@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "973289034890",
+    "firebase_url": "https://bancuri-bune.firebaseio.com",
+    "project_id": "bancuri-bune",
+    "storage_bucket": "bancuri-bune.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:973289034890:android:ef25038676ec7d59",
+        "android_client_info": {
+          "package_name": "cazimir.com.bancuribune"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "973289034890-74lbuu7k83h4ojkfsidrnj31je8usfe2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAROjZ-pCmHZKGfpIT_RM9Jpt1-1VZFPGs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
