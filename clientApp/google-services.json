@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "973289034890-fcd37t0eqi5bv39260bven1aajpevhht.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "cazimir.com.bancuribune",
+            "certificate_hash": "64c39ba4967c0978c064d74d5ade6a8a55504afa"
+          }
+        },
+        {
           "client_id": "973289034890-74lbuu7k83h4ojkfsidrnj31je8usfe2.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -22,6 +30,9 @@
       "api_key": [
         {
           "current_key": "AIzaSyAROjZ-pCmHZKGfpIT_RM9Jpt1-1VZFPGs"
+        },
+        {
+          "current_key": "AIzaSyAHaSa1jSjJEEsJo14oyVCKHP0HrRGmpQw"
         }
       ],
       "services": {
@@ -29,8 +40,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "973289034890-74lbuu7k83h4ojkfsidrnj31je8usfe2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
