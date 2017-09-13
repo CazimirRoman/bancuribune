@@ -11,12 +11,14 @@ import java.util.List;
 
 import cazimir.com.bancuribune.model.Joke;
 
-class JokesInteractor {
+class JokesInteractor implements IJokesInteractor {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference jokesRef = database.getReference("jokes");
 
-    void getJokes(final OnRequestFinishedListener listener) {
+
+    @Override
+    public void getAllJokes(final OnRequestFinishedListener listener) {
         final List<Joke> jokes = new ArrayList<>();
 
         jokesRef.addValueEventListener(new ValueEventListener() {
@@ -36,5 +38,10 @@ class JokesInteractor {
                 listener.onError(databaseError.getMessage());
             }
         });
+    }
+
+    @Override
+    public void addJoke(final OnRequestFinishedListener listener, Joke joke) {
+
     }
 }

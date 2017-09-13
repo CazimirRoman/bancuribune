@@ -14,8 +14,8 @@ public class JokesPresenter implements OnRequestFinishedListener {
         this.interactor = new JokesInteractor();
     }
 
-    public void initData(){
-        interactor.getJokes(this);
+    public void getAllJokesData(){
+        interactor.getAllJokes(this);
     }
 
     @Override

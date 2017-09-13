@@ -27,8 +27,7 @@ public class JokesActivityView extends BaseActivity implements IJokesActivityVie
         adapter = new JokesAdapter();
         jokesListRecyclerView.setAdapter(adapter);
         presenter = new JokesPresenter(this);
-        presenter.initData();
-
+        presenter.getAllJokesData();
     }
 
     @Override

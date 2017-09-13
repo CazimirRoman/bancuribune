@@ -23,7 +23,7 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
 
     @Override
     public void onSuccess() {
-        finish();
+        presenter.getAllJokesData();
 
     }
 
