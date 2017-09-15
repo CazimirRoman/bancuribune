@@ -4,27 +4,44 @@ import java.util.List;
 
 import cazimir.com.bancuribune.model.Joke;
 
-public class JokesPresenter implements OnRequestFinishedListener {
+public class JokesPresenter implements IJokesPresenter, OnRequestFinishedListener, OnAddFinishedListener {
 
-    private IJokesActivityView view;
-    private JokesInteractor interactor;
+    private IJokesActivityView mainView;
+    private  IAddJokeActivityView addView;
+    private IJokesRepository repository;
 
-    public JokesPresenter(IJokesActivityView view) {
-        this.view = view;
-        this.interactor = new JokesInteractor();
+    public JokesPresenter(IJokesActivityView view, IJokesRepository repository) {
+        this.mainView = view;
+        this.repository = repository;
+    }
+
+    public JokesPresenter(IAddJokeActivityView view, IJokesRepository repository) {
+        this.addView = view;
+        this.repository = repository;
     }
 
     public void getAllJokesData(){
-        interactor.getAllJokes(this);
+        repository.getAllJokes(this);
+    }
+
+    @Override
+    public void addJoke(Joke joke) {
+        repository.addJoke(this, joke);
     }
 
     @Override
     public void onSuccess(List<Joke> jokes) {
-        view.populateList(jokes);
+        mainView.refreshJokes(jokes);
     }
 
     @Override
     public void onError(String error) {
-        view.requestFailed(error);
+        mainView.requestFailed(error);
+    }
+
+    @Override
+    public void OnAddSuccess() {
+        //getAllJokesData();
+        addView.closeAdd();
     }
 }

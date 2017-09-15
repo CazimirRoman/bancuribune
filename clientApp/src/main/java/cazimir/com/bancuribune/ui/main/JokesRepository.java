@@ -11,7 +11,7 @@ import java.util.List;
 
 import cazimir.com.bancuribune.model.Joke;
 
-class JokesInteractor implements IJokesInteractor {
+public class JokesRepository implements IJokesRepository {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference jokesRef = database.getReference("jokes");
@@ -19,11 +19,12 @@ class JokesInteractor implements IJokesInteractor {
 
     @Override
     public void getAllJokes(final OnRequestFinishedListener listener) {
-        final List<Joke> jokes = new ArrayList<>();
 
         jokesRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+                final List<Joke> jokes = new ArrayList<>();
 
                 for (DataSnapshot jokeSnapshot : dataSnapshot.getChildren()) {
                     Joke joke = jokeSnapshot.getValue(Joke.class);
@@ -41,7 +42,8 @@ class JokesInteractor implements IJokesInteractor {
     }
 
     @Override
-    public void addJoke(final OnRequestFinishedListener listener, Joke joke) {
-
+    public void addJoke(final OnAddFinishedListener listener, Joke joke) {
+        jokesRef.push().setValue(joke);
+        listener.OnAddSuccess();
     }
 }

@@ -3,7 +3,7 @@ package cazimir.com.bancuribune.ui.main;
 
 import cazimir.com.bancuribune.model.Joke;
 
-interface IJokesInteractor {
+interface IJokesRepository {
     void getAllJokes(OnRequestFinishedListener listener);
-    void addJoke(OnRequestFinishedListener listener, Joke joke);
+    void addJoke(OnAddFinishedListener listener, Joke joke);
 }

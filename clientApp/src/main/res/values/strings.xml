@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Bancuri bune</string>
+    <string name="button_add_joke">Add joke</string>
 </resources>
