@@ -4,7 +4,8 @@ package cazimir.com.bancuribune.presenter;
 import com.facebook.FacebookCallback;
 import com.facebook.login.LoginResult;
 
-public interface ILoginPresenter {
+public interface IAuthPresenter {
     FacebookCallback<LoginResult> loginWithFacebook();
     void checkIfUserLoggedIn();
+    String getCurrentUserID();
 }

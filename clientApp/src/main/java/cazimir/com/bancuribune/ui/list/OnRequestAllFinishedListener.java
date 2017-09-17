@@ -4,7 +4,7 @@ import java.util.List;
 
 import cazimir.com.bancuribune.model.Joke;
 
-public interface OnRequestFinishedListener {
+public interface OnRequestAllFinishedListener {
     void onSuccess(List<Joke> jokes);
     void onError(String error);
 }

@@ -9,9 +9,9 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
-import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.base.BaseActivity;
-import cazimir.com.bancuribune.presenter.JokesPresenter;
+import cazimir.com.bancuribune.model.Joke;
+import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.repository.JokesRepository;
 
 public class AddJokeActivityView extends BaseActivity implements IAddJokeActivityView {
@@ -22,12 +22,12 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
     @BindView(R.id.buttonAddNewJoke)
     Button addJokeButton;
 
-    private JokesPresenter presenter;
+    private CommonPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new JokesPresenter(this, new JokesRepository());
+        presenter = new CommonPresenter(this, new JokesRepository());
     }
 
     @Override

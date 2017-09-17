@@ -8,9 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import cazimir.com.bancuribune.model.Joke;
+import cazimir.com.bancuribune.presenter.CommonPresenter;
+import cazimir.com.bancuribune.repository.IJokesRepository;
 import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
-import cazimir.com.bancuribune.ui.common.IJokesRepository;
-import cazimir.com.bancuribune.presenter.JokesPresenter;
 
 public class JokesPresenterTest {
 
@@ -19,7 +19,7 @@ public class JokesPresenterTest {
 
         IJokesActivityView view = new MockJokesView();
         IJokesRepository jokesRepository = new MockJokesRepository(true);
-        JokesPresenter jokesPresenter = new JokesPresenter(view, jokesRepository);
+        CommonPresenter jokesPresenter = new CommonPresenter(view, jokesRepository);
         jokesPresenter.getAllJokesData();
         Assert.assertEquals(true, ((MockJokesView) view).displayJokesCalled);
 
@@ -29,7 +29,7 @@ public class JokesPresenterTest {
     public void shouldFailWhenNoJokesFound() {
         IJokesActivityView view = new MockJokesView();
         IJokesRepository jokesRepository = new MockJokesRepository(false);
-        JokesPresenter jokesPresenter = new JokesPresenter(view, jokesRepository);
+        CommonPresenter jokesPresenter = new CommonPresenter(view, jokesRepository);
         jokesPresenter.getAllJokesData();
         Assert.assertEquals(true, ((MockJokesView) view).requestFailedCalled);
     }
@@ -48,18 +48,28 @@ public class JokesPresenterTest {
         public void requestFailed(String error) {
             requestFailedCalled = true;
         }
+
+        @Override
+        public void navigateToAddJokeActivity() {
+
+        }
+
+        @Override
+        public void isNotAllowedToAdd() {
+
+        }
     }
 
     private class MockJokesRepository implements IJokesRepository {
 
         private boolean returnSomeJokes;
 
-        public MockJokesRepository(boolean returnSomeBooks) {
-            this.returnSomeJokes = returnSomeBooks;
+        public MockJokesRepository(boolean returnSomeJokes) {
+            this.returnSomeJokes = returnSomeJokes;
         }
 
         @Override
-        public void getAllJokes(OnRequestFinishedListener listener) {
+        public void getAllJokes(OnRequestAllFinishedListener listener) {
 
             List<Joke> jokes;
             if (returnSomeJokes) {
@@ -73,6 +83,11 @@ public class JokesPresenterTest {
 
         @Override
         public void addJoke(OnAddFinishedListener listener, Joke joke) {
+
+        }
+
+        @Override
+        public void getAllJokesAddedToday(OnAllowedToAddFinishedListener listener, String userID) {
 
         }
     }

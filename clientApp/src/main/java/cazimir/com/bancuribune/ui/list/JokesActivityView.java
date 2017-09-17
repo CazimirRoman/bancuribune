@@ -15,12 +15,12 @@ import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.ui.add.AddJokeActivityView;
-import cazimir.com.bancuribune.presenter.JokesPresenter;
+import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.repository.JokesRepository;
 
 public class JokesActivityView extends BaseActivity implements IJokesActivityView {
 
-    private JokesPresenter presenter;
+    private CommonPresenter presenter;
     @BindView(R.id.jokesList) RecyclerView jokesListRecyclerView;
     @BindView(R.id.addJokeButtonFAB) FloatingActionButton addJokeFAB;
     private JokesAdapter adapter;
@@ -29,7 +29,7 @@ public class JokesActivityView extends BaseActivity implements IJokesActivityVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initRecycleView();
-        presenter = new JokesPresenter(this, new JokesRepository());
+        presenter = new CommonPresenter(this, new JokesRepository());
         presenter.getAllJokesData();
     }
 
@@ -62,7 +62,17 @@ public class JokesActivityView extends BaseActivity implements IJokesActivityVie
     }
 
     @OnClick (R.id.addJokeButtonFAB)
+    public void checkIfAllowedToAdd(){
+        presenter.checkNumberOfAdds();
+    }
+
+    @Override
     public void navigateToAddJokeActivity(){
         startActivity(new Intent(this, AddJokeActivityView.class));
+    }
+
+    @Override
+    public void isNotAllowedToAdd() {
+        Toast.makeText(this, "Limit reached", Toast.LENGTH_SHORT).show();
     }
 }
