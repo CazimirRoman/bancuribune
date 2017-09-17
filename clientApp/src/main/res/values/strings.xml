@@ -1,5 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+    <!ENTITY appname "Bancuri bune">
+    <!ENTITY author "Cazimir Roman">
+    ]>
 <resources>
-
     <string name="facebook_app_id">129199171153011</string>
     <string name="fb_login_protocol_scheme">fb129199171153011</string>
 
@@ -9,4 +13,5 @@
     <string name="add_limit_reached">Limit reached</string>
     <string name="joke_added">Joke added. After moderation it will be visible in the app.</string>
     <string name="add_confirmation">Joke added succesfully! After review it will show up in the app.</string>
+    <string name="share_text">Hey! I found this great jokes app called %s. Here is today\'s best joke:</string>
 </resources>
