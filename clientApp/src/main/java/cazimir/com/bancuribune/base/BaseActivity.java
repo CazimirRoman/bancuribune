@@ -1,4 +1,4 @@
-package cazimir.com.bancuribune.ui.base;
+package cazimir.com.bancuribune.base;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

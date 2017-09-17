@@ -1,4 +1,4 @@
-package cazimir.com.bancuribune.ui.main.adapter;
+package cazimir.com.bancuribune.ui.list;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,9 +11,11 @@ import java.util.List;
 
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.model.Joke;
+import cazimir.com.bancuribune.presenter.JokesPresenter;
 
 public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder> {
 
+    private JokesPresenter presenter;
     private List<Joke> jokes;
     public JokesAdapter(){
         jokes = new ArrayList<Joke>();
@@ -21,11 +23,10 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
 
     class MyViewHolder extends RecyclerView.ViewHolder{
 
-        TextView id, text;
+        TextView text;
 
         MyViewHolder(View view){
             super(view);
-            id = view.findViewById(R.id.jokeId);
             text = view.findViewById(R.id.jokeText);
         }
     }
@@ -43,8 +44,12 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(JokesAdapter.MyViewHolder holder, int position) {
         Joke joke = jokes.get(position);
-        holder.id.setText(joke.getJokeId().toString());
-        holder.text.setText(joke.getJokeText());
+        if(!joke.isApproved()){
+            holder.itemView.setVisibility(View.GONE);
+        }else{
+            holder.text.setText(joke.getJokeText());
+        }
+
     }
 
     @Override

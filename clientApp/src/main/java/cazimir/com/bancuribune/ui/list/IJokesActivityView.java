@@ -1,10 +1,10 @@
-package cazimir.com.bancuribune.ui.main;
+package cazimir.com.bancuribune.ui.list;
 
 import java.util.List;
 
 import cazimir.com.bancuribune.model.Joke;
 
 public interface IJokesActivityView {
-    void populateList(List<Joke> jokes);
+    void refreshJokes(List<Joke> jokes);
     void requestFailed(String error);
 }

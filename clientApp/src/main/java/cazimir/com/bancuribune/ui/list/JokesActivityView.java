@@ -1,6 +1,8 @@
-package cazimir.com.bancuribune.ui.main;
+package cazimir.com.bancuribune.ui.list;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
@@ -8,15 +10,19 @@ import android.widget.Toast;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.model.Joke;
-import cazimir.com.bancuribune.ui.base.BaseActivity;
-import cazimir.com.bancuribune.ui.main.adapter.JokesAdapter;
+import cazimir.com.bancuribune.base.BaseActivity;
+import cazimir.com.bancuribune.ui.add.AddJokeActivityView;
+import cazimir.com.bancuribune.presenter.JokesPresenter;
+import cazimir.com.bancuribune.repository.JokesRepository;
 
 public class JokesActivityView extends BaseActivity implements IJokesActivityView {
 
     private JokesPresenter presenter;
     @BindView(R.id.jokesList) RecyclerView jokesListRecyclerView;
+    @BindView(R.id.addJokeButtonFAB) FloatingActionButton addJokeFAB;
     private JokesAdapter adapter;
 
     @Override
@@ -26,9 +32,8 @@ public class JokesActivityView extends BaseActivity implements IJokesActivityVie
         jokesListRecyclerView.setLayoutManager(layoutManager);
         adapter = new JokesAdapter();
         jokesListRecyclerView.setAdapter(adapter);
-        presenter = new JokesPresenter(this);
-        presenter.initData();
-
+        presenter = new JokesPresenter(this, new JokesRepository());
+        presenter.getAllJokesData();
     }
 
     @Override
@@ -37,8 +42,9 @@ public class JokesActivityView extends BaseActivity implements IJokesActivityVie
     }
 
     @Override
-    public void populateList(List<Joke> jokes) {
-
+    public void refreshJokes(List<Joke> jokes) {
+        adapter = new JokesAdapter();
+        jokesListRecyclerView.setAdapter(adapter);
         for(Joke joke : jokes) {
             adapter.add(joke);
         }
@@ -49,5 +55,10 @@ public class JokesActivityView extends BaseActivity implements IJokesActivityVie
     @Override
     public void requestFailed(String error) {
         Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick (R.id.addJokeButtonFAB)
+    public void navigateToAddJokeActivity(){
+        startActivity(new Intent(this, AddJokeActivityView.class));
     }
 }

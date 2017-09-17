@@ -1,21 +1,17 @@
 package cazimir.com.bancuribune.model;
 
 public class Joke {
-    private Integer jokeId;
     private String jokeText;
     private boolean approved;
+    private long createdAt;
 
     public Joke() {
     }
 
-    public Joke(Integer id, String text) {
-        this.jokeId = id;
+    public Joke(String text) {
         this.jokeText = text;
         this.approved = false;
-    }
-
-    public Integer getJokeId() {
-        return jokeId;
+        this.createdAt = System.currentTimeMillis();
     }
 
     public String getJokeText() {
@@ -26,4 +22,7 @@ public class Joke {
         return approved;
     }
 
+    public long getCreatedAt() {
+        return createdAt;
+    }
 }

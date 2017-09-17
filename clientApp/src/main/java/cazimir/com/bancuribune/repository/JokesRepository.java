@@ -1,4 +1,4 @@
-package cazimir.com.bancuribune.ui.main;
+package cazimir.com.bancuribune.repository;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -10,18 +10,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cazimir.com.bancuribune.model.Joke;
+import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
+import cazimir.com.bancuribune.ui.list.OnRequestFinishedListener;
 
-class JokesInteractor {
+public class JokesRepository implements IJokesRepository {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference jokesRef = database.getReference("jokes");
 
-    void getJokes(final OnRequestFinishedListener listener) {
-        final List<Joke> jokes = new ArrayList<>();
+
+    @Override
+    public void getAllJokes(final OnRequestFinishedListener listener) {
 
         jokesRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+                final List<Joke> jokes = new ArrayList<>();
 
                 for (DataSnapshot jokeSnapshot : dataSnapshot.getChildren()) {
                     Joke joke = jokeSnapshot.getValue(Joke.class);
@@ -36,5 +41,11 @@ class JokesInteractor {
                 listener.onError(databaseError.getMessage());
             }
         });
+    }
+
+    @Override
+    public void addJoke(final OnAddFinishedListener listener, Joke joke) {
+        jokesRef.push().setValue(joke);
+        listener.OnAddSuccess();
     }
 }
