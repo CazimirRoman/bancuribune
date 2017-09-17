@@ -1,10 +1,10 @@
 package cazimir.com.bancuribune.ui.add;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -13,8 +13,11 @@ import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.repository.JokesRepository;
+import cazimir.com.bancuribune.utils.MyAlertDialog;
 
 public class AddJokeActivityView extends BaseActivity implements IAddJokeActivityView {
+
+    private MyAlertDialog alertDialog;
 
     @BindView(R.id.editNewJoke)
     EditText addJokeEdit;
@@ -27,6 +30,7 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        alertDialog = new MyAlertDialog(this);
         presenter = new CommonPresenter(this, new JokesRepository());
     }
 
@@ -57,11 +61,14 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
 
     @Override
     public void onError(String error) {
-        Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+        alertDialog.getAlertDialog().setMessage(error);
+        if (!alertDialog.getAlertDialog().isShowing()) alertDialog.getAlertDialog().show();
     }
 
     @Override
     public void closeAdd() {
+        Intent intent = this.getIntent();
+        this.setResult(RESULT_OK, intent);
         finish();
     }
 
