@@ -12,7 +12,7 @@ import cazimir.com.bancuribune.ui.list.OnRequestFinishedListener;
 public class JokesPresenter implements IJokesPresenter, OnRequestFinishedListener, OnAddFinishedListener {
 
     private IJokesActivityView mainView;
-    private  IAddJokeActivityView addView;
+    private IAddJokeActivityView addView;
     private IJokesRepository repository;
 
     public JokesPresenter(IJokesActivityView view, IJokesRepository repository) {
