@@ -1,8 +1,13 @@
-package cazimir.com.bancuribune.ui.main;
+package cazimir.com.bancuribune.presenter;
 
 import java.util.List;
 
 import cazimir.com.bancuribune.model.Joke;
+import cazimir.com.bancuribune.ui.add.IAddJokeActivityView;
+import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
+import cazimir.com.bancuribune.repository.IJokesRepository;
+import cazimir.com.bancuribune.ui.list.IJokesActivityView;
+import cazimir.com.bancuribune.ui.list.OnRequestFinishedListener;
 
 public class JokesPresenter implements IJokesPresenter, OnRequestFinishedListener, OnAddFinishedListener {
 

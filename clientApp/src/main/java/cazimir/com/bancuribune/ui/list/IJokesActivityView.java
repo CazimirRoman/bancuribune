@@ -1,4 +1,4 @@
-package cazimir.com.bancuribune.ui.main;
+package cazimir.com.bancuribune.ui.list;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package cazimir.com.bancuribune.ui.main;
+package cazimir.com.bancuribune.presenter;
 
 import cazimir.com.bancuribune.model.Joke;
 
@@ -6,7 +6,7 @@ import cazimir.com.bancuribune.model.Joke;
  * TODO: Add a class header comment!
  */
 
-interface IJokesPresenter {
+public interface IJokesPresenter {
     void getAllJokesData();
     void addJoke(Joke joke);
 }

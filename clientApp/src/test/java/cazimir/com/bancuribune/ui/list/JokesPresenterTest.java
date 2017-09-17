@@ -1,4 +1,4 @@
-package cazimir.com.bancuribune.ui.main;
+package cazimir.com.bancuribune.ui.list;
 
 import junit.framework.Assert;
 
@@ -8,6 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import cazimir.com.bancuribune.model.Joke;
+import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
+import cazimir.com.bancuribune.ui.common.IJokesRepository;
+import cazimir.com.bancuribune.presenter.JokesPresenter;
 
 public class JokesPresenterTest {
 

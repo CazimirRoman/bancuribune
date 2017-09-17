@@ -1,4 +1,4 @@
-package cazimir.com.bancuribune.ui.main;
+package cazimir.com.bancuribune.ui.list;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,7 +13,10 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.model.Joke;
-import cazimir.com.bancuribune.ui.base.BaseActivity;
+import cazimir.com.bancuribune.base.BaseActivity;
+import cazimir.com.bancuribune.ui.add.AddJokeActivityView;
+import cazimir.com.bancuribune.presenter.JokesPresenter;
+import cazimir.com.bancuribune.repository.JokesRepository;
 
 public class JokesActivityView extends BaseActivity implements IJokesActivityView {
 

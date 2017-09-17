@@ -1,4 +1,4 @@
-package cazimir.com.bancuribune.ui.main;
+package cazimir.com.bancuribune.ui.list;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import java.util.List;
 
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.model.Joke;
+import cazimir.com.bancuribune.presenter.JokesPresenter;
 
 public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder> {
 

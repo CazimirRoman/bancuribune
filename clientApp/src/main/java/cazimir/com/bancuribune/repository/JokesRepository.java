@@ -1,4 +1,4 @@
-package cazimir.com.bancuribune.ui.main;
+package cazimir.com.bancuribune.repository;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cazimir.com.bancuribune.model.Joke;
+import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
+import cazimir.com.bancuribune.ui.list.OnRequestFinishedListener;
 
 public class JokesRepository implements IJokesRepository {
 

@@ -1,8 +1,8 @@
-package cazimir.com.bancuribune.ui.main;
+package cazimir.com.bancuribune.ui.add;
 
 import cazimir.com.bancuribune.model.Joke;
 
-interface IAddJokeActivityView {
+public interface IAddJokeActivityView {
     boolean dataValid();
     void onDataValidated();
     void sendDataToDatabase(Joke joke);
