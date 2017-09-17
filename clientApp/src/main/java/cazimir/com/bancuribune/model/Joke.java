@@ -5,6 +5,8 @@ public class Joke {
     private boolean approved;
     private long createdAt;
     private String createdBy;
+    private String userName;
+
 
     public Joke() {
     }
@@ -33,5 +35,13 @@ public class Joke {
 
     public String getCreatedBy() {
         return createdBy;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 }

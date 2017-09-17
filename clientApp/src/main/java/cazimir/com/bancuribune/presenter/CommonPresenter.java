@@ -36,6 +36,7 @@ public class CommonPresenter implements ICommonPresenter, OnRequestAllFinishedLi
     @Override
     public void addJoke(Joke joke) {
         joke.setCreatedBy(authPresenter.getCurrentUserID());
+        joke.setUserName(authPresenter.getCurrentUserName());
         repository.addJoke(this, joke);
     }
 

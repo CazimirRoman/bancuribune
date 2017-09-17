@@ -8,4 +8,5 @@ public interface IAuthPresenter {
     FacebookCallback<LoginResult> loginWithFacebook();
     void checkIfUserLoggedIn();
     String getCurrentUserID();
+    String getCurrentUserName();
 }

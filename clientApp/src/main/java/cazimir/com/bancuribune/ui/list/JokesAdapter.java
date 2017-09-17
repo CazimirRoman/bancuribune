@@ -11,23 +11,23 @@ import java.util.List;
 
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.model.Joke;
-import cazimir.com.bancuribune.presenter.CommonPresenter;
 
 public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder> {
 
-    private CommonPresenter presenter;
     private List<Joke> jokes;
     public JokesAdapter(){
-        jokes = new ArrayList<Joke>();
+        jokes = new ArrayList<>();
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder{
 
         TextView text;
+        TextView author;
 
         MyViewHolder(View view){
             super(view);
             text = view.findViewById(R.id.jokeText);
+            author = view.findViewById(R.id.authorText);
         }
     }
 
@@ -44,12 +44,8 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(JokesAdapter.MyViewHolder holder, int position) {
         Joke joke = jokes.get(position);
-        if(!joke.isApproved()){
-            holder.itemView.setVisibility(View.GONE);
-        }else{
-            holder.text.setText(joke.getJokeText());
-        }
-
+        holder.text.setText(joke.getJokeText());
+        holder.author.setText(joke.getUserName());
     }
 
     @Override

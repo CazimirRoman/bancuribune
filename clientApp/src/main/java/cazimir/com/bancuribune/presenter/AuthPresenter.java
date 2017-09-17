@@ -78,6 +78,15 @@ public class AuthPresenter implements IAuthPresenter {
         return "";
     }
 
+    @Override
+    public String getCurrentUserName() {
+        if(auth.getCurrentUser() != null){
+            return auth.getCurrentUser().getDisplayName();
+        }
+
+        return "";
+    }
+
     private void handleFacebookAccessToken(AccessToken accessToken) {
         AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
         auth.signInWithCredential(credential)
