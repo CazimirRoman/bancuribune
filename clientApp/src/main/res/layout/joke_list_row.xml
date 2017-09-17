@@ -6,16 +6,34 @@
                 android:orientation="vertical"
                 android:padding="10dp">
 
-    <TextView
-        android:id="@+id/jokeText"
-        android:padding="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:text="JokeText"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:id="@+id/jokeTextContainer"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/jokeText"
+            android:padding="10dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="JokeText"/>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:id="@+id/share"
+            android:src="@android:drawable/ic_menu_share"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_below="@+id/jokeText"
+        android:layout_below="@+id/jokeTextContainer"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:orientation="horizontal"

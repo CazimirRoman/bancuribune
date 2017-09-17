@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.view.View.OnClickListener;
 
 import java.util.List;
 
@@ -12,14 +14,15 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
-import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.repository.JokesRepository;
 import cazimir.com.bancuribune.ui.add.AddJokeActivityView;
 import cazimir.com.bancuribune.utils.MyAlertDialog;
 
-public class JokesActivityView extends BaseActivity implements IJokesActivityView {
+import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_REQUEST;
+
+public class JokesActivityView extends BaseActivity implements IJokesActivityView, ItemClickListener {
 
     private MyAlertDialog alertDialog;
     private CommonPresenter presenter;
@@ -39,7 +42,13 @@ public class JokesActivityView extends BaseActivity implements IJokesActivityVie
     private void initRecycleView() {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         jokesListRecyclerView.setLayoutManager(layoutManager);
-        adapter = new JokesAdapter();
+        jokesListRecyclerView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        adapter = new JokesAdapter(this);
         jokesListRecyclerView.setAdapter(adapter);
     }
 
@@ -50,7 +59,7 @@ public class JokesActivityView extends BaseActivity implements IJokesActivityVie
 
     @Override
     public void refreshJokes(List<Joke> jokes) {
-        adapter = new JokesAdapter();
+        adapter = new JokesAdapter(this);
         jokesListRecyclerView.setAdapter(adapter);
         for(Joke joke : jokes) {
             adapter.add(joke);
@@ -74,7 +83,7 @@ public class JokesActivityView extends BaseActivity implements IJokesActivityVie
     @Override
     public void navigateToAddJokeActivity(){
         Intent addJokeIntent = new Intent(this, AddJokeActivityView.class);
-        startActivityForResult(addJokeIntent, Constants.ADD_JOKE_REQUEST);
+        startActivityForResult(addJokeIntent, ADD_JOKE_REQUEST);
     }
 
     @Override
@@ -85,7 +94,7 @@ public class JokesActivityView extends BaseActivity implements IJokesActivityVie
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Constants.ADD_JOKE_REQUEST) {
+        if (requestCode == ADD_JOKE_REQUEST) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 showAddConfirmationDialog();
@@ -101,5 +110,19 @@ public class JokesActivityView extends BaseActivity implements IJokesActivityVie
     private void showAlertDialog(int message){
         alertDialog.getAlertDialog().setMessage(getString(message));
         if (!alertDialog.getAlertDialog().isShowing()) alertDialog.getAlertDialog().show();
+    }
+
+
+    @Override
+    public void onItemClicked(Joke joke) {
+        shareJoke(joke.getJokeText());
+    }
+
+    private void shareJoke(String text) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.share_text), getString(R.string.app_name)) + "\n\n" + text);
+        sendIntent.setType("text/plain");
+        startActivity(Intent.createChooser(sendIntent, "Share"));
     }
 }
