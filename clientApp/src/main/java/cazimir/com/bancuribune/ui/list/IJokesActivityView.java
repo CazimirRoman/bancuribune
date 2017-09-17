@@ -7,4 +7,6 @@ import cazimir.com.bancuribune.model.Joke;
 public interface IJokesActivityView {
     void refreshJokes(List<Joke> jokes);
     void requestFailed(String error);
+    void navigateToAddJokeActivity();
+    void isNotAllowedToAdd();
 }

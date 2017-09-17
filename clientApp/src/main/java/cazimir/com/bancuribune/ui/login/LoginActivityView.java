@@ -12,12 +12,12 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
-import cazimir.com.bancuribune.presenter.LoginPresenter;
+import cazimir.com.bancuribune.presenter.AuthPresenter;
 import cazimir.com.bancuribune.ui.list.JokesActivityView;
 
 public class LoginActivityView extends BaseActivity implements ILoginActivityView {
 
-    private LoginPresenter presenter;
+    private AuthPresenter presenter;
     private CallbackManager callbackManager;
 
     @BindView(R.id.login_button)
@@ -28,7 +28,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         super.onCreate(savedInstanceState);
 
         callbackManager = CallbackManager.Factory.create();
-        presenter = new LoginPresenter(this);
+        presenter = new AuthPresenter(this);
         presenter.checkIfUserLoggedIn();
     }
 

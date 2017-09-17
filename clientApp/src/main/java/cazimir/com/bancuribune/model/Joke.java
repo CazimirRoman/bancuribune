@@ -4,6 +4,7 @@ public class Joke {
     private String jokeText;
     private boolean approved;
     private long createdAt;
+    private String createdBy;
 
     public Joke() {
     }
@@ -22,7 +23,15 @@ public class Joke {
         return approved;
     }
 
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
     public long getCreatedAt() {
         return createdAt;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
     }
 }

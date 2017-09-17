@@ -11,11 +11,11 @@ import java.util.List;
 
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.model.Joke;
-import cazimir.com.bancuribune.presenter.JokesPresenter;
+import cazimir.com.bancuribune.presenter.CommonPresenter;
 
 public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder> {
 
-    private JokesPresenter presenter;
+    private CommonPresenter presenter;
     private List<Joke> jokes;
     public JokesAdapter(){
         jokes = new ArrayList<Joke>();

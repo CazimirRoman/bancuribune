@@ -2,11 +2,10 @@ package cazimir.com.bancuribune.presenter;
 
 import cazimir.com.bancuribune.model.Joke;
 
-/**
- * TODO: Add a class header comment!
- */
-
-public interface IJokesPresenter {
+public interface ICommonPresenter {
     void getAllJokesData();
     void addJoke(Joke joke);
+    void checkNumberOfAdds();
+    void isAllowedToAdd();
+    void isNotAllowedToAdd();
 }

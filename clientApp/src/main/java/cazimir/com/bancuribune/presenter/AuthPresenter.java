@@ -14,16 +14,30 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
+import cazimir.com.bancuribune.ui.add.IAddJokeActivityView;
+import cazimir.com.bancuribune.ui.list.IJokesActivityView;
 import cazimir.com.bancuribune.ui.login.ILoginActivityView;
 
-public class LoginPresenter implements ILoginPresenter {
+public class AuthPresenter implements IAuthPresenter {
 
     private FirebaseAuth auth;
-    private ILoginActivityView view;
+    private ILoginActivityView login;
+    private IJokesActivityView jokes;
+    private IAddJokeActivityView add;
 
-    public LoginPresenter(ILoginActivityView view) {
+    public AuthPresenter(ILoginActivityView view) {
         auth = FirebaseAuth.getInstance();
-        this.view = view;
+        this.login = view;
+    }
+
+    public AuthPresenter(IJokesActivityView view) {
+        auth = FirebaseAuth.getInstance();
+        this.jokes = view;
+    }
+
+    public AuthPresenter(IAddJokeActivityView view) {
+        auth = FirebaseAuth.getInstance();
+        this.add = view;
     }
 
 
@@ -51,23 +65,32 @@ public class LoginPresenter implements ILoginPresenter {
     @Override
     public void checkIfUserLoggedIn() {
         if (auth.getCurrentUser() != null) {
-            view.launchMainActivity();
+            login.launchMainActivity();
         }
+    }
+
+    @Override
+    public String getCurrentUserID() {
+
+        if(auth.getCurrentUser() != null){
+            return auth.getCurrentUser().getUid();
+        }
+        return "";
     }
 
     private void handleFacebookAccessToken(AccessToken accessToken) {
         AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
         auth.signInWithCredential(credential)
-                .addOnCompleteListener(view.getContext(), new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(login.getContext(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            view.loginSucces();
+                            login.loginSucces();
 
                         } else {
                             // If sign in fails, display a message to the user.
-                            view.loginFailed(task.getException().toString());
+                            login.loginFailed(task.getException().toString());
                         }
 
                     }
