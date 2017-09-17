@@ -13,10 +13,12 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuth.AuthStateListener;
 
 import cazimir.com.bancuribune.ui.add.IAddJokeActivityView;
 import cazimir.com.bancuribune.ui.list.IJokesActivityView;
 import cazimir.com.bancuribune.ui.login.ILoginActivityView;
+import cazimir.com.bancuribune.ui.login.OnAuthStateListenerRegister;
 
 public class AuthPresenter implements IAuthPresenter {
 
@@ -27,6 +29,7 @@ public class AuthPresenter implements IAuthPresenter {
 
     public AuthPresenter(ILoginActivityView view) {
         auth = FirebaseAuth.getInstance();
+        setListener();
         this.login = view;
     }
 
@@ -40,6 +43,17 @@ public class AuthPresenter implements IAuthPresenter {
         this.add = view;
     }
 
+    private void setListener() {
+        auth.addAuthStateListener(new AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+               if(firebaseAuth.getCurrentUser() == null){
+
+               }
+            }
+        });
+    }
+
 
     @Override
     public FacebookCallback<LoginResult> loginWithFacebook() {
@@ -47,6 +61,7 @@ public class AuthPresenter implements IAuthPresenter {
         return new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+
                 handleFacebookAccessToken(loginResult.getAccessToken());
             }
 
@@ -85,6 +100,21 @@ public class AuthPresenter implements IAuthPresenter {
         }
 
         return "";
+    }
+
+    @Override
+    public void logUserOut() {
+        auth.signOut();
+    }
+
+    @Override
+    public void registerAuthChangeListener(final OnAuthStateListenerRegister listener) {
+        auth.addAuthStateListener(new AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                listener.onAuthListenerSuccess();
+            }
+        });
     }
 
     private void handleFacebookAccessToken(AccessToken accessToken) {

@@ -56,6 +56,11 @@ public class CommonPresenter implements ICommonPresenter, OnRequestAllFinishedLi
     }
 
     @Override
+    public void logOutUser() {
+        authPresenter.logUserOut();
+    }
+
+    @Override
     public void onSuccess(List<Joke> jokes) {
         mainView.refreshJokes(jokes);
     }

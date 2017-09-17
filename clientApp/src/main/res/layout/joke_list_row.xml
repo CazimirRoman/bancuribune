@@ -24,6 +24,7 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:id="@+id/share"
+            android:background="@null"
             android:src="@android:drawable/ic_menu_share"
             android:layout_height="wrap_content"/>
 

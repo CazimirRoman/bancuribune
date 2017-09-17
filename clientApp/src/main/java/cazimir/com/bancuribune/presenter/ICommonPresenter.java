@@ -8,4 +8,5 @@ public interface ICommonPresenter {
     void checkNumberOfAdds();
     void isAllowedToAdd();
     void isNotAllowedToAdd();
+    void logOutUser();
 }

@@ -1,8 +1,10 @@
 package cazimir.com.bancuribune.ui.add;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -76,7 +78,13 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
     public void addJoke(View view){
         if(dataValid()){
             sendDataToDatabase(constructJokeObject());
+            hideSoftInput();
         }
+    }
+
+    private void hideSoftInput() {
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(addJokeEdit.getWindowToken(), 0);
     }
 
     private Joke constructJokeObject() {
