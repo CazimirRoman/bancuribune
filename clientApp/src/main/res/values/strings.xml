@@ -1,4 +1,8 @@
 <resources>
+
+    <string name="facebook_app_id">129199171153011</string>
+    <string name="fb_login_protocol_scheme">fb129199171153011</string>
+
     <string name="app_name">Bancuri bune</string>
     <string name="button_add_joke">Add joke</string>
 </resources>

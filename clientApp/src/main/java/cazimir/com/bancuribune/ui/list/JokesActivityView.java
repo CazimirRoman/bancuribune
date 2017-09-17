@@ -28,12 +28,16 @@ public class JokesActivityView extends BaseActivity implements IJokesActivityVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initRecycleView();
+        presenter = new JokesPresenter(this, new JokesRepository());
+        presenter.getAllJokesData();
+    }
+
+    private void initRecycleView() {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         jokesListRecyclerView.setLayoutManager(layoutManager);
         adapter = new JokesAdapter();
         jokesListRecyclerView.setAdapter(adapter);
-        presenter = new JokesPresenter(this, new JokesRepository());
-        presenter.getAllJokesData();
     }
 
     @Override

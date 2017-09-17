@@ -18,7 +18,6 @@ public class JokesRepository implements IJokesRepository {
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference jokesRef = database.getReference("jokes");
 
-
     @Override
     public void getAllJokes(final OnRequestFinishedListener listener) {
 
