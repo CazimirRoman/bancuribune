@@ -6,4 +6,7 @@
     <string name="app_name">Bancuri bune</string>
     <string name="button_add_joke">Add joke</string>
     <string name="added_by_label">"Added by: "</string>
+    <string name="add_limit_reached">Limit reached</string>
+    <string name="joke_added">Joke added. After moderation it will be visible in the app.</string>
+    <string name="add_confirmation">Joke added succesfully! After review it will show up in the app.</string>
 </resources>

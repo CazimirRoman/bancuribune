@@ -9,4 +9,5 @@ public interface IJokesActivityView {
     void requestFailed(String error);
     void navigateToAddJokeActivity();
     void isNotAllowedToAdd();
+    void showAddConfirmationDialog();
 }
