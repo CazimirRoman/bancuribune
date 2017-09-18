@@ -6,18 +6,21 @@ import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.repository.IJokesRepository;
 import cazimir.com.bancuribune.ui.add.IAddJokeActivityView;
 import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
+import cazimir.com.bancuribune.ui.list.IMainActivityView;
 import cazimir.com.bancuribune.ui.list.OnAllowedToAddFinishedListener;
-import cazimir.com.bancuribune.ui.list.IJokesActivityView;
-import cazimir.com.bancuribune.ui.list.OnRequestAllFinishedListener;
+import cazimir.com.bancuribune.ui.list.OnFirebaseGetAllJokesListener;
+import cazimir.com.bancuribune.ui.myjokes.IMyJokesActivityView;
+import cazimir.com.bancuribune.ui.myjokes.OnFirebaseGetMyJokesListener;
 
-public class CommonPresenter implements ICommonPresenter, OnRequestAllFinishedListener, OnAddFinishedListener, OnAllowedToAddFinishedListener {
+public class CommonPresenter implements ICommonPresenter, OnFirebaseGetAllJokesListener, OnFirebaseGetMyJokesListener, OnAddFinishedListener, OnAllowedToAddFinishedListener {
 
-    private IJokesActivityView mainView;
+    private IMainActivityView mainView;
     private IAddJokeActivityView addView;
+    private IMyJokesActivityView myJokesView;
     private IJokesRepository repository;
     private IAuthPresenter authPresenter;
 
-    public CommonPresenter(IJokesActivityView view, IJokesRepository repository) {
+    public CommonPresenter(IMainActivityView view, IJokesRepository repository) {
         this.mainView = view;
         this.repository = repository;
         this.authPresenter = new AuthPresenter(view);
@@ -29,8 +32,19 @@ public class CommonPresenter implements ICommonPresenter, OnRequestAllFinishedLi
         this.authPresenter = new AuthPresenter(view);
     }
 
+    public CommonPresenter(IMyJokesActivityView view, IJokesRepository repository) {
+        this.myJokesView = view;
+        this.repository = repository;
+        this.authPresenter = new AuthPresenter(myJokesView);
+    }
+
     public void getAllJokesData(){
         repository.getAllJokes(this);
+    }
+
+    @Override
+    public void getMyJokes() {
+        repository.getMyJokes(this, authPresenter.getCurrentUserID());
     }
 
     @Override
@@ -57,7 +71,7 @@ public class CommonPresenter implements ICommonPresenter, OnRequestAllFinishedLi
 
     @Override
     public void logOutUser() {
-        authPresenter.logUserOut();
+        authPresenter.logUserOut(mainView);
     }
 
     @Override
@@ -73,5 +87,15 @@ public class CommonPresenter implements ICommonPresenter, OnRequestAllFinishedLi
     @Override
     public void OnAddSuccess() {
         addView.closeAdd();
+    }
+
+    @Override
+    public void onGetMyJokesSuccess(List<Joke> jokes) {
+        myJokesView.showJokesList(jokes);
+    }
+
+    @Override
+    public void onGetMyJokesError(String error) {
+
     }
 }

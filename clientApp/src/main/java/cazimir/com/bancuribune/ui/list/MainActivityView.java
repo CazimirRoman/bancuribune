@@ -5,14 +5,10 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.facebook.Profile;
 
 import java.util.List;
 
@@ -24,58 +20,35 @@ import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.repository.JokesRepository;
 import cazimir.com.bancuribune.ui.add.AddJokeActivityView;
+import cazimir.com.bancuribune.ui.login.LoginActivityView;
 import cazimir.com.bancuribune.ui.login.OnAuthStateListenerRegister;
+import cazimir.com.bancuribune.ui.myjokes.MyJokesActivityView;
 import cazimir.com.bancuribune.utils.MyAlertDialog;
 
 import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_REQUEST;
 
-public class JokesActivityView extends BaseActivity implements IJokesActivityView, ItemClickListener, OnAuthStateListenerRegister {
+public class MainActivityView extends BaseActivity implements IMainActivityView, ItemClickListener, OnAuthStateListenerRegister {
 
-    private Toolbar toolbar;
     private MyAlertDialog alertDialog;
     private CommonPresenter presenter;
-    @BindView(R.id.jokesList) RecyclerView jokesListRecyclerView;
-    @BindView(R.id.addJokeButtonFAB) FloatingActionButton addJokeFAB;
+    @BindView(R.id.jokesList)
+    RecyclerView jokesListRecyclerView;
+    @BindView(R.id.addJokeButtonFAB)
+    FloatingActionButton addJokeFAB;
+    @BindView(R.id.myJokesButtonFAB)
+    FloatingActionButton logoutFAB;
+    @BindView(R.id.logoutButtonFAB)
+    FloatingActionButton myJokesFAB;
     private JokesAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.app_name));
         alertDialog = new MyAlertDialog(this);
-        initializeNavigationDrawer();
         initRecycleView();
         presenter = new CommonPresenter(this, new JokesRepository());
         presenter.getAllJokesData();
-    }
-
-    private void initializeNavigationDrawer() {
-
-        final SecondaryDrawerItem myJokes = new SecondaryDrawerItem().withIdentifier(2).withName(R.string.drawer_item_jokes);
-        final SecondaryDrawerItem logout = new SecondaryDrawerItem().withIdentifier(2).withName(R.string.drawer_item_logout);
-
-        Drawer result = new DrawerBuilder()
-                .withActivity(this)
-                .withToolbar(toolbar)
-                .withTranslucentNavigationBar(false)
-                .addDrawerItems(
-                        myJokes,
-                        logout
-                )
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-
-                        switch(position){
-                            case 1:
-                                presenter.logOutUser();
-                        }
-                        return true;
-                    }
-                })
-                .build();
-
     }
 
     private void initRecycleView() {
@@ -93,14 +66,14 @@ public class JokesActivityView extends BaseActivity implements IJokesActivityVie
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_jokes_view;
+        return R.layout.activity_main_view;
     }
 
     @Override
     public void refreshJokes(List<Joke> jokes) {
         adapter = new JokesAdapter(this);
         jokesListRecyclerView.setAdapter(adapter);
-        for(Joke joke : jokes) {
+        for (Joke joke : jokes) {
             adapter.add(joke);
         }
 
@@ -110,17 +83,29 @@ public class JokesActivityView extends BaseActivity implements IJokesActivityVie
     @Override
     public void requestFailed(String error) {
         //TODO : refactor
-        alertDialog.getAlertDialog().setMessage(error);
-        if (!alertDialog.getAlertDialog().isShowing()) alertDialog.getAlertDialog().show();
+        if(Profile.getCurrentProfile() != null){
+            alertDialog.getAlertDialog().setMessage(error);
+            if (!alertDialog.getAlertDialog().isShowing()) alertDialog.getAlertDialog().show();
+        }
     }
 
-    @OnClick (R.id.addJokeButtonFAB)
-    public void checkIfAllowedToAdd(){
+    @OnClick(R.id.addJokeButtonFAB)
+    public void checkIfAllowedToAdd() {
         presenter.checkNumberOfAdds();
     }
 
+    @OnClick(R.id.myJokesButtonFAB)
+    public void startMyJokesActivity() {
+        startActivity(new Intent(this, MyJokesActivityView.class));
+    }
+
+    @OnClick(R.id.logoutButtonFAB)
+    public void logoutUser() {
+        presenter.logOutUser();
+    }
+
     @Override
-    public void navigateToAddJokeActivity(){
+    public void navigateToAddJokeActivity() {
         Intent addJokeIntent = new Intent(this, AddJokeActivityView.class);
         startActivityForResult(addJokeIntent, ADD_JOKE_REQUEST);
     }
@@ -145,7 +130,13 @@ public class JokesActivityView extends BaseActivity implements IJokesActivityVie
         showAlertDialog(R.string.add_confirmation);
     }
 
-    private void showAlertDialog(int message){
+    @Override
+    public void redirectToLoginPage() {
+        this.finish();
+        startActivity(new Intent(this, LoginActivityView.class));
+    }
+
+    private void showAlertDialog(int message) {
         alertDialog.getAlertDialog().setMessage(getString(message));
         if (!alertDialog.getAlertDialog().isShowing()) alertDialog.getAlertDialog().show();
     }

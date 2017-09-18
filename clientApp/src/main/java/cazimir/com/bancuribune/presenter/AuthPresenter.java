@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.facebook.AccessToken;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -16,16 +17,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener;
 
 import cazimir.com.bancuribune.ui.add.IAddJokeActivityView;
-import cazimir.com.bancuribune.ui.list.IJokesActivityView;
+import cazimir.com.bancuribune.ui.list.IMainActivityView;
 import cazimir.com.bancuribune.ui.login.ILoginActivityView;
 import cazimir.com.bancuribune.ui.login.OnAuthStateListenerRegister;
+import cazimir.com.bancuribune.ui.myjokes.IMyJokesActivityView;
 
 public class AuthPresenter implements IAuthPresenter {
 
     private FirebaseAuth auth;
     private ILoginActivityView login;
-    private IJokesActivityView jokes;
+    private IMainActivityView jokes;
     private IAddJokeActivityView add;
+    private IMyJokesActivityView myJokes;
 
     public AuthPresenter(ILoginActivityView view) {
         auth = FirebaseAuth.getInstance();
@@ -33,7 +36,7 @@ public class AuthPresenter implements IAuthPresenter {
         this.login = view;
     }
 
-    public AuthPresenter(IJokesActivityView view) {
+    public AuthPresenter(IMainActivityView view) {
         auth = FirebaseAuth.getInstance();
         this.jokes = view;
     }
@@ -41,6 +44,11 @@ public class AuthPresenter implements IAuthPresenter {
     public AuthPresenter(IAddJokeActivityView view) {
         auth = FirebaseAuth.getInstance();
         this.add = view;
+    }
+
+    public AuthPresenter(IMyJokesActivityView view) {
+        auth = FirebaseAuth.getInstance();
+        this.myJokes = view;
     }
 
     private void setListener() {
@@ -103,8 +111,10 @@ public class AuthPresenter implements IAuthPresenter {
     }
 
     @Override
-    public void logUserOut() {
+    public void logUserOut(IMainActivityView view) {
         auth.signOut();
+        LoginManager.getInstance().logOut();
+        view.redirectToLoginPage();
     }
 
     @Override

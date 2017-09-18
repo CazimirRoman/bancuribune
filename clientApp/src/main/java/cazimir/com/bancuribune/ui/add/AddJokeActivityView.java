@@ -32,6 +32,8 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setTitle("Add joke");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         alertDialog = new MyAlertDialog(this);
         presenter = new CommonPresenter(this, new JokesRepository());
     }
@@ -89,5 +91,11 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
 
     private Joke constructJokeObject() {
         return new Joke(addJokeEdit.getText().toString().trim());
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 }

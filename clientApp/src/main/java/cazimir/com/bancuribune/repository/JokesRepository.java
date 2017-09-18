@@ -16,7 +16,8 @@ import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnAllowedToAddFinishedListener;
-import cazimir.com.bancuribune.ui.list.OnRequestAllFinishedListener;
+import cazimir.com.bancuribune.ui.list.OnFirebaseGetAllJokesListener;
+import cazimir.com.bancuribune.ui.myjokes.OnFirebaseGetMyJokesListener;
 import cazimir.com.bancuribune.utils.Utils;
 
 public class JokesRepository implements IJokesRepository {
@@ -25,7 +26,7 @@ public class JokesRepository implements IJokesRepository {
     private DatabaseReference jokesRef = database.getReference("jokes");
 
     @Override
-    public void getAllJokes(final OnRequestAllFinishedListener listener) {
+    public void getAllJokes(final OnFirebaseGetAllJokesListener listener) {
 
         jokesRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -49,6 +50,36 @@ public class JokesRepository implements IJokesRepository {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 listener.onError(databaseError.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void getMyJokes(final OnFirebaseGetMyJokesListener listener, String userId) {
+        final ArrayList<Joke> myJokes = new ArrayList<>();
+
+        Query query = jokesRef.orderByChild("createdBy").equalTo(userId);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot markerSnapshot : dataSnapshot.getChildren()) {
+                    Joke joke = markerSnapshot.getValue(Joke.class);
+                    assert joke != null;
+                    myJokes.add(joke);
+                }
+
+                Collections.reverse(myJokes);
+
+                listener.onGetMyJokesSuccess(myJokes);
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listener.onGetMyJokesError(databaseError.getMessage());
             }
         });
     }
