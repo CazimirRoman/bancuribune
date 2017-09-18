@@ -4,10 +4,12 @@ package cazimir.com.bancuribune.repository;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnAllowedToAddFinishedListener;
-import cazimir.com.bancuribune.ui.list.OnRequestAllFinishedListener;
+import cazimir.com.bancuribune.ui.list.OnFirebaseGetAllJokesListener;
+import cazimir.com.bancuribune.ui.myjokes.OnFirebaseGetMyJokesListener;
 
 public interface IJokesRepository {
-    void getAllJokes(OnRequestAllFinishedListener listener);
+    void getAllJokes(OnFirebaseGetAllJokesListener listener);
+    void getMyJokes(OnFirebaseGetMyJokesListener listener, String userID);
     void addJoke(OnAddFinishedListener listener, Joke joke);
     void getAllJokesAddedToday(OnAllowedToAddFinishedListener listener, String userID);
 }

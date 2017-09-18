@@ -17,7 +17,7 @@ public class JokesPresenterTest {
     @Test
     public void shouldPassJokesToView() {
 
-        IJokesActivityView view = new MockJokesView();
+        IMainActivityView view = new MockJokesView();
         IJokesRepository jokesRepository = new MockJokesRepository(true);
         CommonPresenter jokesPresenter = new CommonPresenter(view, jokesRepository);
         jokesPresenter.getAllJokesData();
@@ -27,14 +27,14 @@ public class JokesPresenterTest {
 
     @Test
     public void shouldFailWhenNoJokesFound() {
-        IJokesActivityView view = new MockJokesView();
+        IMainActivityView view = new MockJokesView();
         IJokesRepository jokesRepository = new MockJokesRepository(false);
         CommonPresenter jokesPresenter = new CommonPresenter(view, jokesRepository);
         jokesPresenter.getAllJokesData();
         Assert.assertEquals(true, ((MockJokesView) view).requestFailedCalled);
     }
 
-    private class MockJokesView implements IJokesActivityView {
+    private class MockJokesView implements IMainActivityView {
 
         boolean displayJokesCalled;
         boolean requestFailedCalled;
@@ -58,6 +58,16 @@ public class JokesPresenterTest {
         public void isNotAllowedToAdd() {
 
         }
+
+        @Override
+        public void showAddConfirmationDialog() {
+
+        }
+
+        @Override
+        public void redirectToLoginPage() {
+
+        }
     }
 
     private class MockJokesRepository implements IJokesRepository {
@@ -69,7 +79,7 @@ public class JokesPresenterTest {
         }
 
         @Override
-        public void getAllJokes(OnRequestAllFinishedListener listener) {
+        public void getAllJokes(OnFirebaseGetAllJokesListener listener) {
 
             List<Joke> jokes;
             if (returnSomeJokes) {

@@ -3,6 +3,7 @@ package cazimir.com.bancuribune.ui.login;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
@@ -13,7 +14,7 @@ import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.presenter.AuthPresenter;
-import cazimir.com.bancuribune.ui.list.JokesActivityView;
+import cazimir.com.bancuribune.ui.list.MainActivityView;
 
 public class LoginActivityView extends BaseActivity implements ILoginActivityView {
 
@@ -26,7 +27,6 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         callbackManager = CallbackManager.Factory.create();
         presenter = new AuthPresenter(this);
         presenter.checkIfUserLoggedIn();
@@ -39,7 +39,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
 
     @Override
     public void launchMainActivity() {
-        startActivity(new Intent(this, JokesActivityView.class));
+        startActivity(new Intent(this, MainActivityView.class));
         this.finish();
     }
 
@@ -61,6 +61,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     @OnClick(R.id.login_button)
     void performFacebookLogin() {
         facebookButton.registerCallback(callbackManager, presenter.loginWithFacebook());
+        facebookButton.setVisibility(View.GONE);
     }
 
     @Override
