@@ -10,4 +10,34 @@
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
+    <style name="text">
+
+    </style>
+
+    <style name="text.regular">
+        <item name="android:textSize">18sp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+    </style>
+
+    <style name="text.small">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="text.small.gray">
+        <item name="android:textSize">12sp</item>
+        <item name="android:color">@android:color/darker_gray</item>
+    </style>
+
+    <style name="textFAB">
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="fa_icon">
+        <item name="android:textSize">25sp</item>
+        <item name="android:layout_margin">10sp</item>
+    </style>
+
+
+
 </resources>

@@ -1,53 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
     <include
-        layout="@layout/app_bar_main"
         android:id="@+id/include_app_bar"
+        layout="@layout/app_bar_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"/>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_centerInParent="true"
+        style="?android:progressBarStyle"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/jokesList"
-        android:layout_weight="0.8"
         android:layout_width="match_parent"
-        android:layout_height="0dp"/>
+        android:layout_height="match_parent"
+        android:layout_below="@id/include_app_bar"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:layout_gravity="bottom|end"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
 
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:id="@+id/addJokeButtonFAB"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:clickable="true"/>
+            android:orientation="horizontal">
 
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            app:rippleColor="@color/com_facebook_blue"
-            app:backgroundTint="@color/colorAccent"
-            android:id="@+id/myJokesButtonFAB"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:clickable="true"/>
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|start">
 
-        <android.support.design.widget.FloatingActionButton
-            android:layout_width="wrap_content"
-            app:rippleColor="@color/com_facebook_blue"
-            app:backgroundTint="@color/colorPrimary"
-            android:id="@+id/logoutButtonFAB"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:clickable="true"/>
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/addJokeButtonFAB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"/>
+
+                <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                    android:id="@+id/tvSellRecordCount"
+                    style="@style/textFAB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:elevation="20dp"
+                    android:text="@string/fa_icon_plus"
+                    android:textColor="#FFFFFF"
+                    app:elevation="20dp"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|start">
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/myJokesButtonFAB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:layout_margin="10dp"
+                    app:backgroundTint="@color/colorAccent"
+                    app:rippleColor="@color/com_facebook_blue"/>
+
+                <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                    style="@style/textFAB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:elevation="20dp"
+                    android:text="@string/fa_icon_list"
+                    android:textColor="#FFFFFF"
+                    app:elevation="20dp"/>
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|start">
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/logoutButtonFAB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:layout_margin="10dp"
+                    app:backgroundTint="@color/colorAccent"
+                    app:rippleColor="@color/com_facebook_blue"/>
+
+                <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                    style="@style/textFAB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:elevation="20dp"
+                    android:text="@string/fa_icon_sign_out"
+                    android:textColor="#FFFFFF"
+                    app:elevation="20dp"/>
+            </FrameLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>
