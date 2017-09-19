@@ -21,24 +21,26 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
     private List<Joke> jokes;
     private final ItemClickListener itemClickListener;
 
-    public JokesAdapter(@NonNull ItemClickListener listener){
+    public JokesAdapter(@NonNull ItemClickListener listener) {
         this.itemClickListener = listener;
         jokes = new ArrayList<>();
     }
-    @BindView(R.id.share) ImageButton share;
+
+    @BindView(R.id.share)
+    ImageButton share;
 
     @Override
     public void onItemClicked(Joke data) {
 
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder{
+    class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView text;
         TextView author;
         TextView share;
 
-        MyViewHolder(View view){
+        MyViewHolder(View view) {
             super(view);
             text = view.findViewById(R.id.jokeText);
             author = view.findViewById(R.id.authorText);
@@ -46,7 +48,7 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
         }
     }
 
-    public void add(Joke joke){
+    public void add(Joke joke) {
         jokes.add(joke);
     }
 
@@ -73,5 +75,9 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
     @Override
     public int getItemCount() {
         return jokes.size();
+    }
+
+    public List<Joke> getJokesList() {
+        return this.jokes;
     }
 }

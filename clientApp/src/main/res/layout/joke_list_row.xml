@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:padding="20dp">
 
     <LinearLayout
         android:id="@+id/jokeTextContainer"
@@ -32,13 +33,27 @@
             android:layout_height="match_parent"
             android:layout_gravity="start">
 
-            <cazimir.com.bancuribune.ui.FontAwesomeTextView
-                android:id="@+id/share"
-                style="@style/fa_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/fa_icon_share">
-            </cazimir.com.bancuribune.ui.FontAwesomeTextView>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                    android:id="@+id/share"
+                    style="@style/fa_icon"
+                    android:elevation="20dp"
+                    android:shadowDx="1"
+                    android:shadowRadius="1"
+                    android:shadowColor="@color/com_facebook_blue"
+                    android:shadowDy="1"
+                    app:elevation = "20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fa_icon_share">
+                </cazimir.com.bancuribune.ui.FontAwesomeTextView>
+
+            </FrameLayout>
+
+
 
         </LinearLayout>
 

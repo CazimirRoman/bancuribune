@@ -5,12 +5,16 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.facebook.Profile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -22,17 +26,17 @@ import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.repository.JokesRepository;
 import cazimir.com.bancuribune.ui.add.AddJokeActivityView;
 import cazimir.com.bancuribune.ui.login.LoginActivityView;
-import cazimir.com.bancuribune.ui.login.OnAuthStateListenerRegister;
 import cazimir.com.bancuribune.ui.myjokes.MyJokesActivityView;
 import cazimir.com.bancuribune.utils.MyAlertDialog;
 
 import static cazimir.com.bancuribune.R.id.addJokeButtonFAB;
 import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_REQUEST;
 
-public class MainActivityView extends BaseActivity implements IMainActivityView, ItemClickListener, OnAuthStateListenerRegister {
+public class MainActivityView extends BaseActivity implements IMainActivityView, ItemClickListener {
 
     private MyAlertDialog alertDialog;
     private CommonPresenter presenter;
+    private JokesAdapter adapter;
     @BindView(R.id.jokesList)
     RecyclerView jokesListRecyclerView;
     @BindView(addJokeButtonFAB)
@@ -42,8 +46,10 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @BindView(R.id.logoutButtonFAB)
     FloatingActionButton myJokesFAB;
     @BindView(R.id.progress_bar)
-    ProgressBar progress;
-    private JokesAdapter adapter;
+    ProgressBar progressMain;
+    @BindView(R.id.search)
+    EditText search;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +59,43 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         initRecycleView();
         presenter = new CommonPresenter(this, new JokesRepository());
         presenter.getAllJokesData();
-        progress.setVisibility(View.VISIBLE);
+        initSearch();
+    }
+
+    private void initSearch() {
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(editable.toString().isEmpty()){
+                    presenter.getAllJokesData();
+                }else{
+                    showProgressBar();
+                    filterText(editable.toString());
+                }
+
+            }
+        });
+    }
+
+    private void filterText(String text) {
+        List<Joke> temp = new ArrayList();
+        for(Joke d: adapter.getJokesList()){
+            if(d.getJokeText().contains(text)){
+                temp.add(d);
+            }
+        }
+
+        refreshJokes(temp);
     }
 
     private void initRecycleView() {
@@ -85,13 +127,13 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         }
 
         adapter.notifyDataSetChanged();
-        progress.setVisibility(View.GONE);
+        hideProgressBar();
     }
 
     @Override
     public void requestFailed(String error) {
         //TODO : refactor
-        progress.setVisibility(View.GONE);
+        hideProgressBar();
         if(Profile.getCurrentProfile() != null){
             alertDialog.getAlertDialog().setMessage(error);
             if (!alertDialog.getAlertDialog().isShowing()) alertDialog.getAlertDialog().show();
@@ -144,6 +186,16 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         startActivity(new Intent(this, LoginActivityView.class));
     }
 
+    @Override
+    public void showProgressBar() {
+        progressMain.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        progressMain.setVisibility(View.GONE);
+    }
+
     private void showAlertDialog(int message) {
         alertDialog.getAlertDialog().setMessage(getString(message));
         if (!alertDialog.getAlertDialog().isShowing()) alertDialog.getAlertDialog().show();
@@ -153,6 +205,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @Override
     public void onItemClicked(Joke joke) {
         shareJoke(joke.getJokeText());
+        showProgressBar();
     }
 
     private void shareJoke(String text) {
@@ -161,10 +214,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         sendIntent.putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.share_text), getString(R.string.app_name)) + "\n\n" + text);
         sendIntent.setType("text/plain");
         startActivity(Intent.createChooser(sendIntent, "Share"));
-    }
-
-    @Override
-    public void onAuthListenerSuccess() {
-
+        hideProgressBar();
     }
 }
