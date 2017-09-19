@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -20,14 +18,13 @@ import cazimir.com.bancuribune.utils.MyAlertDialog;
 public class AddJokeActivityView extends BaseActivity implements IAddJokeActivityView {
 
     private MyAlertDialog alertDialog;
+    private CommonPresenter presenter;
 
     @BindView(R.id.editNewJoke)
-    EditText addJokeEdit;
+    android.support.design.widget.TextInputEditText addJokeEdit;
 
-    @BindView(R.id.buttonAddNewJoke)
-    Button addJokeButton;
-
-    private CommonPresenter presenter;
+    @BindView(R.id.addNewJokeButtonFAB)
+    android.support.design.widget.FloatingActionButton addJokeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +73,7 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
         finish();
     }
 
-    @OnClick(R.id.buttonAddNewJoke)
+    @OnClick(R.id.addNewJokeButtonFAB)
     public void addJoke(View view){
         if(dataValid()){
             sendDataToDatabase(constructJokeObject());

@@ -11,6 +11,7 @@ import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.repository.IJokesRepository;
 import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
+import cazimir.com.bancuribune.ui.myjokes.OnFirebaseGetMyJokesListener;
 
 public class JokesPresenterTest {
 
@@ -88,6 +89,11 @@ public class JokesPresenterTest {
             } else {
                 listener.onError("No jokes");
             }
+
+        }
+
+        @Override
+        public void getMyJokes(OnFirebaseGetMyJokesListener listener, String userID) {
 
         }
 

@@ -36,10 +36,10 @@ public class JokesRepository implements IJokesRepository {
 
                 for (DataSnapshot jokeSnapshot : dataSnapshot.getChildren()) {
                     Joke joke = jokeSnapshot.getValue(Joke.class);
+                    assert joke != null;
                     if(joke.isApproved()){
                         jokes.add(joke);
                     }
-
                 }
 
                 Collections.reverse(jokes);

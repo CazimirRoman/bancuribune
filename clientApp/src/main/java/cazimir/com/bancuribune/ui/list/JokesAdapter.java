@@ -36,7 +36,7 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
 
         TextView text;
         TextView author;
-        ImageButton share;
+        TextView share;
 
         MyViewHolder(View view){
             super(view);

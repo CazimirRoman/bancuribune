@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE resources [
-    <!ENTITY appname "Bancuri bune">
-    <!ENTITY author "Cazimir Roman">
-    ]>
 <resources>
     <string name="facebook_app_id">129199171153011</string>
     <string name="fb_login_protocol_scheme">fb129199171153011</string>
@@ -17,4 +13,5 @@
     <string name="my_jokes_title">My Jokes</string>
     <string name="approved">approved</string>
     <string name="not_approved">pending</string>
+    <string name="add_joke_hint">Add your joke here...</string>
 </resources>

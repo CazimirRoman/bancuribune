@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ProgressBar;
 
 import com.facebook.Profile;
 
@@ -25,6 +26,7 @@ import cazimir.com.bancuribune.ui.login.OnAuthStateListenerRegister;
 import cazimir.com.bancuribune.ui.myjokes.MyJokesActivityView;
 import cazimir.com.bancuribune.utils.MyAlertDialog;
 
+import static cazimir.com.bancuribune.R.id.addJokeButtonFAB;
 import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_REQUEST;
 
 public class MainActivityView extends BaseActivity implements IMainActivityView, ItemClickListener, OnAuthStateListenerRegister {
@@ -33,12 +35,14 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     private CommonPresenter presenter;
     @BindView(R.id.jokesList)
     RecyclerView jokesListRecyclerView;
-    @BindView(R.id.addJokeButtonFAB)
+    @BindView(addJokeButtonFAB)
     FloatingActionButton addJokeFAB;
     @BindView(R.id.myJokesButtonFAB)
     FloatingActionButton logoutFAB;
     @BindView(R.id.logoutButtonFAB)
     FloatingActionButton myJokesFAB;
+    @BindView(R.id.progress_bar)
+    ProgressBar progress;
     private JokesAdapter adapter;
 
     @Override
@@ -49,6 +53,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         initRecycleView();
         presenter = new CommonPresenter(this, new JokesRepository());
         presenter.getAllJokesData();
+        progress.setVisibility(View.VISIBLE);
     }
 
     private void initRecycleView() {
@@ -62,6 +67,8 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         });
         adapter = new JokesAdapter(this);
         jokesListRecyclerView.setAdapter(adapter);
+
+
     }
 
     @Override
@@ -78,18 +85,20 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         }
 
         adapter.notifyDataSetChanged();
+        progress.setVisibility(View.GONE);
     }
 
     @Override
     public void requestFailed(String error) {
         //TODO : refactor
+        progress.setVisibility(View.GONE);
         if(Profile.getCurrentProfile() != null){
             alertDialog.getAlertDialog().setMessage(error);
             if (!alertDialog.getAlertDialog().isShowing()) alertDialog.getAlertDialog().show();
         }
     }
 
-    @OnClick(R.id.addJokeButtonFAB)
+    @OnClick(addJokeButtonFAB)
     public void checkIfAllowedToAdd() {
         presenter.checkNumberOfAdds();
     }
@@ -119,7 +128,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_JOKE_REQUEST) {
-            // Make sure the request was successful
             if (resultCode == RESULT_OK) {
                 showAddConfirmationDialog();
             }
