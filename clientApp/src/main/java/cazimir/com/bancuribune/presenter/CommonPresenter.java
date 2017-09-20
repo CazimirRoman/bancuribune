@@ -40,6 +40,7 @@ public class CommonPresenter implements ICommonPresenter, OnFirebaseGetAllJokesL
 
     public void getAllJokesData(){
         repository.getAllJokes(this);
+        mainView.showProgressBar();
     }
 
     @Override

@@ -11,4 +11,6 @@ public interface IMainActivityView {
     void isNotAllowedToAdd();
     void showAddConfirmationDialog();
     void redirectToLoginPage();
+    void showProgressBar();
+    void hideProgressBar();
 }
