@@ -64,8 +64,8 @@ public class JokesRepository implements IJokesRepository {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                for (DataSnapshot markerSnapshot : dataSnapshot.getChildren()) {
-                    Joke joke = markerSnapshot.getValue(Joke.class);
+                for (DataSnapshot jokeSnapshot : dataSnapshot.getChildren()) {
+                    Joke joke = jokeSnapshot.getValue(Joke.class);
                     assert joke != null;
                     myJokes.add(joke);
                 }
@@ -86,6 +86,8 @@ public class JokesRepository implements IJokesRepository {
 
     @Override
     public void addJoke(final OnAddFinishedListener listener, Joke joke) {
+        String uid = jokesRef.push().getKey();
+        joke.setUid(uid);
         jokesRef.push().setValue(joke);
         listener.OnAddSuccess();
     }
@@ -127,5 +129,24 @@ public class JokesRepository implements IJokesRepository {
             });
         }
 
+    @Override
+    public void updateJokePoints(final String uid) {
 
+        jokesRef.orderByChild("uid").equalTo(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Joke joke = dataSnapshot.getValue(Joke.class);
+                assert joke != null;
+                joke.setPoints(joke.getPoints() + 1);
+                jokesRef.child(uid).push().setValue(joke);
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 }

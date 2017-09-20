@@ -14,19 +14,12 @@ import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.ui.list.ItemClickListener;
 
-public class MyJokesAdapter extends RecyclerView.Adapter<MyJokesAdapter.MyViewHolder> implements ItemClickListener {
+public class MyJokesAdapter extends RecyclerView.Adapter<MyJokesAdapter.MyViewHolder> {
 
     private List<Joke> myJokes;
-    private final ItemClickListener itemClickListener;
 
     public MyJokesAdapter(@NonNull ItemClickListener listener){
-        this.itemClickListener = listener;
         myJokes = new ArrayList<>();
-    }
-
-    @Override
-    public void onItemClicked(Joke data) {
-
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder{

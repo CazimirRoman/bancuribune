@@ -66,7 +66,12 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
     }
 
     @Override
-    public void onItemClicked(Joke data) {
+    public void onItemShared(Joke data) {
+
+    }
+
+    @Override
+    public void onItemVoted(String uid) {
 
     }
 

@@ -12,4 +12,5 @@ public interface IJokesRepository {
     void getMyJokes(OnFirebaseGetMyJokesListener listener, String userID);
     void addJoke(OnAddFinishedListener listener, Joke joke);
     void getAllJokesAddedToday(OnAllowedToAddFinishedListener listener, String userID);
+    void updateJokePoints(String uid);
 }

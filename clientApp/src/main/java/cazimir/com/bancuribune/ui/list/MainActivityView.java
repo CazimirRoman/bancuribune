@@ -201,8 +201,13 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
 
     @Override
-    public void onItemClicked(Joke joke) {
+    public void onItemShared(Joke joke) {
         shareJoke(joke.getJokeText());
+    }
+
+    @Override
+    public void onItemVoted(String uid) {
+        presenter.updateJokePoints(uid);
     }
 
     private void shareJoke(String text) {

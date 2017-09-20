@@ -30,7 +30,12 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
     ImageButton share;
 
     @Override
-    public void onItemClicked(Joke data) {
+    public void onItemShared(Joke data) {
+
+    }
+
+    @Override
+    public void onItemVoted(String uid) {
 
     }
 
@@ -39,12 +44,16 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
         TextView text;
         TextView author;
         TextView share;
+        TextView vote;
+        TextView points;
 
         MyViewHolder(View view) {
             super(view);
             text = view.findViewById(R.id.jokeText);
             author = view.findViewById(R.id.authorText);
             share = view.findViewById(R.id.share);
+            vote = view.findViewById(R.id.vote);
+            points = view.findViewById(R.id.points);
         }
     }
 
@@ -59,7 +68,7 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
     }
 
     @Override
-    public void onBindViewHolder(final JokesAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(final JokesAdapter.MyViewHolder holder, final int position) {
         final Joke joke = jokes.get(position);
         holder.text.setText(joke.getJokeText());
         holder.author.setText(joke.getUserName());
@@ -67,9 +76,18 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
         holder.share.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                itemClickListener.onItemClicked(joke);
+                itemClickListener.onItemShared(joke);
             }
         });
+
+        holder.vote.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                itemClickListener.onItemVoted(jokes.get(position).getUid());
+            }
+        });
+
+        holder.points.setText(String.valueOf(joke.getPoints()));
     }
 
     @Override

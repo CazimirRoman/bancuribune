@@ -1,11 +1,14 @@
 package cazimir.com.bancuribune.model;
 
 public class Joke {
+
+    private String uid;
     private String jokeText;
     private boolean approved;
     private long createdAt;
     private String createdBy;
     private String userName;
+    private int points;
 
 
     public Joke() {
@@ -15,6 +18,7 @@ public class Joke {
         this.jokeText = text;
         this.approved = false;
         this.createdAt = System.currentTimeMillis();
+        this.points = 0;
     }
 
     public String getJokeText() {
@@ -43,5 +47,25 @@ public class Joke {
 
     public String getUserName() {
         return userName;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    public void incrementPoints() {
+        this.points++;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

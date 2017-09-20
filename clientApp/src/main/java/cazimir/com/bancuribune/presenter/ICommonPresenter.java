@@ -10,4 +10,6 @@ public interface ICommonPresenter {
     void isAllowedToAdd();
     void isNotAllowedToAdd();
     void logOutUser();
+    void updateJokePoints(String uid);
+
 }

@@ -15,4 +15,5 @@
     <string name="not_approved">pending</string>
     <string name="add_joke_hint">Add your joke here...</string>
     <string name="search_hint">Search for joke...</string>
+    <string name="point_label">"Points: "</string>
 </resources>

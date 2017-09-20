@@ -76,6 +76,11 @@ public class CommonPresenter implements ICommonPresenter, OnFirebaseGetAllJokesL
     }
 
     @Override
+    public void updateJokePoints(String uid) {
+        repository.updateJokePoints(uid);
+    }
+
+    @Override
     public void onSuccess(List<Joke> jokes) {
         mainView.refreshJokes(jokes);
     }
