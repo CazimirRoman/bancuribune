@@ -109,8 +109,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         });
         adapter = new JokesAdapter(this);
         jokesListRecyclerView.setAdapter(adapter);
-
-
     }
 
     @Override
@@ -205,7 +203,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @Override
     public void onItemClicked(Joke joke) {
         shareJoke(joke.getJokeText());
-        showProgressBar();
     }
 
     private void shareJoke(String text) {
@@ -214,6 +211,5 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         sendIntent.putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.share_text), getString(R.string.app_name)) + "\n\n" + text);
         sendIntent.setType("text/plain");
         startActivity(Intent.createChooser(sendIntent, "Share"));
-        hideProgressBar();
     }
 }
