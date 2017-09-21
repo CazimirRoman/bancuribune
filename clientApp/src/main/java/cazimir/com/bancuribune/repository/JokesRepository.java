@@ -10,6 +10,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -76,7 +77,12 @@ public class JokesRepository implements IJokesRepository {
                     myJokes.add(joke);
                 }
 
-                Collections.reverse(myJokes);
+                Collections.sort(myJokes, new Comparator<Joke>() {
+                    @Override public int compare(Joke j1, Joke j2) {
+                        return j2.getPoints() - j1.getPoints();
+                    }
+
+                });
 
                 listener.onGetMyJokesSuccess(myJokes);
 
