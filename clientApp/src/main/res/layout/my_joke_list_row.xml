@@ -1,41 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              android:padding="20dp">
 
     <LinearLayout
-        android:layout_width="match_parent"
         android:id="@+id/jokeTextContainer"
-        android:orientation="vertical"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <cazimir.com.bancuribune.ui.FontAwesomeTextView
             android:id="@+id/jokeText"
             style="@style/text.regular"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="0.8"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.8"
             tools:text="JokeText"/>
 
-        <cazimir.com.bancuribune.ui.FontAwesomeTextView
-            android:id="@+id/approved"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:gravity="end"
-            android:layout_marginTop="5dp"
-            style="@style/text.small.gray"
-            android:layout_gravity="center_vertical"
             android:layout_height="wrap_content"
-            tools:text="not approved"/>
+            android:orientation="horizontal">
+
+            <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                android:id="@+id/approved"
+                style="@style/text.medium.gray"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                tools:text="not approved"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:id="@+id/my_points"
+                android:layout_height="wrap_content">
+
+                <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                    style="@style/text.small.gray"
+                    android:layout_width="match_parent"
+                    android:gravity="end"
+                    android:layout_weight="0.5"
+                    android:layout_height="wrap_content"
+                    android:text="@string/point_label"
+                    android:layout_marginTop="5dp"/>
+
+                <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                    android:id="@+id/points"
+                    style="@style/text.small.gray"
+                    android:layout_width="match_parent"
+                    android:gravity="end"
+                    android:layout_weight="0.8"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    tools:text="Points"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
 
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
-        android:background="@color/colorAccent"
-        android:layout_height="1dp"/>
+        android:layout_height="1dp"
+        android:background="@color/colorAccent"/>
 
 </LinearLayout>

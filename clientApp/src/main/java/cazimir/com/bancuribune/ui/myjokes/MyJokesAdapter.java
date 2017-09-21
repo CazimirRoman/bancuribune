@@ -16,6 +16,7 @@ import cazimir.com.bancuribune.ui.list.JokeItemClickListener;
 
 public class MyJokesAdapter extends RecyclerView.Adapter<MyJokesAdapter.MyViewHolder> {
 
+
     private List<Joke> myJokes;
 
     public MyJokesAdapter(@NonNull JokeItemClickListener listener){
@@ -26,11 +27,16 @@ public class MyJokesAdapter extends RecyclerView.Adapter<MyJokesAdapter.MyViewHo
 
         TextView text;
         TextView approved;
+        TextView points;
+        View pointsLayout;
 
         MyViewHolder(View view){
             super(view);
             text = view.findViewById(R.id.jokeText);
             approved = view.findViewById(R.id.approved);
+            points = view.findViewById(R.id.points);
+            pointsLayout = view.findViewById(R.id.my_points);
+
         }
     }
 
@@ -50,9 +56,14 @@ public class MyJokesAdapter extends RecyclerView.Adapter<MyJokesAdapter.MyViewHo
         holder.text.setText(joke.getJokeText());
         if(joke.isApproved()){
             holder.approved.setText(R.string.approved);
+            holder.points.setText(String.valueOf(joke.getPoints()));
         }else{
             holder.approved.setText(R.string.not_approved);
+            holder.pointsLayout.setVisibility(View.GONE);
+
         }
+
+
     }
 
     @Override
