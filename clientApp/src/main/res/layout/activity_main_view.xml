@@ -27,8 +27,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <EditText
+        <com.beardedhen.androidbootstrap.BootstrapEditText
             android:layout_width="match_parent"
+            app:bootstrapSize="lg"
+            app:roundedCorners="true"
+            app:bootstrapBrand="info"
             android:id="@+id/search"
             android:layout_margin="10dp"
             style="@style/text.regular"

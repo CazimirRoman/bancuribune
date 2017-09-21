@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
@@ -16,7 +18,9 @@ import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.presenter.AuthPresenter;
 import cazimir.com.bancuribune.ui.list.MainActivityView;
 
-public class LoginActivityView extends BaseActivity implements ILoginActivityView {
+import static cazimir.com.bancuribune.R.id.login_button_dummy;
+
+public class LoginActivityView extends BaseActivity implements ILoginActivityView, OnClickListener {
 
     private AuthPresenter presenter;
     private CallbackManager callbackManager;
@@ -24,12 +28,16 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     @BindView(R.id.login_button)
     LoginButton facebookButton;
 
+    @BindView(login_button_dummy)
+    TextView loginButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         callbackManager = CallbackManager.Factory.create();
         presenter = new AuthPresenter(this);
         presenter.checkIfUserLoggedIn();
+        loginButton.setOnClickListener(this);
     }
 
     @Override
@@ -60,6 +68,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
 
     @OnClick(R.id.login_button)
     void performFacebookLogin() {
+        facebookButton.setReadPermissions("email", "public_profile");
         facebookButton.registerCallback(callbackManager, presenter.loginWithFacebook());
         facebookButton.setVisibility(View.GONE);
     }
@@ -68,5 +77,13 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view == loginButton) {
+            facebookButton.performClick();
+            loginButton.setText("Loading data...");
+        }
     }
 }

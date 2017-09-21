@@ -13,9 +13,10 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <cazimir.com.bancuribune.ui.FontAwesomeTextView
+        <com.beardedhen.androidbootstrap.AwesomeTextView
             android:id="@+id/jokeText"
             style="@style/text.regular"
+            android:gravity="start"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -38,37 +39,37 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent">
 
-                <cazimir.com.bancuribune.ui.FontAwesomeTextView
+
+                <com.beardedhen.androidbootstrap.AwesomeTextView
                     android:id="@+id/share"
                     style="@style/fa_icon"
                     android:elevation="20dp"
                     app:elevation = "20dp"
+                    app:fontAwesomeIcon="fa_share"
                     android:layout_gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/fa_icon_share">
-                </cazimir.com.bancuribune.ui.FontAwesomeTextView>
+                </com.beardedhen.androidbootstrap.AwesomeTextView>
 
             </FrameLayout>
 
             <FrameLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent">
 
-                <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                <com.beardedhen.androidbootstrap.AwesomeTextView
                     android:id="@+id/vote"
                     style="@style/fa_icon"
                     android:elevation="20dp"
                     android:layout_gravity="center_vertical"
                     app:elevation = "20dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/fa_icon_thumbs_up">
-                </cazimir.com.bancuribune.ui.FontAwesomeTextView>
+                    app:fontAwesomeIcon="fa_thumbs_up"
+                    android:layout_height="wrap_content">
+                </com.beardedhen.androidbootstrap.AwesomeTextView>
 
             </FrameLayout>
-
-
 
         </LinearLayout>
 
@@ -82,12 +83,12 @@
                 android:layout_width="wrap_content"
                 android:orientation="horizontal"
                 android:layout_height="wrap_content">
-                <TextView
+                <com.beardedhen.androidbootstrap.AwesomeTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/added_by_label"/>
 
-                <TextView
+                <com.beardedhen.androidbootstrap.AwesomeTextView
                     android:id="@+id/authorText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -98,12 +99,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-                <TextView
+                <com.beardedhen.androidbootstrap.AwesomeTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/point_label"/>
 
-                <TextView
+                <com.beardedhen.androidbootstrap.AwesomeTextView
                     android:layout_width="wrap_content"
                     android:id="@+id/points"
                     android:layout_height="wrap_content"
@@ -111,8 +112,6 @@
 
 
             </LinearLayout>
-
-
 
         </LinearLayout>
     </LinearLayout>

@@ -12,9 +12,10 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <cazimir.com.bancuribune.ui.FontAwesomeTextView
+        <com.beardedhen.androidbootstrap.AwesomeTextView
             android:id="@+id/jokeText"
             style="@style/text.regular"
+            android:gravity="start"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center_vertical"
@@ -26,9 +27,10 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <cazimir.com.bancuribune.ui.FontAwesomeTextView
+            <com.beardedhen.androidbootstrap.AwesomeTextView
                 android:id="@+id/approved"
                 style="@style/text.medium.gray"
+                android:gravity="start"
                 android:layout_width="0dp"
                 android:layout_weight="0.5"
                 android:layout_height="wrap_content"
@@ -40,7 +42,7 @@
                 android:id="@+id/my_points"
                 android:layout_height="wrap_content">
 
-                <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                <com.beardedhen.androidbootstrap.AwesomeTextView
                     style="@style/text.small.gray"
                     android:layout_width="match_parent"
                     android:gravity="end"
@@ -49,7 +51,7 @@
                     android:text="@string/point_label"
                     android:layout_marginTop="5dp"/>
 
-                <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                <com.beardedhen.androidbootstrap.AwesomeTextView
                     android:id="@+id/points"
                     style="@style/text.small.gray"
                     android:layout_width="match_parent"

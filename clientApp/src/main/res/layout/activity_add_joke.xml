@@ -12,8 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <android.support.design.widget.TextInputEditText
+    <com.beardedhen.androidbootstrap.BootstrapEditText
         android:id="@+id/editNewJoke"
+        app:bootstrapSize="lg"
+        android:layout_margin="10dp"
+        app:roundedCorners="true"
+        app:bootstrapBrand="info"
         android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,7 +32,7 @@
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start">
+        android:layout_gravity="bottom|end">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/addNewJokeButtonFAB"

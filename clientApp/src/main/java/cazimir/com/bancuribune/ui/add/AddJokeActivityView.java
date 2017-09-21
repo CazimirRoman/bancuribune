@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -21,7 +22,7 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
     private CommonPresenter presenter;
 
     @BindView(R.id.editNewJoke)
-    android.support.design.widget.TextInputEditText addJokeEdit;
+    EditText addJokeEdit;
 
     @BindView(R.id.addNewJokeButtonFAB)
     android.support.design.widget.FloatingActionButton addJokeButton;
