@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.facebook.Profile;
 
@@ -32,7 +33,7 @@ import cazimir.com.bancuribune.utils.MyAlertDialog;
 import static cazimir.com.bancuribune.R.id.addJokeButtonFAB;
 import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_REQUEST;
 
-public class MainActivityView extends BaseActivity implements IMainActivityView, ItemClickListener {
+public class MainActivityView extends BaseActivity implements IMainActivityView, JokeItemClickListener {
 
     private MyAlertDialog alertDialog;
     private CommonPresenter presenter;
@@ -90,7 +91,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     private void filterText(String text) {
         List<Joke> temp = new ArrayList();
         for(Joke d: adapter.getJokesList()){
-            if(d.getJokeText().contains(text)){
+            if(d.getJokeText().toLowerCase().contains(text.toLowerCase())){
                 temp.add(d);
             }
         }
@@ -161,7 +162,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     @Override
     public void isNotAllowedToAdd() {
-        showAlertDialog(R.string.add_limit_reached);
+        showAlertDialog(getString(R.string.add_limit_reached));
     }
 
     @Override
@@ -169,13 +170,23 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_JOKE_REQUEST) {
             if (resultCode == RESULT_OK) {
-                showAddConfirmationDialog();
+                showAddSuccessDialog();
             }
         }
     }
 
-    public void showAddConfirmationDialog() {
-        showAlertDialog(R.string.add_confirmation);
+    public void showAddSuccessDialog() {
+        showAlertDialog(getString(R.string.add_success));
+    }
+
+    @Override
+    public void showAddFailedDialog() {
+        showAlertDialog(getString(R.string.add_failed));
+    }
+
+    @Override
+    public void showTestToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -194,8 +205,9 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         progressMain.setVisibility(View.GONE);
     }
 
-    private void showAlertDialog(int message) {
-        alertDialog.getAlertDialog().setMessage(getString(message));
+    @Override
+    public void showAlertDialog(String message) {
+        alertDialog.getAlertDialog().setMessage(message);
         if (!alertDialog.getAlertDialog().isShowing()) alertDialog.getAlertDialog().show();
     }
 
@@ -207,7 +219,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     @Override
     public void onItemVoted(String uid) {
-        presenter.updateJokePoints(uid);
+        presenter.checkIfAlreadyVoted(uid);
     }
 
     private void shareJoke(String text) {

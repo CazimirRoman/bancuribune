@@ -16,13 +16,13 @@ import butterknife.BindView;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.model.Joke;
 
-public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder> implements ItemClickListener {
+public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder> implements JokeItemClickListener {
 
     private List<Joke> jokes;
-    private final ItemClickListener itemClickListener;
+    private final JokeItemClickListener listener;
 
-    public JokesAdapter(@NonNull ItemClickListener listener) {
-        this.itemClickListener = listener;
+    public JokesAdapter(@NonNull JokeItemClickListener listener) {
+        this.listener = listener;
         jokes = new ArrayList<>();
     }
 
@@ -76,14 +76,14 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
         holder.share.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                itemClickListener.onItemShared(joke);
+                listener.onItemShared(joke);
             }
         });
 
         holder.vote.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                itemClickListener.onItemVoted(jokes.get(position).getUid());
+                listener.onItemVoted(jokes.get(position).getUid());
             }
         });
 
