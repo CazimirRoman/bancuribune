@@ -93,6 +93,7 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
+        hideSoftInput(addJokeEdit);
         return true;
     }
 }
