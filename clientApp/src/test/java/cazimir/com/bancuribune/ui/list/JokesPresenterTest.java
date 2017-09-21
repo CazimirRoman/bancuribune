@@ -61,7 +61,7 @@ public class JokesPresenterTest {
         }
 
         @Override
-        public void showAddConfirmationDialog() {
+        public void showAddSuccessDialog() {
 
         }
 

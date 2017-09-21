@@ -77,13 +77,13 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
     public void addJoke(View view){
         if(dataValid()){
             sendDataToDatabase(constructJokeObject());
-            hideSoftInput();
+            hideSoftInput(addJokeEdit);
         }
     }
 
-    private void hideSoftInput() {
+    private void hideSoftInput(View view) {
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(addJokeEdit.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     private Joke constructJokeObject() {

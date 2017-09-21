@@ -13,10 +13,10 @@ import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.repository.JokesRepository;
-import cazimir.com.bancuribune.ui.list.ItemClickListener;
+import cazimir.com.bancuribune.ui.list.JokeItemClickListener;
 import cazimir.com.bancuribune.utils.MyAlertDialog;
 
-public class MyJokesActivityView extends BaseActivity implements IMyJokesActivityView, ItemClickListener {
+public class MyJokesActivityView extends BaseActivity implements IMyJokesActivityView, JokeItemClickListener {
 
     private MyAlertDialog alertDialog;
     private CommonPresenter presenter;
@@ -66,7 +66,12 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
     }
 
     @Override
-    public void onItemClicked(Joke data) {
+    public void onItemShared(Joke data) {
+
+    }
+
+    @Override
+    public void onItemVoted(String uid) {
 
     }
 

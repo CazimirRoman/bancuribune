@@ -8,11 +8,13 @@
     <string name="added_by_label">"Added by: "</string>
     <string name="add_limit_reached">Limit reached</string>
     <string name="joke_added">Joke added. After moderation it will be visible in the app.</string>
-    <string name="add_confirmation">Joke added succesfully! After review it will show up in the app.</string>
+    <string name="add_success">Joke added succesfully! After review it will show up in the app.</string>
+    <string name="add_failed">Joke not added! Please try again later.</string>
     <string name="share_text">Hey! I found this great jokes app called %s. Here is today\'s best joke:</string>
     <string name="my_jokes_title">My Jokes</string>
     <string name="approved">approved</string>
     <string name="not_approved">pending</string>
     <string name="add_joke_hint">Add your joke here...</string>
     <string name="search_hint">Search for joke...</string>
+    <string name="point_label">"Points: "</string>
 </resources>

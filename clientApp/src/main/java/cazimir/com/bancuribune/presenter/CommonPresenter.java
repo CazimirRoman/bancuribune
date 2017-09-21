@@ -3,39 +3,47 @@ package cazimir.com.bancuribune.presenter;
 import java.util.List;
 
 import cazimir.com.bancuribune.model.Joke;
+import cazimir.com.bancuribune.model.Vote;
 import cazimir.com.bancuribune.repository.IJokesRepository;
 import cazimir.com.bancuribune.ui.add.IAddJokeActivityView;
 import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
+import cazimir.com.bancuribune.ui.add.OnAddJokeVoteFinishedListener;
 import cazimir.com.bancuribune.ui.list.IMainActivityView;
 import cazimir.com.bancuribune.ui.list.OnAllowedToAddFinishedListener;
+import cazimir.com.bancuribune.ui.list.OnCheckIfVotedFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnFirebaseGetAllJokesListener;
+import cazimir.com.bancuribune.ui.list.OnUpdatePointsFinishedListener;
 import cazimir.com.bancuribune.ui.myjokes.IMyJokesActivityView;
 import cazimir.com.bancuribune.ui.myjokes.OnFirebaseGetMyJokesListener;
 
-public class CommonPresenter implements ICommonPresenter, OnFirebaseGetAllJokesListener, OnFirebaseGetMyJokesListener, OnAddFinishedListener, OnAllowedToAddFinishedListener {
+public class CommonPresenter implements ICommonPresenter, OnFirebaseGetAllJokesListener, OnFirebaseGetMyJokesListener, OnAddFinishedListener, OnUpdatePointsFinishedListener, OnCheckIfVotedFinishedListener, OnAddJokeVoteFinishedListener, OnAllowedToAddFinishedListener {
 
     private IMainActivityView mainView;
     private IAddJokeActivityView addView;
     private IMyJokesActivityView myJokesView;
     private IJokesRepository repository;
     private IAuthPresenter authPresenter;
+    private String currentUserID;
 
     public CommonPresenter(IMainActivityView view, IJokesRepository repository) {
         this.mainView = view;
         this.repository = repository;
         this.authPresenter = new AuthPresenter(view);
+        currentUserID = authPresenter.getCurrentUserID();
     }
 
     public CommonPresenter(IAddJokeActivityView view, IJokesRepository repository) {
         this.addView = view;
         this.repository = repository;
         this.authPresenter = new AuthPresenter(view);
+        currentUserID = authPresenter.getCurrentUserID();
     }
 
     public CommonPresenter(IMyJokesActivityView view, IJokesRepository repository) {
         this.myJokesView = view;
         this.repository = repository;
         this.authPresenter = new AuthPresenter(myJokesView);
+        currentUserID = authPresenter.getCurrentUserID();
     }
 
     public void getAllJokesData(){
@@ -45,19 +53,19 @@ public class CommonPresenter implements ICommonPresenter, OnFirebaseGetAllJokesL
 
     @Override
     public void getMyJokes() {
-        repository.getMyJokes(this, authPresenter.getCurrentUserID());
+        repository.getMyJokes(this, currentUserID);
     }
 
     @Override
     public void addJoke(Joke joke) {
-        joke.setCreatedBy(authPresenter.getCurrentUserID());
+        joke.setCreatedBy(currentUserID);
         joke.setUserName(authPresenter.getCurrentUserName());
         repository.addJoke(this, joke);
     }
 
     @Override
     public void checkNumberOfAdds() {
-        repository.getAllJokesAddedToday(this, authPresenter.getCurrentUserID());
+        repository.getAllJokesAddedToday(this, currentUserID);
     }
 
     @Override
@@ -76,6 +84,25 @@ public class CommonPresenter implements ICommonPresenter, OnFirebaseGetAllJokesL
     }
 
     @Override
+    public void checkIfAlreadyVoted(String uid) {
+        repository.checkIfVoted(this, uid, currentUserID);
+    }
+
+    @Override
+    public void updateJokePoints(String uid) {
+        repository.updateJokePoints(this, uid);
+        writeVoteLogToDB(uid);
+    }
+
+    @Override
+    public void writeVoteLogToDB(String uid) {
+        Vote vote = new Vote();
+        vote.setVotedBy(currentUserID);
+        vote.setJokeId(uid);
+        repository.writeJokeVote(this, vote);
+    }
+
+    @Override
     public void onSuccess(List<Joke> jokes) {
         mainView.refreshJokes(jokes);
     }
@@ -91,6 +118,11 @@ public class CommonPresenter implements ICommonPresenter, OnFirebaseGetAllJokesL
     }
 
     @Override
+    public void OnAddFailed() {
+        mainView.showAddFailedDialog();
+    }
+
+    @Override
     public void onGetMyJokesSuccess(List<Joke> jokes) {
         myJokesView.showJokesList(jokes);
     }
@@ -98,5 +130,35 @@ public class CommonPresenter implements ICommonPresenter, OnFirebaseGetAllJokesL
     @Override
     public void onGetMyJokesError(String error) {
 
+    }
+
+    @Override
+    public void onAddJokeVoteSuccess() {
+        mainView.showTestToast("Vote saved successfully!");
+    }
+
+    @Override
+    public void onAddJokeVoteFailed() {
+        mainView.showTestToast("Data could not be saved!");
+    }
+
+    @Override
+    public void OnUpdatePointsFailed(String error) {
+        mainView.showAlertDialog(error);
+    }
+
+    @Override
+    public void OnUpdatePointsSuccess() {
+
+    }
+
+    @Override
+    public void OnHasVotedTrue() {
+        mainView.showTestToast("Already voted!");
+    }
+
+    @Override
+    public void OnHasVotedFalse(String uid) {
+        updateJokePoints(uid);
     }
 }
