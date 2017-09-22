@@ -33,7 +33,7 @@
             app:roundedCorners="true"
             app:bootstrapBrand="info"
             android:id="@+id/search"
-            android:layout_margin="10dp"
+            android:layout_margin="15dp"
             style="@style/text.regular"
             android:hint="@string/search_hint"
             android:layout_height="wrap_content"/>

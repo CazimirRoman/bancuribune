@@ -33,7 +33,7 @@ import cazimir.com.bancuribune.utils.MyAlertDialog;
 import static cazimir.com.bancuribune.R.id.addJokeButtonFAB;
 import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_REQUEST;
 
-public class MainActivityView extends BaseActivity implements IMainActivityView, JokeItemClickListener {
+public class MainActivityView extends BaseActivity implements IMainActivityView, OnJokeItemClickListener {
 
     private MyAlertDialog alertDialog;
     private CommonPresenter presenter;

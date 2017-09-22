@@ -13,10 +13,10 @@ import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.repository.JokesRepository;
-import cazimir.com.bancuribune.ui.list.JokeItemClickListener;
+import cazimir.com.bancuribune.ui.list.OnJokeItemClickListener;
 import cazimir.com.bancuribune.utils.MyAlertDialog;
 
-public class MyJokesActivityView extends BaseActivity implements IMyJokesActivityView, JokeItemClickListener {
+public class MyJokesActivityView extends BaseActivity implements IMyJokesActivityView, OnJokeItemClickListener {
 
     private MyAlertDialog alertDialog;
     private CommonPresenter presenter;
