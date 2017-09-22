@@ -16,7 +16,7 @@ import butterknife.BindView;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.model.Joke;
 
-public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder> implements JokeItemClickListener {
+public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder> {
 
     private List<Joke> jokes;
     private final JokeItemClickListener listener;
@@ -28,16 +28,6 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
 
     @BindView(R.id.share)
     ImageButton share;
-
-    @Override
-    public void onItemShared(Joke data) {
-
-    }
-
-    @Override
-    public void onItemVoted(String uid) {
-
-    }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -72,6 +62,23 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
         final Joke joke = jokes.get(position);
         holder.text.setText(joke.getJokeText());
         holder.author.setText(joke.getUserName());
+
+//        listener.checkIfCurrentUserVoted();
+//       HashMap<String, HashMap<String, String>> map = joke.getVotedBy();
+//        boolean value = map.containsValue("qkBllnl1nZergNb0RN3WIME5Sg13");
+//
+//        boolean votedByThisUser = false;
+//
+//        for(String s: map.keySet()){
+//            HashMap<String, String> switchMap =map.get(s);
+//            if(switchMap.containsValue("qkBllnl1nZergNb0RN3WIME5Sg13")){
+//                votedByThisUser = true;
+//            }
+//        }
+//
+//        if(votedByThisUser){
+//            holder.vote.setVisibility(View.GONE);
+//        }
 
         holder.share.setOnClickListener(new OnClickListener() {
             @Override

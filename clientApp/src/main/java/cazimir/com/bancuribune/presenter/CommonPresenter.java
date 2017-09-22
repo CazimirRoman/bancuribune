@@ -13,10 +13,11 @@ import cazimir.com.bancuribune.ui.list.OnAllowedToAddFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnCheckIfVotedFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnFirebaseGetAllJokesListener;
 import cazimir.com.bancuribune.ui.list.OnUpdatePointsFinishedListener;
+import cazimir.com.bancuribune.ui.list.OnUpdateVotedByFinishedListener;
 import cazimir.com.bancuribune.ui.myjokes.IMyJokesActivityView;
 import cazimir.com.bancuribune.ui.myjokes.OnFirebaseGetMyJokesListener;
 
-public class CommonPresenter implements ICommonPresenter, OnFirebaseGetAllJokesListener, OnFirebaseGetMyJokesListener, OnAddFinishedListener, OnUpdatePointsFinishedListener, OnCheckIfVotedFinishedListener, OnAddJokeVoteFinishedListener, OnAllowedToAddFinishedListener {
+public class CommonPresenter implements ICommonPresenter, OnFirebaseGetAllJokesListener, OnFirebaseGetMyJokesListener, OnAddFinishedListener, OnUpdatePointsFinishedListener, OnUpdateVotedByFinishedListener, OnCheckIfVotedFinishedListener, OnAddJokeVoteFinishedListener, OnAllowedToAddFinishedListener {
 
     private IMainActivityView mainView;
     private IAddJokeActivityView addView;
@@ -91,6 +92,7 @@ public class CommonPresenter implements ICommonPresenter, OnFirebaseGetAllJokesL
     @Override
     public void updateJokePoints(String uid) {
         repository.updateJokePoints(this, uid);
+        repository.updateVotedBy(this, uid, currentUserID);
         writeVoteLogToDB(uid);
     }
 
@@ -103,12 +105,12 @@ public class CommonPresenter implements ICommonPresenter, OnFirebaseGetAllJokesL
     }
 
     @Override
-    public void onSuccess(List<Joke> jokes) {
+    public void OnGetAllJokesSuccess(List<Joke> jokes) {
         mainView.refreshJokes(jokes);
     }
 
     @Override
-    public void onError(String error) {
+    public void OnGetAllJokesFailed(String error) {
         mainView.requestFailed(error);
     }
 
@@ -160,5 +162,15 @@ public class CommonPresenter implements ICommonPresenter, OnFirebaseGetAllJokesL
     @Override
     public void OnHasVotedFalse(String uid) {
         updateJokePoints(uid);
+    }
+
+    @Override
+    public void OnUpdateVotedByFailed(String error) {
+        mainView.showTestToast(error);
+    }
+
+    @Override
+    public void OnUpdateVotedBySuccess() {
+
     }
 }
