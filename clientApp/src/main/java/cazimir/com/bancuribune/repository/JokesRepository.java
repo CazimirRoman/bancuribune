@@ -23,7 +23,7 @@ import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
 import cazimir.com.bancuribune.ui.add.OnAddJokeVoteFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnAllowedToAddFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnCheckIfVotedFinishedListener;
-import cazimir.com.bancuribune.ui.list.OnFirebaseGetAllJokesListener;
+import cazimir.com.bancuribune.ui.list.OnGetJokesListener;
 import cazimir.com.bancuribune.ui.list.OnUpdatePointsFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnUpdateVotedByFinishedListener;
 import cazimir.com.bancuribune.ui.myjokes.OnFirebaseGetMyJokesListener;
@@ -36,7 +36,7 @@ public class JokesRepository implements IJokesRepository {
     private DatabaseReference votesRef = database.getReference("votes");
 
     @Override
-    public void getAllJokes(final OnFirebaseGetAllJokesListener listener) {
+    public void getAllJokes(final OnGetJokesListener listener) {
 
         jokesRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -54,12 +54,40 @@ public class JokesRepository implements IJokesRepository {
 
                 Collections.reverse(jokes);
 
-                listener.OnGetAllJokesSuccess(jokes);
+                listener.OnGetJokesSuccess(jokes);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                listener.OnGetAllJokesFailed(databaseError.getMessage());
+                listener.OnGetJokesFailed(databaseError.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void getAllFilteredJokes(final OnGetJokesListener listener, final String text) {
+        final ArrayList<Joke> filteredJokes = new ArrayList<>();
+
+        final String cleanedText = Utils.removeAccents(text);
+
+        jokesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot jokeSnapshot : dataSnapshot.getChildren()) {
+                    Joke joke = jokeSnapshot.getValue(Joke.class);
+                    assert joke != null;
+                    if(joke.getJokeText().trim().toLowerCase().contains(cleanedText.toLowerCase())){
+                        filteredJokes.add(joke);
+                    }
+                }
+
+                listener.OnGetJokesSuccess(filteredJokes);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listener.OnGetJokesFailed(databaseError.getMessage());
             }
         });
     }
@@ -88,8 +116,6 @@ public class JokesRepository implements IJokesRepository {
                 });
 
                 listener.onGetMyJokesSuccess(myJokes);
-
-
             }
 
             @Override
