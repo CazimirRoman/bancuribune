@@ -1,5 +1,7 @@
 package cazimir.com.bancuribune.utils;
 
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -13,5 +15,11 @@ public class Utils {
         cal2.setTime(day2);
         return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
                 cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+    }
+
+    public static String removeAccents(String text) {
+        return text == null ? null :
+                Normalizer.normalize(text, Form.NFD)
+                        .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
     }
 }

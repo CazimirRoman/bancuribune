@@ -11,13 +11,13 @@ import cazimir.com.bancuribune.ui.add.OnAddJokeVoteFinishedListener;
 import cazimir.com.bancuribune.ui.list.IMainActivityView;
 import cazimir.com.bancuribune.ui.list.OnAllowedToAddFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnCheckIfVotedFinishedListener;
-import cazimir.com.bancuribune.ui.list.OnFirebaseGetAllJokesListener;
+import cazimir.com.bancuribune.ui.list.OnGetJokesListener;
 import cazimir.com.bancuribune.ui.list.OnUpdatePointsFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnUpdateVotedByFinishedListener;
 import cazimir.com.bancuribune.ui.myjokes.IMyJokesActivityView;
 import cazimir.com.bancuribune.ui.myjokes.OnFirebaseGetMyJokesListener;
 
-public class CommonPresenter implements ICommonPresenter, OnFirebaseGetAllJokesListener, OnFirebaseGetMyJokesListener, OnAddFinishedListener, OnUpdatePointsFinishedListener, OnUpdateVotedByFinishedListener, OnCheckIfVotedFinishedListener, OnAddJokeVoteFinishedListener, OnAllowedToAddFinishedListener {
+public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, OnFirebaseGetMyJokesListener, OnAddFinishedListener, OnUpdatePointsFinishedListener, OnUpdateVotedByFinishedListener, OnCheckIfVotedFinishedListener, OnAddJokeVoteFinishedListener, OnAllowedToAddFinishedListener {
 
     private IMainActivityView mainView;
     private IAddJokeActivityView addView;
@@ -50,6 +50,11 @@ public class CommonPresenter implements ICommonPresenter, OnFirebaseGetAllJokesL
     public void getAllJokesData(){
         repository.getAllJokes(this);
         mainView.showProgressBar();
+    }
+
+    @Override
+    public void getFilteredJokesData(String text) {
+        repository.getAllFilteredJokes(this, text);
     }
 
     @Override
@@ -105,12 +110,12 @@ public class CommonPresenter implements ICommonPresenter, OnFirebaseGetAllJokesL
     }
 
     @Override
-    public void OnGetAllJokesSuccess(List<Joke> jokes) {
+    public void OnGetJokesSuccess(List<Joke> jokes) {
         mainView.refreshJokes(jokes);
     }
 
     @Override
-    public void OnGetAllJokesFailed(String error) {
+    public void OnGetJokesFailed(String error) {
         mainView.requestFailed(error);
     }
 

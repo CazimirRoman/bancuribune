@@ -29,7 +29,7 @@
 
                 <com.beardedhen.androidbootstrap.AwesomeTextView
                     android:id="@+id/jokeText"
-                    app:bootstrapBrand="regular"
+                    app:bootstrapBrand="primary"
                     style="@style/text.regular"
                     android:gravity="start"
                     android:layout_width="match_parent"

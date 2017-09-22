@@ -3,6 +3,7 @@ package cazimir.com.bancuribune.ui.list;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -15,13 +16,13 @@ import android.widget.Toast;
 
 import com.facebook.Profile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
+import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.repository.JokesRepository;
@@ -56,6 +57,8 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setTitle(getString(R.string.app_name));
+        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
         alertDialog = new MyAlertDialog(this);
         initRecycleView();
         presenter = new CommonPresenter(this, new JokesRepository());
@@ -64,6 +67,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     }
 
     private void initSearch() {
+
         search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -77,26 +81,19 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(editable.toString().isEmpty()){
-                    presenter.getAllJokesData();
-                }else{
-                    showProgressBar();
-                    filterText(editable.toString());
+
+                    if (editable.toString().isEmpty()) {
+                        presenter.getAllJokesData();
+                    } else {
+                        if (editable.toString().length() >= Constants.FILTER_MINIMUM_CHARACTERS) {
+                            showProgressBar();
+                            presenter.getFilteredJokesData(editable.toString());
+                        }
+                    }
+
                 }
 
-            }
         });
-    }
-
-    private void filterText(String text) {
-        List<Joke> temp = new ArrayList();
-        for(Joke d: adapter.getJokesList()){
-            if(d.getJokeText().toLowerCase().contains(text.toLowerCase())){
-                temp.add(d);
-            }
-        }
-
-        refreshJokes(temp);
     }
 
     private void initRecycleView() {

@@ -80,14 +80,14 @@ public class JokesPresenterTest {
         }
 
         @Override
-        public void getAllJokes(OnFirebaseGetAllJokesListener listener) {
+        public void getAllJokes(OnGetJokesListener listener) {
 
             List<Joke> jokes;
             if (returnSomeJokes) {
                 jokes = Arrays.asList(new Joke("Joke Test 234"), new Joke("Joke Test 239"), new Joke("Joke Test 235"));
-                listener.OnGetAllJokesSuccess(jokes);
+                listener.OnGetJokesSuccess(jokes);
             } else {
-                listener.OnGetAllJokesFailed("No jokes");
+                listener.OnGetJokesFailed("No jokes");
             }
 
         }
