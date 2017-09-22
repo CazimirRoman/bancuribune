@@ -12,14 +12,14 @@ import java.util.List;
 
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.model.Joke;
-import cazimir.com.bancuribune.ui.list.JokeItemClickListener;
+import cazimir.com.bancuribune.ui.list.OnJokeItemClickListener;
 
 public class MyJokesAdapter extends RecyclerView.Adapter<MyJokesAdapter.MyViewHolder> {
 
 
     private List<Joke> myJokes;
 
-    public MyJokesAdapter(@NonNull JokeItemClickListener listener){
+    public MyJokesAdapter(@NonNull OnJokeItemClickListener listener){
         myJokes = new ArrayList<>();
     }
 

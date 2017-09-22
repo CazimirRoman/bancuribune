@@ -85,9 +85,9 @@ public class JokesPresenterTest {
             List<Joke> jokes;
             if (returnSomeJokes) {
                 jokes = Arrays.asList(new Joke("Joke Test 234"), new Joke("Joke Test 239"), new Joke("Joke Test 235"));
-                listener.onSuccess(jokes);
+                listener.OnGetAllJokesSuccess(jokes);
             } else {
-                listener.onError("No jokes");
+                listener.OnGetAllJokesFailed("No jokes");
             }
 
         }

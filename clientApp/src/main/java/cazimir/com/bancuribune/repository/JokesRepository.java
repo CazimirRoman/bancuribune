@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
@@ -23,6 +25,7 @@ import cazimir.com.bancuribune.ui.list.OnAllowedToAddFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnCheckIfVotedFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnFirebaseGetAllJokesListener;
 import cazimir.com.bancuribune.ui.list.OnUpdatePointsFinishedListener;
+import cazimir.com.bancuribune.ui.list.OnUpdateVotedByFinishedListener;
 import cazimir.com.bancuribune.ui.myjokes.OnFirebaseGetMyJokesListener;
 import cazimir.com.bancuribune.utils.Utils;
 
@@ -51,12 +54,12 @@ public class JokesRepository implements IJokesRepository {
 
                 Collections.reverse(jokes);
 
-                listener.onSuccess(jokes);
+                listener.OnGetAllJokesSuccess(jokes);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                listener.onError(databaseError.getMessage());
+                listener.OnGetAllJokesFailed(databaseError.getMessage());
             }
         });
     }
@@ -193,6 +196,25 @@ public class JokesRepository implements IJokesRepository {
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
+    }
+
+    @Override
+    public void updateVotedBy(final OnUpdateVotedByFinishedListener listener, String uid, String userId) {
+
+        DatabaseReference ref = jokesRef.child(uid).child("votedBy").push();
+        Map<String, Object> map = new HashMap<>();
+        map.put("userID", userId);
+        ref.updateChildren(map, new DatabaseReference.CompletionListener(){
+
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    listener.OnUpdateVotedByFailed(databaseError.getMessage());
+                } else {
+                    listener.OnUpdateVotedBySuccess();
+                }
             }
         });
     }

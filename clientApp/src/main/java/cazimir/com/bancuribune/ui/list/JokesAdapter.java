@@ -16,28 +16,18 @@ import butterknife.BindView;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.model.Joke;
 
-public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder> implements JokeItemClickListener {
+public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder> {
 
     private List<Joke> jokes;
-    private final JokeItemClickListener listener;
+    private final OnJokeItemClickListener listener;
 
-    public JokesAdapter(@NonNull JokeItemClickListener listener) {
+    public JokesAdapter(@NonNull OnJokeItemClickListener listener) {
         this.listener = listener;
         jokes = new ArrayList<>();
     }
 
     @BindView(R.id.share)
     ImageButton share;
-
-    @Override
-    public void onItemShared(Joke data) {
-
-    }
-
-    @Override
-    public void onItemVoted(String uid) {
-
-    }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -72,7 +62,6 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
         final Joke joke = jokes.get(position);
         holder.text.setText(joke.getJokeText());
         holder.author.setText(joke.getUserName());
-
         holder.share.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
