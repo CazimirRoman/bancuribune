@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="8dp"
-        app:bootstrapSize="xl">
+        app:bootstrapSize="xs">
 
         <LinearLayout
             android:layout_width="match_parent"
