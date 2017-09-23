@@ -16,6 +16,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
 import cazimir.com.bancuribune.ui.add.IAddJokeActivityView;
+import cazimir.com.bancuribune.ui.admin.IAdminActivityView;
 import cazimir.com.bancuribune.ui.list.IMainActivityView;
 import cazimir.com.bancuribune.ui.login.ILoginActivityView;
 import cazimir.com.bancuribune.ui.myjokes.IMyJokesActivityView;
@@ -27,6 +28,7 @@ public class AuthPresenter implements IAuthPresenter {
     private IMainActivityView jokes;
     private IAddJokeActivityView add;
     private IMyJokesActivityView myJokes;
+    private IAdminActivityView adminView;
 
     public AuthPresenter(ILoginActivityView view) {
         auth = FirebaseAuth.getInstance();
@@ -46,6 +48,11 @@ public class AuthPresenter implements IAuthPresenter {
     public AuthPresenter(IMyJokesActivityView view) {
         auth = FirebaseAuth.getInstance();
         this.myJokes = view;
+    }
+
+    public AuthPresenter(IAdminActivityView view) {
+        auth = FirebaseAuth.getInstance();
+        this.adminView = view;
     }
 
 

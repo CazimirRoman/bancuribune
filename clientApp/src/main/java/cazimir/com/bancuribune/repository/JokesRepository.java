@@ -21,6 +21,8 @@ import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Vote;
 import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
 import cazimir.com.bancuribune.ui.add.OnAddJokeVoteFinishedListener;
+import cazimir.com.bancuribune.ui.admin.OnGetAllPendingJokesListener;
+import cazimir.com.bancuribune.ui.admin.OnUpdateApproveStatusListener;
 import cazimir.com.bancuribune.ui.list.OnAllowedToAddFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnCheckIfVotedFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnGetJokesListener;
@@ -88,6 +90,32 @@ public class JokesRepository implements IJokesRepository {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 listener.OnGetJokesFailed(databaseError.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void getAllPendingJokes(final OnGetAllPendingJokesListener listener) {
+        final ArrayList<Joke> pendingJokes = new ArrayList<>();
+
+        jokesRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot jokeSnapshot : dataSnapshot.getChildren()) {
+                    Joke joke = jokeSnapshot.getValue(Joke.class);
+                    assert joke != null;
+                    if(!joke.isApproved()){
+                        pendingJokes.add(joke);
+                    }
+                }
+
+                listener.OnGetAllPendingJokesSuccess(pendingJokes);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listener.OnGetAllPendingJokesFailed(databaseError.getMessage());
             }
         });
     }
@@ -199,6 +227,52 @@ public class JokesRepository implements IJokesRepository {
                             listener.OnUpdatePointsFailed(databaseError.getMessage());
                         } else {
                             listener.OnUpdatePointsSuccess();
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    @Override
+    public void updateApproveStatus(final OnUpdateApproveStatusListener listener, final String uid) {
+        Query query = jokesRef.orderByChild("uid").equalTo(uid);
+
+        query.addChildEventListener(new ChildEventListener() {
+
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Joke joke = dataSnapshot.getValue(Joke.class);
+                assert joke != null;
+
+                jokesRef.child(uid).child("approved").setValue(true, new DatabaseReference.CompletionListener() {
+
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        if (databaseError != null) {
+                            listener.OnUpdateApproveStatusFailed(databaseError.getMessage());
+                        } else {
+                            listener.OnUpdateApproveStatusSuccess();
                         }
                     }
                 });

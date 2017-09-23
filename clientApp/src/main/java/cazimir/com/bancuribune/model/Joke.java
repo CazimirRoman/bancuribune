@@ -14,6 +14,10 @@ public class Joke {
     public Joke() {
     }
 
+    public void setApproved(boolean approved) {
+        this.approved = approved;
+    }
+
     public Joke(String text) {
         this.jokeText = text;
         this.approved = false;

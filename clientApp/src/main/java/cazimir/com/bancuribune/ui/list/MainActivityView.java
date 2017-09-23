@@ -9,8 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -27,14 +27,16 @@ import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.repository.JokesRepository;
 import cazimir.com.bancuribune.ui.add.AddJokeActivityView;
+import cazimir.com.bancuribune.ui.admin.AdminActivityView;
 import cazimir.com.bancuribune.ui.login.LoginActivityView;
 import cazimir.com.bancuribune.ui.myjokes.MyJokesActivityView;
 import cazimir.com.bancuribune.utils.MyAlertDialog;
 
 import static cazimir.com.bancuribune.R.id.addJokeButtonFAB;
+import static cazimir.com.bancuribune.R.id.adminFAB;
 import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_REQUEST;
 
-public class MainActivityView extends BaseActivity implements IMainActivityView, OnJokeItemClickListener {
+public class MainActivityView extends BaseActivity implements IMainActivityView, OnJokeItemClickListener, OnCheckIfAdminListener {
 
     private MyAlertDialog alertDialog;
     private CommonPresenter presenter;
@@ -45,12 +47,15 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     FloatingActionButton addJokeFAB;
     @BindView(R.id.myJokesButtonFAB)
     FloatingActionButton logoutFAB;
+    @BindView(R.id.admin)
+    FrameLayout admin;
     @BindView(R.id.logoutButtonFAB)
     FloatingActionButton myJokesFAB;
     @BindView(R.id.progress_bar)
     ProgressBar progressMain;
     @BindView(R.id.search)
     EditText search;
+    private boolean isAdmin = false;
 
 
     @Override
@@ -65,9 +70,15 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
         alertDialog = new MyAlertDialog(this);
         initRecycleView();
-        presenter = new CommonPresenter(this, new JokesRepository());
-        presenter.getAllJokesData();
         initSearch();
+        presenter = new CommonPresenter(this, new JokesRepository());
+        getAllJokesData();
+        checkIfAdmin();
+
+    }
+
+    private void getAllJokesData() {
+        presenter.getAllJokesData();
     }
 
     private void initSearch() {
@@ -103,12 +114,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     private void initRecycleView() {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         jokesListRecyclerView.setLayoutManager(layoutManager);
-        jokesListRecyclerView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
         adapter = new JokesAdapter(this);
         jokesListRecyclerView.setAdapter(adapter);
     }
@@ -142,12 +147,23 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     @OnClick(addJokeButtonFAB)
     public void checkIfAllowedToAdd() {
-        presenter.checkNumberOfAdds();
+
+        if(!isAdmin){
+            presenter.checkNumberOfAdds();
+        }else{
+            navigateToAddJokeActivity();
+        }
+
     }
 
     @OnClick(R.id.myJokesButtonFAB)
     public void startMyJokesActivity() {
         startActivity(new Intent(this, MyJokesActivityView.class));
+    }
+
+    @OnClick(adminFAB)
+    public void startAdminJokesActivity() {
+        startActivity(new Intent(this, AdminActivityView.class));
     }
 
     @OnClick(R.id.logoutButtonFAB)
@@ -163,7 +179,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     @Override
     public void isNotAllowedToAdd() {
-        showAlertDialog(getString(R.string.add_limit_reached));
+        showAlertDialog(String.format(getString(R.string.add_limit_reached), String.valueOf(Constants.ADD_JOKE_LIMIT)));
     }
 
     @Override
@@ -207,6 +223,11 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     }
 
     @Override
+    public void showAdminButton() {
+        admin.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void showAlertDialog(String message) {
         alertDialog.getAlertDialog().setMessage(message);
         if (!alertDialog.getAlertDialog().isShowing()) alertDialog.getAlertDialog().show();
@@ -229,5 +250,16 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         sendIntent.putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.share_text), getString(R.string.app_name)) + "\n\n" + text);
         sendIntent.setType("text/plain");
         startActivity(Intent.createChooser(sendIntent, "Share"));
+    }
+
+    @Override
+    public void checkIfAdmin() {
+        presenter.checkIfAdmin(this);
+    }
+
+    @Override
+    public void OnAdminTrue() {
+        isAdmin = true;
+        showAdminButton();
     }
 }
