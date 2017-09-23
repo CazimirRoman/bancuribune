@@ -28,4 +28,9 @@ public class MyAlertDialog extends AlertDialog {
         }
         return dialog;
     }
+
+    public void showAlertDialog(String message){
+        getAlertDialog().setMessage(message);
+        if (!getAlertDialog().isShowing()) getAlertDialog().show();
+    }
 }

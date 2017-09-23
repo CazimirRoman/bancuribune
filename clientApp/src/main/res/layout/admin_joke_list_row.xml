@@ -54,16 +54,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent">
 
-                        <com.beardedhen.androidbootstrap.AwesomeTextView
+                        <cazimir.com.bancuribune.ui.FontAwesomeTextView
                             android:id="@+id/approve"
-                            style="@style/fa_icon"
+                            style="@style/fontAwesome.iconSizeJoke"
                             android:elevation="20dp"
                             android:layout_gravity="center_vertical"
                             app:elevation = "20dp"
                             android:layout_width="wrap_content"
-                            app:fontAwesomeIcon="fa_smile_o"
+                            android:text="@string/fa_icon_smile_o"
                             android:layout_height="wrap_content">
-                        </com.beardedhen.androidbootstrap.AwesomeTextView>
+                        </cazimir.com.bancuribune.ui.FontAwesomeTextView>
 
                     </FrameLayout>
 
@@ -79,13 +79,15 @@
                         android:layout_width="wrap_content"
                         android:orientation="horizontal"
                         android:layout_height="wrap_content">
-                        <com.beardedhen.androidbootstrap.AwesomeTextView
+                        <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                            style="@style/fontAwesome.secondaryText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/added_by_label"/>
 
-                        <com.beardedhen.androidbootstrap.AwesomeTextView
+                        <cazimir.com.bancuribune.ui.FontAwesomeTextView
                             android:id="@+id/authorText"
+                            style="@style/fontAwesome.secondaryText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             tools:text="AuthorText"/>

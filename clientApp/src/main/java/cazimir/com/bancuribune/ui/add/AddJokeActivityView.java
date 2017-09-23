@@ -45,6 +45,12 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
     }
 
     @Override
+    public void showAlertDialog(String message) {
+        alertDialog.getAlertDialog().setMessage(message);
+        if (!alertDialog.getAlertDialog().isShowing()) alertDialog.getAlertDialog().show();
+    }
+
+    @Override
     public boolean dataValid() {
         if(addJokeEdit.getText().toString().isEmpty()){
             onError();
