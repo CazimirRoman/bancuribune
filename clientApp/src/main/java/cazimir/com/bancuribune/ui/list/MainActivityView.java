@@ -63,7 +63,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         super.onCreate(savedInstanceState);
 
         if(getSupportActionBar() != null){
-            getSupportActionBar().setTitle(getString(R.string.app_name));
+            getSupportActionBar().setTitle("  " + getString(R.string.app_name));
             getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
             getSupportActionBar().setIcon(R.mipmap.ic_launcher);
         }
@@ -229,8 +229,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     @Override
     public void showAlertDialog(String message) {
-        alertDialog.getAlertDialog().setMessage(message);
-        if (!alertDialog.getAlertDialog().isShowing()) alertDialog.getAlertDialog().show();
+        alertDialog.showAlertDialog(message);
     }
 
 
@@ -261,5 +260,10 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     public void OnAdminTrue() {
         isAdmin = true;
         showAdminButton();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }

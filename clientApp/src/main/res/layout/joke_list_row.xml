@@ -54,16 +54,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent">
 
-                        <com.beardedhen.androidbootstrap.AwesomeTextView
+                        <cazimir.com.bancuribune.ui.FontAwesomeTextView
                             android:id="@+id/vote"
-                            style="@style/fa_icon"
+                            style="@style/fontAwesome.iconSizeJoke"
                             android:elevation="20dp"
                             android:layout_gravity="center_vertical"
                             app:elevation = "20dp"
                             android:layout_width="wrap_content"
-                            app:fontAwesomeIcon="fa_thumbs_up"
+                            android:text="@string/fa_icon_thumbs_up"
                             android:layout_height="wrap_content">
-                        </com.beardedhen.androidbootstrap.AwesomeTextView>
+                        </cazimir.com.bancuribune.ui.FontAwesomeTextView>
 
                     </FrameLayout>
 
@@ -72,17 +72,16 @@
                         android:layout_height="match_parent">
 
 
-                        <com.beardedhen.androidbootstrap.AwesomeTextView
+                        <cazimir.com.bancuribune.ui.FontAwesomeTextView
                             android:id="@+id/share"
-                            style="@style/fa_icon"
+                            style="@style/fontAwesome.iconSizeJoke"
                             android:elevation="20dp"
                             app:elevation = "20dp"
-                            app:fontAwesomeIcon="fa_share"
+                            android:text="@string/fa_icon_share"
                             android:layout_gravity="center_vertical"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/fa_icon_share">
-                        </com.beardedhen.androidbootstrap.AwesomeTextView>
+                            android:layout_height="wrap_content">
+                        </cazimir.com.bancuribune.ui.FontAwesomeTextView>
 
                     </FrameLayout>
 
@@ -98,13 +97,17 @@
                         android:layout_width="wrap_content"
                         android:orientation="horizontal"
                         android:layout_height="wrap_content">
-                        <com.beardedhen.androidbootstrap.AwesomeTextView
+
+                        <cazimir.com.bancuribune.ui.FontAwesomeTextView
                             android:layout_width="wrap_content"
+                            style="@style/fontAwesome.secondaryText"
+                            android:visibility="gone"
                             android:layout_height="wrap_content"
                             android:text="@string/added_by_label"/>
 
-                        <com.beardedhen.androidbootstrap.AwesomeTextView
+                        <cazimir.com.bancuribune.ui.FontAwesomeTextView
                             android:id="@+id/authorText"
+                            style="@style/fontAwesome.secondaryText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             tools:text="AuthorText"/>
@@ -112,15 +115,19 @@
 
                     <LinearLayout
                         android:layout_width="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="5dp"
                         android:layout_height="wrap_content">
 
-                        <com.beardedhen.androidbootstrap.AwesomeTextView
+                        <cazimir.com.bancuribune.ui.FontAwesomeTextView
                             android:layout_width="wrap_content"
+                            style="@style/fontAwesome.secondaryText"
                             android:layout_height="wrap_content"
                             android:text="@string/point_label"/>
 
-                        <com.beardedhen.androidbootstrap.AwesomeTextView
+                        <cazimir.com.bancuribune.ui.FontAwesomeTextView
                             android:layout_width="wrap_content"
+                            style="@style/fontAwesome.secondaryText"
                             android:id="@+id/points"
                             android:layout_height="wrap_content"
                             tools:text="456"/>

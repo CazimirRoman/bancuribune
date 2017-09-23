@@ -17,11 +17,13 @@ import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.presenter.AuthPresenter;
 import cazimir.com.bancuribune.ui.list.MainActivityView;
+import cazimir.com.bancuribune.utils.MyAlertDialog;
 
 import static cazimir.com.bancuribune.R.id.login_button_dummy;
 
 public class LoginActivityView extends BaseActivity implements ILoginActivityView, OnClickListener {
 
+    private MyAlertDialog alertDialog;
     private AuthPresenter presenter;
     private CallbackManager callbackManager;
 
@@ -34,6 +36,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        alertDialog = new MyAlertDialog(this);
         callbackManager = CallbackManager.Factory.create();
         presenter = new AuthPresenter(this);
         presenter.checkIfUserLoggedIn();

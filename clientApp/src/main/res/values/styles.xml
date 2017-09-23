@@ -13,7 +13,6 @@
     <style name="text">
         <item name="android:paddingTop">10dp</item>
         <item name="android:textColor">@color/colorPrimaryText</item>
-
         <item name="android:paddingBottom">10dp</item>
     </style>
 
@@ -37,13 +36,25 @@
         <item name="android:color">@android:color/darker_gray</item>
     </style>
 
-    <style name="textFAB">
+    <style name="fontAwesome">
         <item name="android:textSize">30sp</item>
     </style>
 
-    <style name="fa_icon">
-        <item name="android:textSize">25sp</item>
-        <item name="android:layout_margin">10sp</item>
+    <style name="fontAwesome.secondaryText">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/colorSecondaryText</item>
+
+    </style>
+
+
+    <style name="fontAwesome.iconSizeButtons">
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="fontAwesome.iconSizeJoke">
+        <item name="android:textSize">28sp</item>
+        <item name="android:textColor">@drawable/button_color</item>
+        <item name="android:padding">10sp</item>
     </style>
 
 

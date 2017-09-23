@@ -1,5 +1,9 @@
 package cazimir.com.bancuribune.presenter;
 
+import com.facebook.Profile;
+
+import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 import cazimir.com.bancuribune.constants.Constants;
@@ -20,7 +24,9 @@ import cazimir.com.bancuribune.ui.list.OnGetJokesListener;
 import cazimir.com.bancuribune.ui.list.OnUpdatePointsFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnUpdateVotedByFinishedListener;
 import cazimir.com.bancuribune.ui.myjokes.IMyJokesActivityView;
+import cazimir.com.bancuribune.ui.myjokes.OnCalculatePointsListener;
 import cazimir.com.bancuribune.ui.myjokes.OnFirebaseGetMyJokesListener;
+import cazimir.com.bancuribune.ui.myjokes.OnGetFacebookNameListener;
 
 public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, OnGetAllPendingJokesListener, OnUpdateApproveStatusListener, OnFirebaseGetMyJokesListener, OnAddFinishedListener, OnUpdatePointsFinishedListener, OnUpdateVotedByFinishedListener, OnCheckIfVotedFinishedListener, OnAddJokeVoteFinishedListener, OnAllowedToAddFinishedListener {
 
@@ -150,6 +156,35 @@ public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, On
         vote.setJokeId(uid);
         repository.writeJokeVote(this, vote);
     }
+
+    @Override
+    public void getFacebookProfilePicture(final OnGetProfilePictureListener listener) throws IOException {
+        String id = Profile.getCurrentProfile().getId();
+        final URL imageURL = new URL("https://graph.facebook.com/" + id + "/picture?type=large");
+        listener.OnGetProfilePictureSuccess(imageURL);
+    }
+
+    @Override
+    public void getFacebookName(OnGetFacebookNameListener listener) {
+        String name = Profile.getCurrentProfile().getName();
+        if(name != null){
+            listener.OnGetFacebookNameSuccess(name);
+        }else{
+            listener.OnGetFacebookNameFailed();
+        }
+
+    }
+
+    @Override
+    public void calculateTotalPoints(OnCalculatePointsListener listener, List<Joke> jokes) {
+        int points = 0;
+        for (Joke joke : jokes){
+            points = points + joke.getPoints();
+        }
+
+        listener.OnCalculateSuccess(points);
+    }
+
 
     @Override
     public void OnGetJokesSuccess(List<Joke> jokes) {

@@ -42,7 +42,7 @@
 
         <cazimir.com.bancuribune.ui.FontAwesomeTextView
             android:id="@+id/tvSellRecordCount"
-            style="@style/textFAB"
+            style="@style/fontAwesome.iconSizeButtons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
