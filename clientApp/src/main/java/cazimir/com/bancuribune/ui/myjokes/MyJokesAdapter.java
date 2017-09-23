@@ -1,6 +1,5 @@
 package cazimir.com.bancuribune.ui.myjokes;
 
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,14 +11,12 @@ import java.util.List;
 
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.model.Joke;
-import cazimir.com.bancuribune.ui.list.OnJokeItemClickListener;
 
 public class MyJokesAdapter extends RecyclerView.Adapter<MyJokesAdapter.MyViewHolder> {
 
-
     private List<Joke> myJokes;
 
-    public MyJokesAdapter(@NonNull OnJokeItemClickListener listener){
+    public MyJokesAdapter(){
         myJokes = new ArrayList<>();
     }
 
@@ -62,8 +59,6 @@ public class MyJokesAdapter extends RecyclerView.Adapter<MyJokesAdapter.MyViewHo
             holder.pointsLayout.setVisibility(View.GONE);
 
         }
-
-
     }
 
     @Override

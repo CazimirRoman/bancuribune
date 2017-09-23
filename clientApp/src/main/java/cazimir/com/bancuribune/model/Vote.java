@@ -10,7 +10,7 @@ public class Vote {
     private long votedAt;
 
     public Vote() {
-        this.votedAt = System.currentTimeMillis();;
+        this.votedAt = System.currentTimeMillis();
     }
 
     public String getUid() {

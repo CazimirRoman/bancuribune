@@ -14,12 +14,10 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuth.AuthStateListener;
 
 import cazimir.com.bancuribune.ui.add.IAddJokeActivityView;
 import cazimir.com.bancuribune.ui.list.IMainActivityView;
 import cazimir.com.bancuribune.ui.login.ILoginActivityView;
-import cazimir.com.bancuribune.ui.login.OnAuthStateListenerRegister;
 import cazimir.com.bancuribune.ui.myjokes.IMyJokesActivityView;
 
 public class AuthPresenter implements IAuthPresenter {
@@ -32,7 +30,6 @@ public class AuthPresenter implements IAuthPresenter {
 
     public AuthPresenter(ILoginActivityView view) {
         auth = FirebaseAuth.getInstance();
-        setListener();
         this.login = view;
     }
 
@@ -49,17 +46,6 @@ public class AuthPresenter implements IAuthPresenter {
     public AuthPresenter(IMyJokesActivityView view) {
         auth = FirebaseAuth.getInstance();
         this.myJokes = view;
-    }
-
-    private void setListener() {
-        auth.addAuthStateListener(new AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-               if(firebaseAuth.getCurrentUser() == null){
-
-               }
-            }
-        });
     }
 
 
@@ -115,16 +101,6 @@ public class AuthPresenter implements IAuthPresenter {
         auth.signOut();
         LoginManager.getInstance().logOut();
         view.redirectToLoginPage();
-    }
-
-    @Override
-    public void registerAuthChangeListener(final OnAuthStateListenerRegister listener) {
-        auth.addAuthStateListener(new AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                listener.onAuthListenerSuccess();
-            }
-        });
     }
 
     private void handleFacebookAccessToken(AccessToken accessToken) {

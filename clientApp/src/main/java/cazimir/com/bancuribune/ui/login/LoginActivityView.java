@@ -83,7 +83,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     public void onClick(View view) {
         if (view == loginButton) {
             facebookButton.performClick();
-            loginButton.setText("Loading data...");
+            loginButton.setText(getString(R.string.loading_data));
         }
     }
 }

@@ -14,11 +14,9 @@ import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.repository.JokesRepository;
 import cazimir.com.bancuribune.ui.list.OnJokeItemClickListener;
-import cazimir.com.bancuribune.utils.MyAlertDialog;
 
 public class MyJokesActivityView extends BaseActivity implements IMyJokesActivityView, OnJokeItemClickListener {
 
-    private MyAlertDialog alertDialog;
     private CommonPresenter presenter;
     @BindView(R.id.myJokesList)
     RecyclerView myJokesListRecyclerView;
@@ -27,8 +25,11 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setTitle(getString(R.string.my_jokes_title));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setTitle(getString(R.string.my_jokes_title));
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         initRecycleView();
         presenter = new CommonPresenter(this, new JokesRepository());
         presenter.getMyJokes();
@@ -44,7 +45,7 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
 
             }
         });
-        adapter = new MyJokesAdapter(this);
+        adapter = new MyJokesAdapter();
         myJokesListRecyclerView.setAdapter(adapter);
     }
 
@@ -56,7 +57,7 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
 
     @Override
     public void showJokesList(List<Joke> jokes) {
-        adapter = new MyJokesAdapter(this);
+        adapter = new MyJokesAdapter();
         myJokesListRecyclerView.setAdapter(adapter);
         for (Joke joke : jokes) {
             adapter.add(joke);
@@ -73,11 +74,6 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
     @Override
     public void onItemVoted(String uid) {
 
-    }
-
-    private void showAlertDialog(int message) {
-        alertDialog.getAlertDialog().setMessage(getString(message));
-        if (!alertDialog.getAlertDialog().isShowing()) alertDialog.getAlertDialog().show();
     }
 
     @Override

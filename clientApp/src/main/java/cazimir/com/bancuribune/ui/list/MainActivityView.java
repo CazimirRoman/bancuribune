@@ -56,9 +56,13 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setTitle(getString(R.string.app_name));
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setTitle(getString(R.string.app_name));
+            getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+            getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+        }
+
         alertDialog = new MyAlertDialog(this);
         initRecycleView();
         presenter = new CommonPresenter(this, new JokesRepository());

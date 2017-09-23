@@ -6,6 +6,6 @@ public interface IAddJokeActivityView {
     boolean dataValid();
     void onDataValidated();
     void sendDataToDatabase(Joke joke);
-    void onError(String error);
+    void onError();
     void closeAdd();
 }
