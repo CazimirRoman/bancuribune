@@ -7,4 +7,5 @@ import cazimir.com.bancuribune.model.Joke;
 
 public interface IMyJokesActivityView {
     void showJokesList(List<Joke> jokes);
+    String getRankDataFromSharedPreferences();
 }

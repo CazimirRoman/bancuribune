@@ -22,6 +22,10 @@
     <string name="add_joke_empty">Te rog sa completezi bancul tau care va face ravagii</string>
     <string name="close">Inchide</string>
     <string name="admin_title">Bancuri de aprobat</string>
-    <string name="total_points">"Total puncte: "</string>
+    <string name="total_points">"Total puncte: %s"</string>
     <string name="no_internet">Oops. Se pare ca nu esti conectat la net. Stii ce ai de facut</string>
+    <string name="rank">"Rang: "</string>
+    <string name="nextRank">Urmatorul rang in %s like-uri</string>
+    <string name="rankLabel">Rang: %s</string>
+    <string name="remainingAdds">Mai poti adauga %s bancuri astazi</string>
 </resources>

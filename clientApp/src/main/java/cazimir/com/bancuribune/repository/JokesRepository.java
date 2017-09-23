@@ -16,9 +16,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
+import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.model.Vote;
+import cazimir.com.bancuribune.presenter.OnAddRankFinishedListener;
+import cazimir.com.bancuribune.presenter.OnCheckIfRankDataInDBListener;
+import cazimir.com.bancuribune.presenter.OnUpdateRankPointsSuccess;
 import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
 import cazimir.com.bancuribune.ui.add.OnAddJokeVoteFinishedListener;
 import cazimir.com.bancuribune.ui.admin.OnGetAllPendingJokesListener;
@@ -36,6 +39,7 @@ public class JokesRepository implements IJokesRepository {
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference jokesRef = database.getReference("jokes");
     private DatabaseReference votesRef = database.getReference("votes");
+    private DatabaseReference ranksRef = database.getReference("ranks");
 
     @Override
     public void getAllJokes(final OnGetJokesListener listener) {
@@ -79,7 +83,7 @@ public class JokesRepository implements IJokesRepository {
                 for (DataSnapshot jokeSnapshot : dataSnapshot.getChildren()) {
                     Joke joke = jokeSnapshot.getValue(Joke.class);
                     assert joke != null;
-                    if(joke.getJokeText().trim().toLowerCase().contains(cleanedText.toLowerCase())){
+                    if (joke.getJokeText().trim().toLowerCase().contains(cleanedText.toLowerCase())) {
                         filteredJokes.add(joke);
                     }
                 }
@@ -105,7 +109,7 @@ public class JokesRepository implements IJokesRepository {
                 for (DataSnapshot jokeSnapshot : dataSnapshot.getChildren()) {
                     Joke joke = jokeSnapshot.getValue(Joke.class);
                     assert joke != null;
-                    if(!joke.isApproved()){
+                    if (!joke.isApproved()) {
                         pendingJokes.add(joke);
                     }
                 }
@@ -137,7 +141,8 @@ public class JokesRepository implements IJokesRepository {
                 }
 
                 Collections.sort(myJokes, new Comparator<Joke>() {
-                    @Override public int compare(Joke j1, Joke j2) {
+                    @Override
+                    public int compare(Joke j1, Joke j2) {
                         return j2.getPoints() - j1.getPoints();
                     }
 
@@ -149,6 +154,26 @@ public class JokesRepository implements IJokesRepository {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 listener.onGetMyJokesError(databaseError.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void addRankToDB(final OnAddRankFinishedListener listener, Rank rank) {
+        String uid = ranksRef.push().getKey();
+        rank.setUid(uid);
+        ranksRef.child(uid).setValue(rank);
+
+        ranksRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Rank rank = dataSnapshot.getValue(Rank.class);
+                listener.OnAddRankSuccess(rank);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
     }
@@ -171,7 +196,7 @@ public class JokesRepository implements IJokesRepository {
     }
 
     @Override
-    public void getAllJokesAddedToday(final OnAllowedToAddFinishedListener listener, String userId) {
+    public void getAllJokesAddedToday(final OnAllowedToAddFinishedListener listener, String userId, final int addLimit) {
 
         final ArrayList<Joke> addedJokesToday = new ArrayList<>();
 
@@ -193,10 +218,13 @@ public class JokesRepository implements IJokesRepository {
                     }
                 }
 
-                if (addedJokesToday.size() <= Constants.ADD_JOKE_LIMIT) {
-                    listener.isAllowedToAdd();
+                if (addedJokesToday.size() < addLimit) {
+
+                    int remainingAdds = addLimit - addedJokesToday.size();
+
+                    listener.isAllowedToAdd(remainingAdds);
                 } else {
-                    listener.isNotAllowedToAdd();
+                    listener.isNotAllowedToAdd(addLimit);
                 }
             }
 
@@ -306,7 +334,7 @@ public class JokesRepository implements IJokesRepository {
         DatabaseReference ref = jokesRef.child(uid).child("votedBy").push();
         Map<String, Object> map = new HashMap<>();
         map.put("userID", userId);
-        ref.updateChildren(map, new DatabaseReference.CompletionListener(){
+        ref.updateChildren(map, new DatabaseReference.CompletionListener() {
 
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -317,6 +345,61 @@ public class JokesRepository implements IJokesRepository {
                 }
             }
         });
+    }
+
+    @Override
+    public void updateRankPointsAndName(final OnUpdateRankPointsSuccess listener, final String rankName, final int points, final String uid) {
+
+        Query query = ranksRef.orderByChild("uid").equalTo(uid);
+
+        query.addChildEventListener(new ChildEventListener() {
+
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Rank rank = dataSnapshot.getValue(Rank.class);
+                assert rank != null;
+
+                ranksRef.child(uid).child("totalPoints").setValue(points, new DatabaseReference.CompletionListener() {
+
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        if (databaseError == null) {
+                            ranksRef.child(uid).child("rank").setValue(rankName, new DatabaseReference.CompletionListener() {
+
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                    if (databaseError == null) {
+                                        listener.OnUpdateRankPointsSuccess();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     @Override
@@ -370,6 +453,38 @@ public class JokesRepository implements IJokesRepository {
 
             }
         });
+    }
+
+    @Override
+    public void checkIfRankDataInDB(final OnCheckIfRankDataInDBListener listener, String userId) {
+        Query query = ranksRef.orderByChild("userId").equalTo(userId);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Rank rank = null;
+
+                for (DataSnapshot rankSnapshot : dataSnapshot.getChildren()) {
+                    rank = rankSnapshot.getValue(Rank.class);
+                }
+
+                if (rank != null) {
+                    listener.RankDataIsInDB(rank);
+
+                } else {
+                    listener.RankDataNotInDB();
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
 }

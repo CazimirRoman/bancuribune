@@ -1,6 +1,6 @@
 package cazimir.com.bancuribune.ui.list;
 
 public interface OnAllowedToAddFinishedListener {
-    void isAllowedToAdd();
-    void isNotAllowedToAdd();
+    void isAllowedToAdd(int remainingAdds);
+    void isNotAllowedToAdd(int addLimit);
 }

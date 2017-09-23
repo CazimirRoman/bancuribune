@@ -14,10 +14,12 @@ public interface ICommonPresenter {
     void getAllPendingJokesData();
     void getMyJokes();
     void addJoke(Joke joke);
+    void addRankToDatabase();
     void checkIfAdmin(OnCheckIfAdminListener listener);
-    void checkNumberOfAdds();
-    void isAllowedToAdd();
-    void isNotAllowedToAdd();
+    void checkNumberOfAdds(int addLimit);
+    void checkAndGetMyRank();
+    void isAllowedToAdd(int remainingAdds);
+    void isNotAllowedToAdd(int addLimit);
     void logOutUser();
     void checkIfAlreadyVoted(String uid);
     void updateJokePoints(String uid);
@@ -26,6 +28,7 @@ public interface ICommonPresenter {
     void getFacebookProfilePicture(OnGetProfilePictureListener listener) throws IOException;
     void getFacebookName(OnGetFacebookNameListener listener);
     void calculateTotalPoints(OnCalculatePointsListener listener, List<Joke> jokes);
+    void updateRankPointsAndName(int points, String rankName, String rankId);
 
 
 }
