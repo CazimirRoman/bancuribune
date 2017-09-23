@@ -6,7 +6,7 @@
     <string name="app_name">Bancuri bune</string>
     <string name="add_joke">Adauga banc</string>
     <string name="added_by_label">"Adaugat de: "</string>
-    <string name="add_limit_reached">Ai ajuns la limita de 5 adaugari pe zi. Revino maine pentru a adauga un banc nou.</string>
+    <string name="add_limit_reached">Ai ajuns la limita de %s adaugari pe zi. Revino maine pentru a adauga un banc nou.</string>
     <string name="add_success">Am adaugat bancul cu success! Dupa ce il va verifica un moderator, el va fi vizibil in aplicatie.</string>
     <string name="add_failed">Nu am putut adauga bancul. Te rog sa incerci mai tarziu.</string>
     <string name="share_text">Hei! Am gasit aceasta super aplicatie de bancuri numita %s. Bancul zilei este:</string>
@@ -21,4 +21,5 @@
     <string name="loading_data">Incarc bancul cu pesti…</string>
     <string name="add_joke_empty">Te rog sa completezi bancul tau care va face ravagii</string>
     <string name="close">Inchide</string>
+    <string name="admin_title">Bancuri de aprobat</string>
 </resources>

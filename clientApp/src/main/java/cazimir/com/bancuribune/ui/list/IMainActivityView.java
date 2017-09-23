@@ -9,12 +9,14 @@ public interface IMainActivityView {
     void requestFailed(String error);
     void navigateToAddJokeActivity();
     void isNotAllowedToAdd();
+    void checkIfAdmin();
     void showAddSuccessDialog();
     void showAddFailedDialog();
     void showTestToast(String message);
     void redirectToLoginPage();
     void showProgressBar();
     void hideProgressBar();
+    void showAdminButton();
     void showAlertDialog(String message);
 
 }

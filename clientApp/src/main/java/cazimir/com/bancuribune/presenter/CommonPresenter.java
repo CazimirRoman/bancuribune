@@ -2,14 +2,19 @@ package cazimir.com.bancuribune.presenter;
 
 import java.util.List;
 
+import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Vote;
 import cazimir.com.bancuribune.repository.IJokesRepository;
 import cazimir.com.bancuribune.ui.add.IAddJokeActivityView;
 import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
 import cazimir.com.bancuribune.ui.add.OnAddJokeVoteFinishedListener;
+import cazimir.com.bancuribune.ui.admin.IAdminActivityView;
+import cazimir.com.bancuribune.ui.admin.OnGetAllPendingJokesListener;
+import cazimir.com.bancuribune.ui.admin.OnUpdateApproveStatusListener;
 import cazimir.com.bancuribune.ui.list.IMainActivityView;
 import cazimir.com.bancuribune.ui.list.OnAllowedToAddFinishedListener;
+import cazimir.com.bancuribune.ui.list.OnCheckIfAdminListener;
 import cazimir.com.bancuribune.ui.list.OnCheckIfVotedFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnGetJokesListener;
 import cazimir.com.bancuribune.ui.list.OnUpdatePointsFinishedListener;
@@ -17,11 +22,12 @@ import cazimir.com.bancuribune.ui.list.OnUpdateVotedByFinishedListener;
 import cazimir.com.bancuribune.ui.myjokes.IMyJokesActivityView;
 import cazimir.com.bancuribune.ui.myjokes.OnFirebaseGetMyJokesListener;
 
-public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, OnFirebaseGetMyJokesListener, OnAddFinishedListener, OnUpdatePointsFinishedListener, OnUpdateVotedByFinishedListener, OnCheckIfVotedFinishedListener, OnAddJokeVoteFinishedListener, OnAllowedToAddFinishedListener {
+public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, OnGetAllPendingJokesListener, OnUpdateApproveStatusListener, OnFirebaseGetMyJokesListener, OnAddFinishedListener, OnUpdatePointsFinishedListener, OnUpdateVotedByFinishedListener, OnCheckIfVotedFinishedListener, OnAddJokeVoteFinishedListener, OnAllowedToAddFinishedListener {
 
     private IMainActivityView mainView;
     private IAddJokeActivityView addView;
     private IMyJokesActivityView myJokesView;
+    private IAdminActivityView adminView;
     private IJokesRepository repository;
     private IAuthPresenter authPresenter;
     private String currentUserID;
@@ -47,9 +53,21 @@ public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, On
         currentUserID = authPresenter.getCurrentUserID();
     }
 
+    public CommonPresenter(IAdminActivityView view, IJokesRepository repository) {
+        this.adminView = view;
+        this.repository = repository;
+        this.authPresenter = new AuthPresenter(adminView);
+        currentUserID = authPresenter.getCurrentUserID();
+    }
+
     public void getAllJokesData(){
         repository.getAllJokes(this);
         mainView.showProgressBar();
+    }
+
+    @Override
+    public void getAllPendingJokesData() {
+        repository.getAllPendingJokes(this);
     }
 
     @Override
@@ -66,7 +84,26 @@ public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, On
     public void addJoke(Joke joke) {
         joke.setCreatedBy(currentUserID);
         joke.setUserName(authPresenter.getCurrentUserName());
+        if (isAdmin()) {
+            joke.setApproved(true);
+        }
         repository.addJoke(this, joke);
+    }
+
+    private boolean isAdmin() {
+        if(authPresenter.getCurrentUserID().equals(Constants.ADMIN_ID)){
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void checkIfAdmin(OnCheckIfAdminListener listener) {
+
+        if(isAdmin()){
+            listener.OnAdminTrue();
+        }
     }
 
     @Override
@@ -99,6 +136,11 @@ public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, On
         repository.updateJokePoints(this, uid);
         repository.updateVotedBy(this, uid, currentUserID);
         writeVoteLogToDB(uid);
+    }
+
+    @Override
+    public void updateJokeApproval(String uid) {
+        repository.updateApproveStatus(this, uid);
     }
 
     @Override
@@ -177,5 +219,27 @@ public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, On
     @Override
     public void OnUpdateVotedBySuccess() {
 
+    }
+
+    @Override
+    public void OnGetAllPendingJokesSuccess(List<Joke> jokes) {
+        adminView.refreshJokes(jokes);
+    }
+
+    @Override
+    public void OnGetAllPendingJokesFailed(String message) {
+
+
+    }
+
+    @Override
+    public void OnUpdateApproveStatusSuccess() {
+        adminView.showToast("Approved!");
+        adminView.getAllPendingJokes();
+    }
+
+    @Override
+    public void OnUpdateApproveStatusFailed(String error) {
+        adminView.showToast(error);
     }
 }
