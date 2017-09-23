@@ -141,7 +141,7 @@ public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, On
 
     @Override
     public void onAddJokeVoteSuccess() {
-        mainView.showTestToast("Vote saved successfully!");
+        mainView.showTestToast("Multumim pentru vot!");
     }
 
     @Override
@@ -161,7 +161,7 @@ public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, On
 
     @Override
     public void OnHasVotedTrue() {
-        mainView.showTestToast("Already voted!");
+        mainView.showTestToast("Bancul asta a fost deja votat de tine. Multumim!");
     }
 
     @Override

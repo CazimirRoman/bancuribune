@@ -8,9 +8,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import cazimir.com.bancuribune.model.Joke;
+import cazimir.com.bancuribune.model.Vote;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.repository.IJokesRepository;
 import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
+import cazimir.com.bancuribune.ui.add.OnAddJokeVoteFinishedListener;
 import cazimir.com.bancuribune.ui.myjokes.OnFirebaseGetMyJokesListener;
 
 public class JokesPresenterTest {
@@ -66,7 +68,32 @@ public class JokesPresenterTest {
         }
 
         @Override
+        public void showAddFailedDialog() {
+
+        }
+
+        @Override
+        public void showTestToast(String message) {
+
+        }
+
+        @Override
         public void redirectToLoginPage() {
+
+        }
+
+        @Override
+        public void showProgressBar() {
+
+        }
+
+        @Override
+        public void hideProgressBar() {
+
+        }
+
+        @Override
+        public void showAlertDialog(String message) {
 
         }
     }
@@ -93,6 +120,11 @@ public class JokesPresenterTest {
         }
 
         @Override
+        public void getAllFilteredJokes(OnGetJokesListener listener, String text) {
+
+        }
+
+        @Override
         public void getMyJokes(OnFirebaseGetMyJokesListener listener, String userID) {
 
         }
@@ -104,6 +136,26 @@ public class JokesPresenterTest {
 
         @Override
         public void getAllJokesAddedToday(OnAllowedToAddFinishedListener listener, String userID) {
+
+        }
+
+        @Override
+        public void updateJokePoints(OnUpdatePointsFinishedListener listener, String uid) {
+
+        }
+
+        @Override
+        public void updateVotedBy(OnUpdateVotedByFinishedListener listener, String uid, String userId) {
+
+        }
+
+        @Override
+        public void writeJokeVote(OnAddJokeVoteFinishedListener listener, Vote vote) {
+
+        }
+
+        @Override
+        public void checkIfVoted(OnCheckIfVotedFinishedListener listener, String uid, String userId) {
 
         }
     }

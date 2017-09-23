@@ -83,8 +83,4 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
     public int getItemCount() {
         return jokes.size();
     }
-
-    public List<Joke> getJokesList() {
-        return this.jokes;
-    }
 }

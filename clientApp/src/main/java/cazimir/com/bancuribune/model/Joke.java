@@ -1,7 +1,5 @@
 package cazimir.com.bancuribune.model;
 
-import java.util.HashMap;
-
 public class Joke {
 
     private String uid;
@@ -10,7 +8,6 @@ public class Joke {
     private long createdAt;
     private String createdBy;
     private String userName;
-    private HashMap<String, HashMap<String, String>> votedBy;
     private int points;
 
 
@@ -60,23 +57,11 @@ public class Joke {
         this.points = points;
     }
 
-    public void incrementPoints() {
-        this.points++;
-    }
-
     public String getUid() {
         return uid;
     }
 
     public void setUid(String uid) {
         this.uid = uid;
-    }
-
-    public HashMap<String, HashMap<String, String>> getVotedBy() {
-        return votedBy;
-    }
-
-    public void setVotedBy(HashMap<String, HashMap<String, String>> votedBy) {
-        this.votedBy = votedBy;
     }
 }

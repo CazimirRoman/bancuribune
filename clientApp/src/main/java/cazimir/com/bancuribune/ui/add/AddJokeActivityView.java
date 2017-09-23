@@ -30,8 +30,11 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setTitle("Add joke");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(getSupportActionBar() != null){
+            getSupportActionBar().setTitle(getString(R.string.add_joke));
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         alertDialog = new MyAlertDialog(this);
         presenter = new CommonPresenter(this, new JokesRepository());
     }
@@ -44,7 +47,7 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
     @Override
     public boolean dataValid() {
         if(addJokeEdit.getText().toString().isEmpty()){
-            onError("Please fill out Joke field");
+            onError();
             return false;
         }else{
             return true;
@@ -62,8 +65,8 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
     }
 
     @Override
-    public void onError(String error) {
-        alertDialog.getAlertDialog().setMessage(error);
+    public void onError() {
+        alertDialog.getAlertDialog().setMessage(getString(R.string.add_joke_empty));
         if (!alertDialog.getAlertDialog().isShowing()) alertDialog.getAlertDialog().show();
     }
 

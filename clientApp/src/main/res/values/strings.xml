@@ -4,7 +4,7 @@
     <string name="fb_login_protocol_scheme">fb129199171153011</string>
 
     <string name="app_name">Bancuri bune</string>
-    <string name="button_add_joke">Adauga banc</string>
+    <string name="add_joke">Adauga banc</string>
     <string name="added_by_label">"Adaugat de: "</string>
     <string name="add_limit_reached">Ai ajuns la limita de 5 adaugari pe zi. Revino maine pentru a adauga un banc nou.</string>
     <string name="add_success">Am adaugat bancul cu success! Dupa ce il va verifica un moderator, el va fi vizibil in aplicatie.</string>
@@ -16,4 +16,9 @@
     <string name="add_joke_hint">Adauga bancul tau aici…</string>
     <string name="search_hint">Cauta banc…</string>
     <string name="point_label">"Puncte: "</string>
+    <string name="facebook_login">Login cu Facebook</string>
+    <string name="copyright">Copyright© 2017 Cazimir Roman Dev</string>
+    <string name="loading_data">Incarc bancul cu pesti…</string>
+    <string name="add_joke_empty">Te rog sa completezi bancul tau care va face ravagii</string>
+    <string name="close">Inchide</string>
 </resources>
