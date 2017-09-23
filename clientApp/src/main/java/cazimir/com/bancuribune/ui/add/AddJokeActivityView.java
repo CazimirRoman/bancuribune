@@ -88,6 +88,7 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
         if(dataValid()){
             sendDataToDatabase(constructJokeObject());
             hideSoftInput(addJokeEdit);
+            closeAdd();
         }
     }
 

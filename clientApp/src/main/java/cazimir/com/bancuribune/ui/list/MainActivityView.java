@@ -9,8 +9,11 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -26,6 +29,7 @@ import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.repository.JokesRepository;
+import cazimir.com.bancuribune.ui.MyRecylerScroll;
 import cazimir.com.bancuribune.ui.add.AddJokeActivityView;
 import cazimir.com.bancuribune.ui.admin.AdminActivityView;
 import cazimir.com.bancuribune.ui.login.LoginActivityView;
@@ -55,6 +59,8 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     ProgressBar progressMain;
     @BindView(R.id.search)
     EditText search;
+    @BindView(R.id.fab)
+    LinearLayout fab;
     private boolean isAdmin = false;
 
 
@@ -115,6 +121,20 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         jokesListRecyclerView.setLayoutManager(layoutManager);
         adapter = new JokesAdapter(this);
+
+        jokesListRecyclerView.setOnScrollListener(new MyRecylerScroll(){
+
+            @Override
+            public void show() {
+                fab.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+            }
+
+            @Override
+            public void hide() {
+                fab.animate().translationY(fab.getHeight()).setInterpolator(new AccelerateInterpolator(2)).start();
+            }
+        });
+
         jokesListRecyclerView.setAdapter(adapter);
     }
 

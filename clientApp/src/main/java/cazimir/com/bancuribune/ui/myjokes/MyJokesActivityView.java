@@ -3,7 +3,6 @@ package cazimir.com.bancuribune.ui.myjokes;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -70,12 +69,6 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
     private void initRecycleView() {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         myJokesListRecyclerView.setLayoutManager(layoutManager);
-        myJokesListRecyclerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
         adapter = new MyJokesAdapter();
         myJokesListRecyclerView.setAdapter(adapter);
     }

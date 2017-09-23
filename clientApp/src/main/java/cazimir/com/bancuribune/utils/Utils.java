@@ -22,4 +22,6 @@ public class Utils {
                 Normalizer.normalize(text, Form.NFD)
                         .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
     }
+
+
 }
