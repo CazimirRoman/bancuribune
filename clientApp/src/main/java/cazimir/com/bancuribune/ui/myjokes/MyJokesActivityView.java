@@ -1,5 +1,6 @@
 package cazimir.com.bancuribune.ui.myjokes;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import java.util.List;
 import butterknife.BindView;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
+import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.presenter.OnGetProfilePictureListener;
@@ -32,7 +34,14 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
     RecyclerView myJokesListRecyclerView;
     @BindView(R.id.profilePoints)
     TextView profilePoints;
+    @BindView(R.id.profileRank)
+    TextView profileRank;
+    @BindView(R.id.nextRank)
+    TextView profileNextRank;
+    @BindView(R.id.remainingAdds)
+    TextView remainingAdds;
     private MyJokesAdapter adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +60,6 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
             e.printStackTrace();
         }
         getMyJokes();
-
     }
 
     private void getProfileNameFromFacebook() {
@@ -93,6 +101,27 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
     }
 
     @Override
+    public String getRankDataFromSharedPreferences() {
+        SharedPreferences prefs = getSharedPreferences(Constants.RANK, MODE_PRIVATE);
+        String rankId = prefs.getString(Constants.RANK, null);
+        if (rankId != null) {
+            return rankId;
+        }
+
+        return "";
+    }
+
+    public int getRemainingAdds() {
+        SharedPreferences prefs = getSharedPreferences(Constants.REMAINING_ADDS, MODE_PRIVATE);
+        int remaining = prefs.getInt(Constants.REMAINING, 0);
+        if (remaining != 0) {
+            return remaining;
+        }
+
+        return 0;
+    }
+
+    @Override
     public void onItemShared(Joke data) {
 
     }
@@ -120,7 +149,40 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
 
     @Override
     public void OnCalculateSuccess(int points) {
-        profilePoints.setText(String.valueOf(points));
+        updateRank(points);
+    }
+
+    private void updateRank(int points) {
+        String rankId = getRankDataFromSharedPreferences();
+        String rankName = computeRankName(points);
+        Integer likesForNextRank = computeLikeForNextRank(points);
+        presenter.updateRankPointsAndName(points, rankName, rankId);
+
+        profilePoints.setText(String.format(getString(R.string.total_points), String.valueOf(points)));
+        profileRank.setText(String.format(getString(R.string.rankLabel), rankName));
+        profileNextRank.setText(String.format(getString(R.string.nextRank), String.valueOf(likesForNextRank)));
+        remainingAdds.setText(String.format(getString(R.string.remainingAdds), String.valueOf(getRemainingAdds())));
+    }
+
+    private Integer computeLikeForNextRank(int points) {
+
+        if(0<=points && points<50){
+            return 50-points;
+        }else if(50<=points && points<200){
+            return 200-points;
+        }
+
+        return 0;
+    }
+
+    private String computeRankName(int points) {
+        if(0<=points && points<50){
+            return Constants.NOVICE;
+        }else if(50<=points && points<200){
+            return Constants.GRASSHOPPER;
+        }
+
+        return Constants.DEFAULT;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package cazimir.com.bancuribune.ui.list;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
@@ -27,6 +28,7 @@ import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
+import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.repository.JokesRepository;
 import cazimir.com.bancuribune.ui.MyRecylerScroll;
@@ -62,13 +64,14 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @BindView(R.id.fab)
     LinearLayout fab;
     private boolean isAdmin = false;
+    private String currentRank;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("  " + getString(R.string.app_name));
             getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
             getSupportActionBar().setIcon(R.mipmap.ic_launcher);
@@ -79,8 +82,13 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         initSearch();
         presenter = new CommonPresenter(this, new JokesRepository());
         getAllJokesData();
+        getMyRank();
         checkIfAdmin();
 
+    }
+
+    private void getMyRank() {
+        presenter.checkAndGetMyRank();
     }
 
     private void getAllJokesData() {
@@ -103,16 +111,16 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
             @Override
             public void afterTextChanged(Editable editable) {
 
-                    if (editable.toString().isEmpty()) {
-                        presenter.getAllJokesData();
-                    } else {
-                        if (editable.toString().length() >= Constants.FILTER_MINIMUM_CHARACTERS) {
-                            showProgressBar();
-                            presenter.getFilteredJokesData(editable.toString());
-                        }
+                if (editable.toString().isEmpty()) {
+                    presenter.getAllJokesData();
+                } else {
+                    if (editable.toString().length() >= Constants.FILTER_MINIMUM_CHARACTERS) {
+                        showProgressBar();
+                        presenter.getFilteredJokesData(editable.toString());
                     }
-
                 }
+
+            }
 
         });
     }
@@ -122,7 +130,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         jokesListRecyclerView.setLayoutManager(layoutManager);
         adapter = new JokesAdapter(this);
 
-        jokesListRecyclerView.setOnScrollListener(new MyRecylerScroll(){
+        jokesListRecyclerView.setOnScrollListener(new MyRecylerScroll() {
 
             @Override
             public void show() {
@@ -159,7 +167,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     public void requestFailed(String error) {
         //TODO : refactor
         hideProgressBar();
-        if(Profile.getCurrentProfile() != null){
+        if (Profile.getCurrentProfile() != null) {
             alertDialog.getAlertDialog().setMessage(error);
             if (!alertDialog.getAlertDialog().isShowing()) alertDialog.getAlertDialog().show();
         }
@@ -168,9 +176,15 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @OnClick(addJokeButtonFAB)
     public void checkIfAllowedToAdd() {
 
-        if(!isAdmin){
-            presenter.checkNumberOfAdds();
-        }else{
+        if (!isAdmin) {
+
+            if (currentRank.equals(Constants.NOVICE)) {
+                presenter.checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_NOVICE);
+            } else if (currentRank.equals(Constants.GRASSHOPPER)) {
+                presenter.checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_GRASSHOPPER);
+            }
+
+        } else {
             navigateToAddJokeActivity();
         }
 
@@ -178,7 +192,8 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     @OnClick(R.id.myJokesButtonFAB)
     public void startMyJokesActivity() {
-        startActivity(new Intent(this, MyJokesActivityView.class));
+        Intent i = new Intent(this, MyJokesActivityView.class);
+        startActivity(i);
     }
 
     @OnClick(adminFAB)
@@ -198,8 +213,8 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     }
 
     @Override
-    public void isNotAllowedToAdd() {
-        showAlertDialog(String.format(getString(R.string.add_limit_reached), String.valueOf(Constants.ADD_JOKE_LIMIT)));
+    public void isNotAllowedToAdd(int addLimit) {
+        showAlertDialog(String.format(getString(R.string.add_limit_reached), String.valueOf(addLimit)));
     }
 
     @Override
@@ -250,6 +265,29 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @Override
     public void showAlertDialog(String message) {
         alertDialog.showAlertDialog(message);
+    }
+
+    @Override
+    public void saveRankDataToSharedPreferences(Rank rank) {
+        SharedPreferences.Editor editor = getSharedPreferences(Constants.RANK, MODE_PRIVATE).edit();
+        editor.putString(Constants.RANK, rank.getUid());
+        editor.apply();
+    }
+
+    public void saveRemainingDataToSharedPreferences(int remainingAdds) {
+        SharedPreferences.Editor editor = getSharedPreferences(Constants.REMAINING_ADDS, MODE_PRIVATE).edit();
+        editor.putInt(Constants.REMAINING, remainingAdds);
+        editor.apply();
+    }
+
+    @Override
+    public void updateCurrentRank(String rank) {
+        this.currentRank = rank;
+    }
+
+    @Override
+    public void updateRemainingAdds(int remaininigAdds) {
+        saveRemainingDataToSharedPreferences(remaininigAdds);
     }
 
 
