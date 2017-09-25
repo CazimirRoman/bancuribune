@@ -3,7 +3,6 @@ package cazimir.com.bancuribune.ui.myjokes;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,6 +15,7 @@ import java.util.List;
 import butterknife.BindView;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
+import cazimir.com.bancuribune.base.EmptyRecyclerView;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
@@ -31,7 +31,7 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
     @BindView(R.id.profileImage)
     ImageView profileImage;
     @BindView(R.id.myJokesList)
-    RecyclerView myJokesListRecyclerView;
+    EmptyRecyclerView myJokesListRecyclerView;
     @BindView(R.id.profilePoints)
     TextView profilePoints;
     @BindView(R.id.profileRank)
@@ -75,10 +75,11 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
     }
 
     private void initRecycleView() {
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        EmptyRecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         myJokesListRecyclerView.setLayoutManager(layoutManager);
         adapter = new MyJokesAdapter();
         myJokesListRecyclerView.setAdapter(adapter);
+        myJokesListRecyclerView.setEmptyView(findViewById(R.id.empty_view));
     }
 
     @Override

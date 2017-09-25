@@ -319,5 +319,11 @@ public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, On
     @Override
     public void OnAddRankSuccess(Rank rank) {
         mainView.saveRankDataToSharedPreferences(rank);
+        mainView.updateCurrentRank(rank.getRank());
+    }
+
+    @Override
+    public void OnAddRankFailure(String error) {
+        mainView.showAlertDialog(error);
     }
 }

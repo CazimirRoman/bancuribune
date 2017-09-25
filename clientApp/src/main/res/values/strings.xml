@@ -28,4 +28,5 @@
     <string name="nextRank">Urmatorul rang in %s like-uri</string>
     <string name="rankLabel">Rang: %s</string>
     <string name="remainingAdds">Mai poti adauga %s bancuri astazi</string>
+    <string name="no_added_jokes">Cam liniste pe aici…</string>
 </resources>

@@ -1,6 +1,5 @@
 package cazimir.com.bancuribune.ui.myjokes;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cazimir.com.bancuribune.R;
+import cazimir.com.bancuribune.base.EmptyRecyclerView;
 import cazimir.com.bancuribune.model.Joke;
 
-public class MyJokesAdapter extends RecyclerView.Adapter<MyJokesAdapter.MyViewHolder> {
+public class MyJokesAdapter extends EmptyRecyclerView.Adapter<MyJokesAdapter.MyViewHolder> {
 
     private List<Joke> myJokes;
 
@@ -20,7 +20,7 @@ public class MyJokesAdapter extends RecyclerView.Adapter<MyJokesAdapter.MyViewHo
         myJokes = new ArrayList<>();
     }
 
-    class MyViewHolder extends RecyclerView.ViewHolder{
+    class MyViewHolder extends EmptyRecyclerView.ViewHolder{
 
         TextView text;
         TextView approved;
