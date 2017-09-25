@@ -7,15 +7,15 @@ public class Rank {
     private String rank;
     private int totalPoints;
 
-    public String getUid() {
-        return uid;
-    }
-
     public Rank() {
     }
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public String getUid() {
+        return uid;
     }
 
     public String getUserId() {

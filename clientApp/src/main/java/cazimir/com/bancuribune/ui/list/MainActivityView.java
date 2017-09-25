@@ -81,8 +81,8 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         initRecycleView();
         initSearch();
         presenter = new CommonPresenter(this, new JokesRepository());
-        getAllJokesData();
         getMyRank();
+        getAllJokesData();
         checkIfAdmin();
 
     }

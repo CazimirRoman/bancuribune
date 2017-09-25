@@ -159,21 +159,20 @@ public class JokesRepository implements IJokesRepository {
     }
 
     @Override
-    public void addRankToDB(final OnAddRankFinishedListener listener, Rank rank) {
+    public void addRankToDB(final OnAddRankFinishedListener listener, final Rank rank) {
         String uid = ranksRef.push().getKey();
         rank.setUid(uid);
         ranksRef.child(uid).setValue(rank);
 
-        ranksRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Rank rank = dataSnapshot.getValue(Rank.class);
-                listener.OnAddRankSuccess(rank);
-            }
+        ranksRef.child(uid).setValue(rank, new DatabaseReference.CompletionListener() {
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    listener.OnAddRankFailure(databaseError.getMessage().toString());
+                } else {
+                    listener.OnAddRankSuccess(rank);
+                }
             }
         });
     }
