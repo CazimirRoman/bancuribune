@@ -31,4 +31,6 @@
     <string name="no_added_jokes">Cam liniste pe aici…</string>
     <string name="date">"Publicat: "</string>
     <string name="test">Spam? Nu prea credem :)</string>
+    <string name="approved_jokes">Aprobate</string>
+    <string name="pending_jokes">In curs de aprobare</string>
 </resources>

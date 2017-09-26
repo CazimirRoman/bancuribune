@@ -23,6 +23,7 @@ import cazimir.com.bancuribune.presenter.OnGetProfilePictureListener;
 import cazimir.com.bancuribune.repository.JokesRepository;
 import cazimir.com.bancuribune.ui.list.OnJokeItemClickListener;
 
+
 public class MyJokesActivityView extends BaseActivity implements IMyJokesActivityView, OnJokeItemClickListener, OnGetProfilePictureListener, OnCalculatePointsListener, OnGetFacebookNameListener {
 
     private CommonPresenter presenter;
@@ -156,9 +157,9 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
 
     private Integer computeLikeForNextRank(int points) {
 
-        if(0<=points && points<50){
-            return 50-points;
-        }else if(50<=points && points<200){
+        if(0<=points && points<7){
+            return 7-points;
+        }else if(7<=points && points<200){
             return 200-points;
         }
 
@@ -166,10 +167,16 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
     }
 
     private String computeRankName(int points) {
-        if(0<=points && points<50){
-            return Constants.NOVICE;
-        }else if(50<=points && points<200){
-            return Constants.GRASSHOPPER;
+        if(Constants.LOWER_LIMIT_MORMOLOC<=points && points<Constants.UPPER_LIMIT_MORMOLOC){
+            return Constants.MORMOLOC;
+        }else if(Constants.UPPER_LIMIT_MORMOLOC<=points && points<Constants.UPPER_LIMIT_HAMSIE){
+            return Constants.HAMSIE;
+        }else if(Constants.UPPER_LIMIT_HAMSIE<=points && points<Constants.UPPER_LIMIT_HERING){
+            return Constants.HERING;
+        }else if(Constants.UPPER_LIMIT_HERING<=points && points<Constants.UPPER_LIMIT_SOMON){
+            return Constants.SOMON;
+        }else if(Constants.UPPER_LIMIT_SOMON<=points && points<Constants.UPPER_LIMIT_STIUCA){
+            return Constants.STIUCA;
         }
 
         return Constants.DEFAULT;
