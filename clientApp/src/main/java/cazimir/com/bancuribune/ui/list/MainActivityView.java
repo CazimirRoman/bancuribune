@@ -289,7 +289,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @Override
     public void saveAdminDataToSharedPreferences(Boolean isAdmin) {
         SharedPreferences.Editor editor = getSharedPreferences(Constants.ADMIN, MODE_PRIVATE).edit();
-        editor.putBoolean(Constants.ADMIN, true);
+        editor.putBoolean(Constants.ADMIN, isAdmin);
         editor.apply();
     }
 
