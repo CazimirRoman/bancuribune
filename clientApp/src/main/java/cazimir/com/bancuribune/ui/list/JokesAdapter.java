@@ -17,6 +17,8 @@ import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.utils.Utils;
 
+import static android.R.id.list;
+
 public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder> {
 
     private List<Joke> jokes;
@@ -75,7 +77,7 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
         holder.vote.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onItemVoted(jokes.get(position).getUid());
+                listener.onItemVoted(jokes.get(position));
             }
         });
 
@@ -86,5 +88,15 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
     @Override
     public int getItemCount() {
         return jokes.size();
+    }
+
+    public List<Joke> returnJokes(){
+        return jokes;
+    }
+
+    public void updateList(Joke joke){
+        int index = jokes.indexOf(joke);
+        jokes.set(index, joke);
+        notifyDataSetChanged();
     }
 }

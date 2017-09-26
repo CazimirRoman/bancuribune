@@ -145,15 +145,15 @@ public class CommonPresenter implements ICommonPresenter, OnAdminCheckFinishedLi
     }
 
     @Override
-    public void checkIfAlreadyVoted(String uid) {
-        repository.checkIfVoted(this, uid, currentUserID);
+    public void checkIfAlreadyVoted(Joke joke) {
+        repository.checkIfVoted(this, joke, currentUserID);
     }
 
     @Override
-    public void increaseJokePointByOne(String uid) {
-        repository.updateJokePoints(this, uid);
+    public void increaseJokePointByOne(Joke joke) {
+        repository.updateJokePoints(this, joke);
         //repository.updateVotedBy(this, uid, currentUserID);
-        writeVoteLogToDB(uid);
+        writeVoteLogToDB(joke.getUid());
     }
 
     @Override
@@ -250,8 +250,8 @@ public class CommonPresenter implements ICommonPresenter, OnAdminCheckFinishedLi
     }
 
     @Override
-    public void OnUpdatePointsSuccess() {
-        getAllJokesData();
+    public void OnUpdatePointsSuccess(Joke joke) {
+        mainView.refreshAdapter(joke);
     }
 
     @Override
@@ -262,8 +262,8 @@ public class CommonPresenter implements ICommonPresenter, OnAdminCheckFinishedLi
     }
 
     @Override
-    public void OnHasVotedFalse(String uid) {
-        increaseJokePointByOne(uid);
+    public void OnHasVotedFalse(Joke joke) {
+        increaseJokePointByOne(joke);
     }
 
     @Override

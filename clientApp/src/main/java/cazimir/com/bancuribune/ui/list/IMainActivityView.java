@@ -25,5 +25,6 @@ public interface IMainActivityView {
     void updateRemainingAdds(int remaininigAdds);
     boolean getAdminDataFromSharedPreferences();
     void hideSwipeRefresh();
+    void refreshAdapter(Joke joke);
 
 }
