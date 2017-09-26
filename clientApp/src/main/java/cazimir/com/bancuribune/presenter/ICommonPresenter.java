@@ -20,8 +20,8 @@ public interface ICommonPresenter {
     void isAllowedToAdd(int remainingAdds);
     void isNotAllowedToAdd(int addLimit);
     void logOutUser();
-    void checkIfAlreadyVoted(String uid);
-    void increaseJokePointByOne(String uid);
+    void checkIfAlreadyVoted(Joke joke);
+    void increaseJokePointByOne(Joke joke);
     void updateJokeApproval(String uid);
     void writeVoteLogToDB(String uid);
     void getFacebookProfilePicture(OnGetProfilePictureListener listener) throws IOException;

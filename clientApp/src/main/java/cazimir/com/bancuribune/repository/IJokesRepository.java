@@ -28,12 +28,12 @@ public interface IJokesRepository {
     void addRankToDB(OnAddRankFinishedListener listener, Rank rank);
     void addJoke(OnAddFinishedListener listener, Joke joke);
     void getAllJokesAddedToday(OnAllowedToAddFinishedListener listener, String userId, int addLimit);
-    void updateJokePoints(OnUpdatePointsFinishedListener listener, String uid);
+    void updateJokePoints(OnUpdatePointsFinishedListener listener, Joke joke);
     void updateApproveStatus(OnUpdateApproveStatusListener listener, String uid);
     void updateVotedBy(OnUpdateVotedByFinishedListener listener, String uid, String userId);
     void updateRankPointsAndName(OnUpdateRankPointsSuccess listener, String rankName, int points, String userId);
     void writeJokeVote(OnAddJokeVoteFinishedListener listener, Vote vote);
-    void checkIfVoted(OnCheckIfVotedFinishedListener listener, String uid, String userId);
+    void checkIfVoted(OnCheckIfVotedFinishedListener listener, Joke joke, String userId);
     void checkIfRankDataInDB(OnCheckIfRankDataInDBListener listener, String userId);
     void addUserToDatabase(OnAddUserListener listener, String userId, String userName);
     void checkIfAdmin(OnAdminCheckFinishedListener listener, String userId);

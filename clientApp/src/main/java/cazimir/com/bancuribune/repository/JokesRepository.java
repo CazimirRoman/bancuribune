@@ -107,7 +107,7 @@ public class JokesRepository implements IJokesRepository {
     public void getAllPendingJokes(final OnGetAllPendingJokesListener listener) {
         final ArrayList<Joke> pendingJokes = new ArrayList<>();
 
-        jokesRef.addValueEventListener(new ValueEventListener() {
+        jokesRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -242,50 +242,95 @@ public class JokesRepository implements IJokesRepository {
     }
 
     @Override
-    public void updateJokePoints(final OnUpdatePointsFinishedListener listener, final String uid) {
+    public void updateJokePoints(final OnUpdatePointsFinishedListener listener, final Joke joke) {
 
-        Query query = jokesRef.orderByChild("uid").equalTo(uid);
-
-        query.addChildEventListener(new ChildEventListener() {
+        jokesRef.child(joke.getUid()).child("points").setValue(joke.getPoints() + 1, new DatabaseReference.CompletionListener(){
 
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Joke joke = dataSnapshot.getValue(Joke.class);
-                assert joke != null;
-                int newPoints = joke.getPoints() + 1;
-                jokesRef.child(uid).child("points").setValue(newPoints, new DatabaseReference.CompletionListener() {
-
-                    @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        if (databaseError != null) {
+            public void onComplete(final DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
                             listener.OnUpdatePointsFailed(databaseError.getMessage());
                         } else {
-                            listener.OnUpdatePointsSuccess();
+
+                            Query query = jokesRef.orderByChild("uid").equalTo(joke.getUid());
+
+                    query.addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                            Joke joke = dataSnapshot.getValue(Joke.class);
+                            listener.OnUpdatePointsSuccess(joke);
                         }
-                    }
-                });
-            }
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                        @Override
+                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-            }
+                        }
 
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                        @Override
+                        public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-            }
+                        }
 
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                        @Override
+                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
-            }
+                        }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
+                        }
+                    });
+
+
+
+                        }
             }
         });
+
+
+//        Query query = jokesRef.orderByChild("uid").equalTo(uid);
+//
+//        query.addChildEventListener(new ChildEventListener() {
+//
+//            @Override
+//            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//                Joke joke = dataSnapshot.getValue(Joke.class);
+//                assert joke != null;
+//                int newPoints = joke.getPoints() + 1;
+//                jokesRef.child(uid).child("points").setValue(newPoints, new DatabaseReference.CompletionListener() {
+//
+//                    @Override
+//                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+//                        if (databaseError != null) {
+//                            listener.OnUpdatePointsFailed(databaseError.getMessage());
+//                        } else {
+//                            listener.OnUpdatePointsSuccess();
+//                        }
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
     }
 
     @Override
@@ -427,7 +472,7 @@ public class JokesRepository implements IJokesRepository {
     }
 
     @Override
-    public void checkIfVoted(final OnCheckIfVotedFinishedListener listener, final String uid, String userId) {
+    public void checkIfVoted(final OnCheckIfVotedFinishedListener listener, final Joke joke, String userId) {
 
         final ArrayList<Vote> votedJokes = new ArrayList<>();
 
@@ -443,14 +488,14 @@ public class JokesRepository implements IJokesRepository {
                 }
 
                 for (Vote vote : votedJokes) {
-                    if (vote.getJokeId().equals(uid)) {
+                    if (vote.getJokeId().equals(joke.getUid())) {
                         listener.OnHasVotedTrue();
                         return;
                     }
 
                 }
 
-                listener.OnHasVotedFalse(uid);
+                listener.OnHasVotedFalse(joke);
 
             }
 

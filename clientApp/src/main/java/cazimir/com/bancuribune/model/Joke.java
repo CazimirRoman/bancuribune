@@ -68,4 +68,16 @@ public class Joke {
     public void setUid(String uid) {
         this.uid = uid;
     }
+
+    @Override
+    public boolean equals(Object o){
+        if(o == this) return true;
+        if(!(o instanceof Joke)){
+            return false;
+        }
+
+        Joke joke = (Joke) o;
+
+        return joke.getUid().equals(uid);
+    }
 }

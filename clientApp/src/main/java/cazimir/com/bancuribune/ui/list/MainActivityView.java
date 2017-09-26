@@ -312,6 +312,11 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     }
 
     @Override
+    public void refreshAdapter(Joke joke) {
+        adapter.updateList(joke);
+    }
+
+    @Override
     public void updateCurrentRank(String rank) {
         this.currentRank = rank;
     }
@@ -328,8 +333,8 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     }
 
     @Override
-    public void onItemVoted(String uid) {
-        presenter.checkIfAlreadyVoted(uid);
+    public void onItemVoted(Joke joke) {
+        presenter.checkIfAlreadyVoted(joke);
     }
 
     private void shareJoke(String text) {

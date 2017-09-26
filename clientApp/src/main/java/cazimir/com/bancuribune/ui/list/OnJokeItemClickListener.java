@@ -4,5 +4,5 @@ import cazimir.com.bancuribune.model.Joke;
 
 public interface OnJokeItemClickListener {
     void onItemShared(Joke data);
-    void onItemVoted(String uid);
+    void onItemVoted(Joke joke);
 }
