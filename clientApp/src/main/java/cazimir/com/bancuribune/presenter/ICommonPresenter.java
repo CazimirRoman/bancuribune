@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import cazimir.com.bancuribune.model.Joke;
-import cazimir.com.bancuribune.ui.list.OnCheckIfAdminListener;
 import cazimir.com.bancuribune.ui.myjokes.OnCalculatePointsListener;
 import cazimir.com.bancuribune.ui.myjokes.OnGetFacebookNameListener;
 
@@ -13,16 +12,16 @@ public interface ICommonPresenter {
     void getFilteredJokesData(String text);
     void getAllPendingJokesData();
     void getMyJokes();
-    void addJoke(Joke joke);
+    void addJoke(Joke joke, Boolean isAdmin);
     void addRankToDatabase();
-    void checkIfAdmin(OnCheckIfAdminListener listener);
+    void checkIfAdmin();
     void checkNumberOfAdds(int addLimit);
     void checkAndGetMyRank();
     void isAllowedToAdd(int remainingAdds);
     void isNotAllowedToAdd(int addLimit);
     void logOutUser();
     void checkIfAlreadyVoted(String uid);
-    void updateJokePoints(String uid);
+    void increaseJokePointByOne(String uid);
     void updateJokeApproval(String uid);
     void writeVoteLogToDB(String uid);
     void getFacebookProfilePicture(OnGetProfilePictureListener listener) throws IOException;

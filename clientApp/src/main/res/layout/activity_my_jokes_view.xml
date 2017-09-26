@@ -65,8 +65,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="fill"
                     android:paddingBottom="5dp"
-                    android:paddingTop="5dp"
-                    android:text="345"/>
+                    android:paddingTop="5dp"/>
 
             </LinearLayout>
 
@@ -102,17 +101,6 @@
                     android:paddingTop="5dp"
                     android:text="@string/nextRank"/>
 
-                <cazimir.com.bancuribune.ui.FontAwesomeTextView
-                    android:id="@+id/remainingAdds"
-                    style="@style/fontAwesome.secondaryText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="fill"
-                    android:paddingBottom="5dp"
-                    android:paddingTop="5dp"
-                    android:text="@string/remainingAdds"
-                    android:visibility="gone"/>
-
             </LinearLayout>
 
         </LinearLayout>
@@ -124,14 +112,9 @@
             android:layout_weight="0.8"
             android:layout_height="match_parent">
 
-            <cazimir.com.bancuribune.base.EmptyRecyclerView
-                android:id="@+id/myJokesList"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                />
-
             <RelativeLayout
                 android:id="@+id/empty_view"
+                android:visibility="visible"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_centerHorizontal="true"
@@ -157,20 +140,18 @@
                             android:src="@drawable/no_jokes"
                             android:layout_height="wrap_content"/>
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:padding="10dp"
-                            android:layout_gravity="center_horizontal"
-                            android:layout_height="wrap_content"
-                            android:text="@string/no_added_jokes"
-                            android:textSize="18sp"/>
-
                     </LinearLayout>
 
                 </com.beardedhen.androidbootstrap.BootstrapWell>
 
 
             </RelativeLayout>
+
+            <cazimir.com.bancuribune.base.EmptyRecyclerView
+                android:id="@+id/myJokesList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
 
         </RelativeLayout>
 

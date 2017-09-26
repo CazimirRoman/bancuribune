@@ -5,6 +5,8 @@ import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.model.Vote;
 import cazimir.com.bancuribune.presenter.OnAddRankFinishedListener;
+import cazimir.com.bancuribune.presenter.OnAddUserListener;
+import cazimir.com.bancuribune.presenter.OnAdminCheckFinishedListener;
 import cazimir.com.bancuribune.presenter.OnCheckIfRankDataInDBListener;
 import cazimir.com.bancuribune.presenter.OnUpdateRankPointsSuccess;
 import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
@@ -33,5 +35,7 @@ public interface IJokesRepository {
     void writeJokeVote(OnAddJokeVoteFinishedListener listener, Vote vote);
     void checkIfVoted(OnCheckIfVotedFinishedListener listener, String uid, String userId);
     void checkIfRankDataInDB(OnCheckIfRankDataInDBListener listener, String userId);
+    void addUserToDatabase(OnAddUserListener listener, String userId, String userName);
+    void checkIfAdmin(OnAdminCheckFinishedListener listener, String userId);
 
 }
