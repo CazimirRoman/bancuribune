@@ -15,7 +15,7 @@
     <string name="not_approved">asteapta aprobare</string>
     <string name="add_joke_hint">Adauga bancul tau aici…</string>
     <string name="search_hint">Cauta banc…</string>
-    <string name="point_label">"Puncte: "</string>
+    <string name="points">"Puncte: "</string>
     <string name="facebook_login">Login cu Facebook</string>
     <string name="copyright">Copyright© 2017 Cazimir Roman Dev</string>
     <string name="loading_data">Incarc bancul cu pesti…</string>
@@ -29,4 +29,6 @@
     <string name="rankLabel">Rang: %s</string>
     <string name="remainingAdds">Mai poti adauga %s bancuri astazi</string>
     <string name="no_added_jokes">Cam liniste pe aici…</string>
+    <string name="date">"Publicat: "</string>
+    <string name="test">Spam? Nu prea credem :)</string>
 </resources>

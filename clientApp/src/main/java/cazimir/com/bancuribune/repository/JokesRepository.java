@@ -16,10 +16,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
+import cazimir.com.bancuribune.model.User;
 import cazimir.com.bancuribune.model.Vote;
 import cazimir.com.bancuribune.presenter.OnAddRankFinishedListener;
+import cazimir.com.bancuribune.presenter.OnAddUserListener;
+import cazimir.com.bancuribune.presenter.OnAdminCheckFinishedListener;
 import cazimir.com.bancuribune.presenter.OnCheckIfRankDataInDBListener;
 import cazimir.com.bancuribune.presenter.OnUpdateRankPointsSuccess;
 import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
@@ -40,11 +44,12 @@ public class JokesRepository implements IJokesRepository {
     private DatabaseReference jokesRef = database.getReference("jokes");
     private DatabaseReference votesRef = database.getReference("votes");
     private DatabaseReference ranksRef = database.getReference("ranks");
+    private DatabaseReference usersRef = database.getReference("users");
 
     @Override
     public void getAllJokes(final OnGetJokesListener listener) {
 
-        jokesRef.addValueEventListener(new ValueEventListener() {
+        jokesRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -113,6 +118,8 @@ public class JokesRepository implements IJokesRepository {
                         pendingJokes.add(joke);
                     }
                 }
+
+                Collections.reverse(pendingJokes);
 
                 listener.OnGetAllPendingJokesSuccess(pendingJokes);
             }
@@ -475,6 +482,61 @@ public class JokesRepository implements IJokesRepository {
                     listener.RankDataNotInDB();
                 }
 
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    @Override
+    public void addUserToDatabase(final OnAddUserListener listener, String userId, String userName) {
+        String uid = usersRef.push().getKey();
+        User user = new User();
+        user.setUid(uid);
+        user.setUserId(userId);
+        user.setName(userName);
+        user.setRole(Constants.ROLE_USER);
+        usersRef.child(uid).setValue(user);
+
+        usersRef.child(uid).setValue(user, new DatabaseReference.CompletionListener() {
+
+            @Override
+            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                if (databaseError != null) {
+                    listener.OnAddUserFailed(databaseError.getMessage().toString());
+                } else {
+                    listener.OnAddUserSuccess();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void checkIfAdmin(final OnAdminCheckFinishedListener listener, String userId) {
+
+        Query query = usersRef.orderByChild("userId").equalTo(userId);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                User user = null;
+
+                for (DataSnapshot usersSnapshot : dataSnapshot.getChildren()) {
+                    user = usersSnapshot.getValue(User.class);
+                    assert user != null;
+                }
+
+                if(user.getRole().equals("Admin")){
+                    listener.OnAdminCheckTrue();
+                }else{
+                    listener.OnAdminCheckFalse();
+                }
 
             }
 

@@ -15,6 +15,7 @@ import java.util.List;
 import butterknife.BindView;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.model.Joke;
+import cazimir.com.bancuribune.utils.Utils;
 
 public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder> {
 
@@ -36,6 +37,7 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
         TextView share;
         TextView vote;
         TextView points;
+        TextView date;
 
         MyViewHolder(View view) {
             super(view);
@@ -44,6 +46,7 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
             share = view.findViewById(R.id.share);
             vote = view.findViewById(R.id.vote);
             points = view.findViewById(R.id.points);
+            date = view.findViewById(R.id.date);
         }
     }
 
@@ -77,6 +80,7 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
         });
 
         holder.points.setText(String.valueOf(joke.getPoints()));
+        holder.date.setText(Utils.convertEpochToDate(joke.getCreatedAt()));
     }
 
     @Override

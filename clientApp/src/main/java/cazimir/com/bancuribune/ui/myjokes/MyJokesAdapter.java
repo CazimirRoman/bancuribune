@@ -11,6 +11,7 @@ import java.util.List;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.EmptyRecyclerView;
 import cazimir.com.bancuribune.model.Joke;
+import cazimir.com.bancuribune.utils.Utils;
 
 public class MyJokesAdapter extends EmptyRecyclerView.Adapter<MyJokesAdapter.MyViewHolder> {
 
@@ -25,6 +26,7 @@ public class MyJokesAdapter extends EmptyRecyclerView.Adapter<MyJokesAdapter.MyV
         TextView text;
         TextView approved;
         TextView points;
+        TextView date;
         View pointsLayout;
 
         MyViewHolder(View view){
@@ -32,6 +34,7 @@ public class MyJokesAdapter extends EmptyRecyclerView.Adapter<MyJokesAdapter.MyV
             text = view.findViewById(R.id.jokeText);
             approved = view.findViewById(R.id.approved);
             points = view.findViewById(R.id.points);
+            date = view.findViewById(R.id.date);
             pointsLayout = view.findViewById(R.id.my_points);
 
         }
@@ -57,8 +60,9 @@ public class MyJokesAdapter extends EmptyRecyclerView.Adapter<MyJokesAdapter.MyV
         }else{
             holder.approved.setText(R.string.not_approved);
             holder.pointsLayout.setVisibility(View.GONE);
-
         }
+
+        holder.date.setText(Utils.convertEpochToDate(joke.getCreatedAt()));
     }
 
     @Override

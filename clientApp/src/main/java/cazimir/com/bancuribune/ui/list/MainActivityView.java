@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,13 +44,15 @@ import static cazimir.com.bancuribune.R.id.addJokeButtonFAB;
 import static cazimir.com.bancuribune.R.id.adminFAB;
 import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_REQUEST;
 
-public class MainActivityView extends BaseActivity implements IMainActivityView, OnJokeItemClickListener, OnCheckIfAdminListener {
+public class MainActivityView extends BaseActivity implements IMainActivityView, OnJokeItemClickListener {
 
     private MyAlertDialog alertDialog;
     private CommonPresenter presenter;
     private JokesAdapter adapter;
     @BindView(R.id.jokesList)
     RecyclerView jokesListRecyclerView;
+    @BindView(R.id.swipeRefreshLayout)
+    SwipeRefreshLayout swipeRefreshLayout;
     @BindView(addJokeButtonFAB)
     FloatingActionButton addJokeFAB;
     @BindView(R.id.myJokesButtonFAB)
@@ -63,7 +67,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     EditText search;
     @BindView(R.id.fab)
     LinearLayout fab;
-    private boolean isAdmin = false;
     private String currentRank;
 
 
@@ -78,13 +81,19 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         }
 
         alertDialog = new MyAlertDialog(this);
+
+        swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getAllJokesData();
+            }
+        });
+
         initRecycleView();
         initSearch();
         presenter = new CommonPresenter(this, new JokesRepository());
         getMyRank();
         getAllJokesData();
-        checkIfAdmin();
-
     }
 
     private void getMyRank() {
@@ -152,7 +161,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     }
 
     @Override
-    public void refreshJokes(List<Joke> jokes) {
+    public void displayJokes(List<Joke> jokes) {
         adapter = new JokesAdapter(this);
         jokesListRecyclerView.setAdapter(adapter);
         for (Joke joke : jokes) {
@@ -175,6 +184,8 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     @OnClick(addJokeButtonFAB)
     public void checkIfAllowedToAdd() {
+
+        Boolean isAdmin = getAdminDataFromSharedPreferences();
 
         if (!isAdmin) {
 
@@ -223,6 +234,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         if (requestCode == ADD_JOKE_REQUEST) {
             if (resultCode == RESULT_OK) {
                 showAddSuccessDialog();
+                getAllJokesData();
             }
         }
     }
@@ -274,10 +286,29 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         editor.apply();
     }
 
+    @Override
+    public void saveAdminDataToSharedPreferences(Boolean isAdmin) {
+        SharedPreferences.Editor editor = getSharedPreferences(Constants.ADMIN, MODE_PRIVATE).edit();
+        editor.putBoolean(Constants.ADMIN, true);
+        editor.apply();
+    }
+
     public void saveRemainingDataToSharedPreferences(int remainingAdds) {
         SharedPreferences.Editor editor = getSharedPreferences(Constants.REMAINING_ADDS, MODE_PRIVATE).edit();
         editor.putInt(Constants.REMAINING, remainingAdds);
         editor.apply();
+    }
+
+    @Override
+    public boolean getAdminDataFromSharedPreferences() {
+        SharedPreferences prefs = getSharedPreferences(Constants.ADMIN, MODE_PRIVATE);
+        return prefs.getBoolean(Constants.ADMIN, false);
+
+    }
+
+    @Override
+    public void hideSwipeRefresh() {
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -311,13 +342,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     @Override
     public void checkIfAdmin() {
-        presenter.checkIfAdmin(this);
-    }
-
-    @Override
-    public void OnAdminTrue() {
-        isAdmin = true;
-        showAdminButton();
+        presenter.checkIfAdmin();
     }
 
     @Override

@@ -43,7 +43,7 @@ public class JokesPresenterTest {
         boolean requestFailedCalled;
 
         @Override
-        public void refreshJokes(List<Joke> jokes) {
+        public void displayJokes(List<Joke> jokes) {
             displayJokesCalled = true;
         }
 

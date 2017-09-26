@@ -38,8 +38,6 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
     TextView profileRank;
     @BindView(R.id.nextRank)
     TextView profileNextRank;
-    @BindView(R.id.remainingAdds)
-    TextView remainingAdds;
     private MyJokesAdapter adapter;
 
 
@@ -80,6 +78,8 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
         adapter = new MyJokesAdapter();
         myJokesListRecyclerView.setAdapter(adapter);
         myJokesListRecyclerView.setEmptyView(findViewById(R.id.empty_view));
+
+
     }
 
     @Override
@@ -89,7 +89,7 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
 
 
     @Override
-    public void showJokesList(List<Joke> jokes) {
+    public void showMyJokesList(List<Joke> jokes) {
         adapter = new MyJokesAdapter();
         myJokesListRecyclerView.setAdapter(adapter);
         for (Joke joke : jokes) {
@@ -110,16 +110,6 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
         }
 
         return "";
-    }
-
-    public int getRemainingAdds() {
-        SharedPreferences prefs = getSharedPreferences(Constants.REMAINING_ADDS, MODE_PRIVATE);
-        int remaining = prefs.getInt(Constants.REMAINING, 0);
-        if (remaining != 0) {
-            return remaining;
-        }
-
-        return 0;
     }
 
     @Override
@@ -162,7 +152,6 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
         profilePoints.setText(String.format(getString(R.string.total_points), String.valueOf(points)));
         profileRank.setText(String.format(getString(R.string.rankLabel), rankName));
         profileNextRank.setText(String.format(getString(R.string.nextRank), String.valueOf(likesForNextRank)));
-        remainingAdds.setText(String.format(getString(R.string.remainingAdds), String.valueOf(getRemainingAdds())));
     }
 
     private Integer computeLikeForNextRank(int points) {

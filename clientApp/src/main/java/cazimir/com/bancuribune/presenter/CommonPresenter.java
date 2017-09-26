@@ -1,12 +1,12 @@
 package cazimir.com.bancuribune.presenter;
 
 import com.facebook.Profile;
+import com.google.firebase.crash.FirebaseCrash;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
-import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.model.Vote;
@@ -19,7 +19,6 @@ import cazimir.com.bancuribune.ui.admin.OnGetAllPendingJokesListener;
 import cazimir.com.bancuribune.ui.admin.OnUpdateApproveStatusListener;
 import cazimir.com.bancuribune.ui.list.IMainActivityView;
 import cazimir.com.bancuribune.ui.list.OnAllowedToAddFinishedListener;
-import cazimir.com.bancuribune.ui.list.OnCheckIfAdminListener;
 import cazimir.com.bancuribune.ui.list.OnCheckIfVotedFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnGetJokesListener;
 import cazimir.com.bancuribune.ui.list.OnUpdatePointsFinishedListener;
@@ -29,7 +28,7 @@ import cazimir.com.bancuribune.ui.myjokes.OnCalculatePointsListener;
 import cazimir.com.bancuribune.ui.myjokes.OnFirebaseGetMyJokesListener;
 import cazimir.com.bancuribune.ui.myjokes.OnGetFacebookNameListener;
 
-public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, OnGetAllPendingJokesListener, OnAddRankFinishedListener, OnUpdateRankPointsSuccess, OnCheckIfRankDataInDBListener, OnUpdateApproveStatusListener, OnFirebaseGetMyJokesListener, OnAddFinishedListener, OnUpdatePointsFinishedListener, OnUpdateVotedByFinishedListener, OnCheckIfVotedFinishedListener, OnAddJokeVoteFinishedListener, OnAllowedToAddFinishedListener {
+public class CommonPresenter implements ICommonPresenter, OnAdminCheckFinishedListener, OnGetJokesListener, OnAddUserListener, OnGetAllPendingJokesListener, OnAddRankFinishedListener, OnUpdateRankPointsSuccess, OnCheckIfRankDataInDBListener, OnUpdateApproveStatusListener, OnFirebaseGetMyJokesListener, OnAddFinishedListener, OnUpdatePointsFinishedListener, OnUpdateVotedByFinishedListener, OnCheckIfVotedFinishedListener, OnAddJokeVoteFinishedListener, OnAllowedToAddFinishedListener {
 
     private IMainActivityView mainView;
     private IAddJokeActivityView addView;
@@ -38,32 +37,38 @@ public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, On
     private IJokesRepository repository;
     private IAuthPresenter authPresenter;
     private String currentUserID;
+    private Boolean isAdmin = false;
 
     public CommonPresenter(IMainActivityView view, IJokesRepository repository) {
         this.mainView = view;
         this.repository = repository;
         this.authPresenter = new AuthPresenter(view);
-        currentUserID = authPresenter.getCurrentUserID();
+        setCurrentLoggedInUserId();
+
     }
 
     public CommonPresenter(IAddJokeActivityView view, IJokesRepository repository) {
         this.addView = view;
         this.repository = repository;
         this.authPresenter = new AuthPresenter(view);
-        currentUserID = authPresenter.getCurrentUserID();
+        setCurrentLoggedInUserId();
     }
 
     public CommonPresenter(IMyJokesActivityView view, IJokesRepository repository) {
         this.myJokesView = view;
         this.repository = repository;
         this.authPresenter = new AuthPresenter(myJokesView);
-        currentUserID = authPresenter.getCurrentUserID();
+        setCurrentLoggedInUserId();
     }
 
     public CommonPresenter(IAdminActivityView view, IJokesRepository repository) {
         this.adminView = view;
         this.repository = repository;
         this.authPresenter = new AuthPresenter(adminView);
+        setCurrentLoggedInUserId();
+    }
+
+    private void setCurrentLoggedInUserId() {
         currentUserID = authPresenter.getCurrentUserID();
     }
 
@@ -88,10 +93,12 @@ public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, On
     }
 
     @Override
-    public void addJoke(Joke joke) {
+    public void addJoke(Joke joke, Boolean isAdmin) {
         joke.setCreatedBy(currentUserID);
         joke.setUserName(authPresenter.getCurrentUserName());
-        if (isAdmin()) {
+
+
+        if (isAdmin) {
             joke.setApproved(true);
         }
         repository.addJoke(this, joke);
@@ -106,20 +113,9 @@ public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, On
         repository.addRankToDB(this, rank);
     }
 
-    private boolean isAdmin() {
-        if(authPresenter.getCurrentUserID().equals(Constants.ADMIN_ID)){
-            return true;
-        }
-
-        return false;
-    }
-
     @Override
-    public void checkIfAdmin(OnCheckIfAdminListener listener) {
-
-        if(isAdmin()){
-            listener.OnAdminTrue();
-        }
+    public void checkIfAdmin() {
+        repository.checkIfAdmin(this, currentUserID);
     }
 
     @Override
@@ -154,9 +150,9 @@ public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, On
     }
 
     @Override
-    public void updateJokePoints(String uid) {
+    public void increaseJokePointByOne(String uid) {
         repository.updateJokePoints(this, uid);
-        repository.updateVotedBy(this, uid, currentUserID);
+        //repository.updateVotedBy(this, uid, currentUserID);
         writeVoteLogToDB(uid);
     }
 
@@ -209,7 +205,8 @@ public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, On
 
     @Override
     public void OnGetJokesSuccess(List<Joke> jokes) {
-        mainView.refreshJokes(jokes);
+        mainView.displayJokes(jokes);
+        mainView.hideSwipeRefresh();
     }
 
     @Override
@@ -229,7 +226,7 @@ public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, On
 
     @Override
     public void onGetMyJokesSuccess(List<Joke> jokes) {
-        myJokesView.showJokesList(jokes);
+        myJokesView.showMyJokesList(jokes);
     }
 
     @Override
@@ -254,17 +251,19 @@ public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, On
 
     @Override
     public void OnUpdatePointsSuccess() {
-
+        getAllJokesData();
     }
 
     @Override
     public void OnHasVotedTrue() {
-        mainView.showTestToast("Bancul asta a fost deja votat de tine. Multumim!");
+//        mainView.changeColour();
+//        mainView.decreasePoints();
+        mainView.showTestToast("Chiar vrei sa trezesti toti pestii? Ai votat deja bancul asta!");
     }
 
     @Override
     public void OnHasVotedFalse(String uid) {
-        updateJokePoints(uid);
+        increaseJokePointByOne(uid);
     }
 
     @Override
@@ -303,12 +302,18 @@ public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, On
     public void RankDataIsInDB(Rank rank) {
         mainView.saveRankDataToSharedPreferences(rank);
         mainView.updateCurrentRank(rank.getRank());
+        mainView.checkIfAdmin();
     }
 
     @Override
     public void RankDataNotInDB() {
         addRankToDatabase();
+        addUserToDatabase(currentUserID, authPresenter.getCurrentUserName());
 
+    }
+
+    private void addUserToDatabase(String currentUserID, String userName) {
+        repository.addUserToDatabase(this, currentUserID, userName);
     }
 
     @Override
@@ -325,5 +330,27 @@ public class CommonPresenter implements ICommonPresenter, OnGetJokesListener, On
     @Override
     public void OnAddRankFailure(String error) {
         mainView.showAlertDialog(error);
+    }
+
+    @Override
+    public void OnAddUserFailed(String message) {
+        FirebaseCrash.log(message);
+    }
+
+    @Override
+    public void OnAddUserSuccess() {
+        FirebaseCrash.log("User added successfully!");
+    }
+
+    @Override
+    public void OnAdminCheckTrue() {
+        mainView.saveAdminDataToSharedPreferences(true);
+        mainView.showAdminButton();
+    }
+
+    @Override
+    public void OnAdminCheckFalse() {
+        mainView.saveAdminDataToSharedPreferences(false);
+
     }
 }

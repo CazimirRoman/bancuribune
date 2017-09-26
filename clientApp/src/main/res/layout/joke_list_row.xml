@@ -96,18 +96,11 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:orientation="horizontal"
+                        android:padding="2dp"
                         android:layout_height="wrap_content">
 
                         <cazimir.com.bancuribune.ui.FontAwesomeTextView
-                            android:layout_width="wrap_content"
-                            style="@style/fontAwesome.secondaryText"
-                            android:visibility="gone"
-                            android:layout_height="wrap_content"
-                            android:text="@string/added_by_label"/>
-
-                        <cazimir.com.bancuribune.ui.FontAwesomeTextView
                             android:id="@+id/authorText"
-                            android:padding="2dp"
                             style="@style/fontAwesome.secondaryText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -116,22 +109,43 @@
 
                     <LinearLayout
                         android:layout_width="wrap_content"
+                        android:padding="2dp"
                         android:orientation="horizontal"
-                        android:layout_marginTop="5dp"
                         android:layout_height="wrap_content">
 
                         <cazimir.com.bancuribune.ui.FontAwesomeTextView
                             android:layout_width="wrap_content"
                             style="@style/fontAwesome.secondaryText"
                             android:layout_height="wrap_content"
-                            android:text="@string/point_label"/>
+                            android:text="@string/points"/>
+
+                        <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                            android:layout_width="wrap_content"
+                            android:id="@+id/points"
+                            tools:text="123"
+                            style="@style/fontAwesome.secondaryText"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:padding="2dp"
+                        android:orientation="horizontal"
+                        android:layout_height="wrap_content">
 
                         <cazimir.com.bancuribune.ui.FontAwesomeTextView
                             android:layout_width="wrap_content"
                             style="@style/fontAwesome.secondaryText"
-                            android:id="@+id/points"
                             android:layout_height="wrap_content"
-                            tools:text="456"/>
+                            android:text="@string/date"/>
+
+                        <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                            android:layout_width="wrap_content"
+                            android:id="@+id/date"
+                            style="@style/fontAwesome.secondaryText"
+                            android:layout_height="wrap_content"
+                            tools:text="24/07/2012"/>
 
                     </LinearLayout>
 

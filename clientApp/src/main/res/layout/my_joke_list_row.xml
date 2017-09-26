@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
               android:paddingEnd="10dp"
               android:paddingStart="10dp">
@@ -15,68 +15,103 @@
         android:layout_margin="8dp"
         app:bootstrapSize="xs">
 
-    <LinearLayout
-        android:id="@+id/jokeTextContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <com.beardedhen.androidbootstrap.AwesomeTextView
-            android:id="@+id/jokeText"
-            style="@style/text.regular"
-            android:gravity="start"
-            app:bootstrapBrand="primary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            tools:text="JokeText"/>
-
         <LinearLayout
+            android:id="@+id/jokeTextContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <cazimir.com.bancuribune.ui.FontAwesomeTextView
-                android:id="@+id/approved"
-                style="@style/fontAwesome.secondaryText"
-                android:layout_width="0dp"
+            <com.beardedhen.androidbootstrap.AwesomeTextView
+                android:id="@+id/jokeText"
+                style="@style/text.regular"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_weight="0.5"
+                android:layout_gravity="center_vertical"
                 android:gravity="start"
-                tools:text="not approved"/>
+                app:bootstrapBrand="primary"
+                tools:text="JokeText"/>
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:id="@+id/my_points"
-                android:layout_gravity="center_vertical"
-                android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                    android:id="@+id/approved"
                     style="@style/fontAwesome.secondaryText"
-                    android:layout_width="match_parent"
-                    android:gravity="end"
-                    android:layout_weight="0.5"
-                    android:layout_height="wrap_content"
-                    android:text="@string/point_label"
-                    android:layout_marginTop="5dp"/>
-
-                <cazimir.com.bancuribune.ui.FontAwesomeTextView
-                    android:id="@+id/points"
-                    style="@style/fontAwesome.secondaryText"
-                    android:layout_width="match_parent"
-                    android:gravity="end"
-                    android:layout_weight="0.8"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    tools:text="Points"/>
+                    android:layout_weight="0.5"
+                    android:gravity="start"
+                    tools:text="not approved"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/my_points"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end">
+
+                        <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                            style="@style/fontAwesome.secondaryText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="0.5"
+                            android:gravity="end"
+                            android:text="@string/points"/>
+
+                        <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                            android:id="@+id/points"
+                            style="@style/fontAwesome.secondaryText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="0.8"
+                            android:gravity="end"
+                            tools:text="Points"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/my_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical">
+
+                        <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                            style="@style/fontAwesome.secondaryText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="0.5"
+                            android:gravity="end"
+                            android:text="@string/date"/>
+
+                        <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                            android:id="@+id/date"
+                            style="@style/fontAwesome.secondaryText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="0.8"
+                            android:gravity="end"
+                            tools:text="24/09/2017"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
 
             </LinearLayout>
 
+
         </LinearLayout>
-
-
-    </LinearLayout>
 
     </com.beardedhen.androidbootstrap.BootstrapWell>
 

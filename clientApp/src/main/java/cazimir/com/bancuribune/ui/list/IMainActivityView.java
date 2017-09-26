@@ -6,7 +6,7 @@ import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
 
 public interface IMainActivityView {
-    void refreshJokes(List<Joke> jokes);
+    void displayJokes(List<Joke> jokes);
     void requestFailed(String error);
     void navigateToAddJokeActivity();
     void isNotAllowedToAdd(int addLimit);
@@ -20,7 +20,10 @@ public interface IMainActivityView {
     void showAdminButton();
     void showAlertDialog(String message);
     void saveRankDataToSharedPreferences (Rank rank);
+    void saveAdminDataToSharedPreferences (Boolean isAdmin);
     void updateCurrentRank(String rank);
     void updateRemainingAdds(int remaininigAdds);
+    boolean getAdminDataFromSharedPreferences();
+    void hideSwipeRefresh();
 
 }

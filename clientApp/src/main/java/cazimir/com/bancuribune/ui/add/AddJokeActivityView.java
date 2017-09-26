@@ -2,6 +2,7 @@ package cazimir.com.bancuribune.ui.add;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -11,6 +12,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
+import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.repository.JokesRepository;
@@ -67,7 +69,11 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
 
     @Override
     public void sendDataToDatabase(Joke joke) {
-        presenter.addJoke(joke);
+
+        SharedPreferences prefs = getSharedPreferences(Constants.ADMIN, MODE_PRIVATE);
+        Boolean isAdmin =  prefs.getBoolean(Constants.ADMIN, false);
+
+        presenter.addJoke(joke, isAdmin);
     }
 
     @Override

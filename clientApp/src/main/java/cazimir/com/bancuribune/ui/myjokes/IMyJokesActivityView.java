@@ -6,6 +6,6 @@ import java.util.List;
 import cazimir.com.bancuribune.model.Joke;
 
 public interface IMyJokesActivityView {
-    void showJokesList(List<Joke> jokes);
+    void showMyJokesList(List<Joke> jokes);
     String getRankDataFromSharedPreferences();
 }

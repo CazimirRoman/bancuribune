@@ -2,6 +2,7 @@ package cazimir.com.bancuribune.utils;
 
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -21,6 +22,11 @@ public class Utils {
         return text == null ? null :
                 Normalizer.normalize(text, Form.NFD)
                         .replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
+    }
+
+    public static String convertEpochToDate(long epoch) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        return sdf.format(new Date(epoch));
     }
 
 
