@@ -45,7 +45,7 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(getString(R.string.my_jokes_title));
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
@@ -157,26 +157,31 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
 
     private Integer computeLikeForNextRank(int points) {
 
-        if(0<=points && points<7){
-            return 7-points;
-        }else if(7<=points && points<200){
-            return 200-points;
+        if (Constants.LOWER_LIMIT_HAMSIE <= points && points < Constants.UPPER_LIMIT_HAMSIE) {
+            return Constants.UPPER_LIMIT_HAMSIE - points;
+        } else if (Constants.UPPER_LIMIT_HAMSIE <= points && points < Constants.UPPER_LIMIT_HERING) {
+            return Constants.UPPER_LIMIT_HERING - points;
+        } else if (Constants.UPPER_LIMIT_HERING <= points && points < Constants.UPPER_LIMIT_SOMON) {
+            return Constants.UPPER_LIMIT_SOMON - points;
+        } else if (Constants.UPPER_LIMIT_SOMON <= points && points < Constants.UPPER_LIMIT_STIUCA) {
+            return Constants.UPPER_LIMIT_STIUCA - points;
+        } else if (Constants.UPPER_LIMIT_STIUCA <= points && points < Constants.UPPER_LIMIT_RECHIN) {
+            return Constants.UPPER_LIMIT_RECHIN - points;
         }
-
         return 0;
     }
 
     private String computeRankName(int points) {
-        if(Constants.LOWER_LIMIT_MORMOLOC<=points && points<Constants.UPPER_LIMIT_MORMOLOC){
-            return Constants.MORMOLOC;
-        }else if(Constants.UPPER_LIMIT_MORMOLOC<=points && points<Constants.UPPER_LIMIT_HAMSIE){
+        if (Constants.LOWER_LIMIT_HAMSIE <= points && points < Constants.UPPER_LIMIT_HAMSIE) {
             return Constants.HAMSIE;
-        }else if(Constants.UPPER_LIMIT_HAMSIE<=points && points<Constants.UPPER_LIMIT_HERING){
+        } else if (Constants.UPPER_LIMIT_HAMSIE <= points && points < Constants.UPPER_LIMIT_HERING) {
             return Constants.HERING;
-        }else if(Constants.UPPER_LIMIT_HERING<=points && points<Constants.UPPER_LIMIT_SOMON){
+        } else if (Constants.UPPER_LIMIT_HERING <= points && points < Constants.UPPER_LIMIT_SOMON) {
             return Constants.SOMON;
-        }else if(Constants.UPPER_LIMIT_SOMON<=points && points<Constants.UPPER_LIMIT_STIUCA){
+        } else if (Constants.UPPER_LIMIT_SOMON <= points && points < Constants.UPPER_LIMIT_STIUCA) {
             return Constants.STIUCA;
+        } else if (Constants.UPPER_LIMIT_STIUCA <= points && points < Constants.UPPER_LIMIT_RECHIN) {
+            return Constants.RECHIN;
         }
 
         return Constants.DEFAULT;

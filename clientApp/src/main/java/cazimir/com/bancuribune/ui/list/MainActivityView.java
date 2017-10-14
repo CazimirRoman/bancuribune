@@ -189,16 +189,16 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
         if (!isAdmin) {
 
-            if (currentRank.equals(Constants.MORMOLOC)) {
-                presenter.checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_MORMOLOC);
-            } else if (currentRank.equals(Constants.HAMSIE)) {
+            if (currentRank.equals(Constants.HAMSIE)) {
                 presenter.checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_HAMSIE);
             } else if (currentRank.equals(Constants.HERING)) {
                 presenter.checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_HERING);
             } else if (currentRank.equals(Constants.SOMON)) {
                 presenter.checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_SOMON);
-            } else if (currentRank.equals(Constants.SOMON)) {
+            } else if (currentRank.equals(Constants.STIUCA)) {
                 presenter.checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_STIUCA);
+            } else if (currentRank.equals(Constants.RECHIN)) {
+                presenter.checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_RECHIN);
             }
 
         } else {

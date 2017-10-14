@@ -88,7 +88,7 @@ public class JokesRepository implements IJokesRepository {
                 for (DataSnapshot jokeSnapshot : dataSnapshot.getChildren()) {
                     Joke joke = jokeSnapshot.getValue(Joke.class);
                     assert joke != null;
-                    if (joke.getJokeText().trim().toLowerCase().contains(cleanedText.toLowerCase())) {
+                    if (Utils.removeAccents(joke.getJokeText().trim().toLowerCase()).contains(cleanedText.toLowerCase())) {
                         filteredJokes.add(joke);
                     }
                 }

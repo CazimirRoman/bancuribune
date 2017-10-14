@@ -59,7 +59,7 @@
                             style="@style/fontAwesome.iconSizeJoke"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
+                            android:layout_gravity="bottom"
                             android:elevation="20dp"
                             android:text="@string/fa_icon_thumbs_up"
                             app:elevation="20dp">
@@ -77,7 +77,7 @@
                             style="@style/fontAwesome.iconSizeJoke"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
+                            android:layout_gravity="bottom"
                             android:elevation="20dp"
                             android:text="@string/fa_icon_share"
                             app:elevation="20dp">
