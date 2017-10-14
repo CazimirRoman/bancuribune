@@ -62,9 +62,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
+                            android:padding="5dp"
                             android:layout_weight="0.5"
+                            android:textColor="@android:color/holo_red_light"
                             android:gravity="end"
-                            android:text="@string/points"/>
+                            android:text="@string/fa_icon_heart"/>
 
                         <cazimir.com.bancuribune.ui.FontAwesomeTextView
                             android:id="@+id/points"
@@ -83,15 +85,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical">
-
-                        <cazimir.com.bancuribune.ui.FontAwesomeTextView
-                            style="@style/fontAwesome.secondaryText"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_weight="0.5"
-                            android:gravity="end"
-                            android:text="@string/date"/>
 
                         <cazimir.com.bancuribune.ui.FontAwesomeTextView
                             android:id="@+id/date"

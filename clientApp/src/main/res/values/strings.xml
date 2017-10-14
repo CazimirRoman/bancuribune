@@ -7,7 +7,7 @@
     <string name="add_joke">Adauga banc</string>
     <string name="added_by_label">"Adaugat de: "</string>
     <string name="add_limit_reached">Ai ajuns la limita de %s adaugari pe zi. Revino maine pentru a adauga un banc nou.</string>
-    <string name="add_success">Am adaugat bancul cu success! Dupa ce il va verifica un moderator, el va fi vizibil in aplicatie.</string>
+    <string name="add_success">Am adaugat bancul cu success! El va fi vizibil in scurt timp in aplicatie.</string>
     <string name="add_failed">Nu am putut adauga bancul. Te rog sa incerci mai tarziu.</string>
     <string name="share_text">Hei! Am gasit aceasta super aplicatie de bancuri numita %s. Bancul zilei este:</string>
     <string name="my_jokes_title">Bancurile mele</string>
@@ -31,4 +31,6 @@
     <string name="no_added_jokes">Cam liniste pe aici…</string>
     <string name="date">"Publicat: "</string>
     <string name="test">Spam? Nu prea credem :)</string>
+    <string name="approved_jokes">Aprobate</string>
+    <string name="pending_jokes">In curs de aprobare</string>
 </resources>

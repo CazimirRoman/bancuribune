@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
+import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.model.Vote;
@@ -108,7 +109,7 @@ public class CommonPresenter implements ICommonPresenter, OnAdminCheckFinishedLi
     public void addRankToDatabase() {
         Rank rank = new Rank();
         rank.setUserId(currentUserID);
-        rank.setRank("Novice");
+        rank.setRank(Constants.MORMOLOC);
         rank.setTotalPoints(0);
         repository.addRankToDB(this, rank);
     }
@@ -258,7 +259,7 @@ public class CommonPresenter implements ICommonPresenter, OnAdminCheckFinishedLi
     public void OnHasVotedTrue() {
 //        mainView.changeColour();
 //        mainView.decreasePoints();
-        mainView.showTestToast("Chiar vrei sa trezesti toti pestii? Ai votat deja bancul asta!");
+        mainView.showTestToast("Ai votat deja!");
     }
 
     @Override

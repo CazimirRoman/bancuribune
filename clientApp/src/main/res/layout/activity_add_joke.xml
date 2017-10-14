@@ -14,19 +14,19 @@
 
     <com.beardedhen.androidbootstrap.BootstrapEditText
         android:id="@+id/editNewJoke"
-        app:bootstrapSize="lg"
-        android:layout_margin="10dp"
-        app:roundedCorners="true"
-        app:bootstrapBrand="info"
-        android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:gravity="top|start"
         android:hint="@string/add_joke_hint"
         android:inputType="textMultiLine"
         android:lines="8"
         android:maxLines="100"
+        android:padding="10dp"
         android:scrollbars="vertical"
+        app:bootstrapBrand="info"
+        app:bootstrapSize="lg"
+        app:roundedCorners="true"
         />
 
     <FrameLayout
