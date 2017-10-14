@@ -43,6 +43,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:layout_weight="0.5"
+                    android:layout_gravity="bottom"
                     android:gravity="start"
                     tools:text="not approved"/>
 

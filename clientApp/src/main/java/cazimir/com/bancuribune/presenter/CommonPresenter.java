@@ -109,7 +109,8 @@ public class CommonPresenter implements ICommonPresenter, OnAdminCheckFinishedLi
     public void addRankToDatabase() {
         Rank rank = new Rank();
         rank.setUserId(currentUserID);
-        rank.setRank(Constants.MORMOLOC);
+        rank.setUserName(authPresenter.getCurrentUserName());
+        rank.setRank(Constants.HAMSIE);
         rank.setTotalPoints(0);
         repository.addRankToDB(this, rank);
     }

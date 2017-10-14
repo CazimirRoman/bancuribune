@@ -4,6 +4,7 @@ package cazimir.com.bancuribune.model;
 public class Rank {
     private String uid;
     private String userId;
+    private String userName;
     private String rank;
     private int totalPoints;
 
@@ -32,6 +33,14 @@ public class Rank {
 
     public void setRank(String rank) {
         this.rank = rank;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public int getTotalPoints() {

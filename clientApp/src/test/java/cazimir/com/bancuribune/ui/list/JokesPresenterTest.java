@@ -8,11 +8,19 @@ import java.util.Arrays;
 import java.util.List;
 
 import cazimir.com.bancuribune.model.Joke;
+import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.model.Vote;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
+import cazimir.com.bancuribune.presenter.OnAddRankFinishedListener;
+import cazimir.com.bancuribune.presenter.OnAddUserListener;
+import cazimir.com.bancuribune.presenter.OnAdminCheckFinishedListener;
+import cazimir.com.bancuribune.presenter.OnCheckIfRankDataInDBListener;
+import cazimir.com.bancuribune.presenter.OnUpdateRankPointsSuccess;
 import cazimir.com.bancuribune.repository.IJokesRepository;
 import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
 import cazimir.com.bancuribune.ui.add.OnAddJokeVoteFinishedListener;
+import cazimir.com.bancuribune.ui.admin.OnGetAllPendingJokesListener;
+import cazimir.com.bancuribune.ui.admin.OnUpdateApproveStatusListener;
 import cazimir.com.bancuribune.ui.myjokes.OnFirebaseGetMyJokesListener;
 
 public class JokesPresenterTest {
@@ -125,7 +133,17 @@ public class JokesPresenterTest {
         }
 
         @Override
+        public void getAllPendingJokes(OnGetAllPendingJokesListener listener) {
+
+        }
+
+        @Override
         public void getMyJokes(OnFirebaseGetMyJokesListener listener, String userID) {
+
+        }
+
+        @Override
+        public void addRankToDB(OnAddRankFinishedListener listener, Rank rank) {
 
         }
 
@@ -135,12 +153,17 @@ public class JokesPresenterTest {
         }
 
         @Override
-        public void getAllJokesAddedToday(OnAllowedToAddFinishedListener listener, String userID) {
+        public void getAllJokesAddedToday(OnAllowedToAddFinishedListener listener, String userId, int addLimit) {
 
         }
 
         @Override
-        public void updateJokePoints(OnUpdatePointsFinishedListener listener, String uid) {
+        public void updateJokePoints(OnUpdatePointsFinishedListener listener, Joke joke) {
+
+        }
+
+        @Override
+        public void updateApproveStatus(OnUpdateApproveStatusListener listener, String uid) {
 
         }
 
@@ -150,7 +173,32 @@ public class JokesPresenterTest {
         }
 
         @Override
+        public void updateRankPointsAndName(OnUpdateRankPointsSuccess listener, String rankName, int points, String userId) {
+
+        }
+
+        @Override
         public void writeJokeVote(OnAddJokeVoteFinishedListener listener, Vote vote) {
+
+        }
+
+        @Override
+        public void checkIfVoted(OnCheckIfVotedFinishedListener listener, Joke joke, String userId) {
+
+        }
+
+        @Override
+        public void checkIfRankDataInDB(OnCheckIfRankDataInDBListener listener, String userId) {
+
+        }
+
+        @Override
+        public void addUserToDatabase(OnAddUserListener listener, String userId, String userName) {
+
+        }
+
+        @Override
+        public void checkIfAdmin(OnAdminCheckFinishedListener listener, String userId) {
 
         }
 
