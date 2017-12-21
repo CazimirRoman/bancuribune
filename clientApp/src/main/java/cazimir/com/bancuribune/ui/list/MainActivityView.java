@@ -3,6 +3,7 @@ package cazimir.com.bancuribune.ui.list;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +15,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBar;
@@ -39,6 +42,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cazimir.com.bancuribune.Manifest;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.constants.Constants;
@@ -358,7 +362,10 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     private void shareJoke(String text) {
 
-        String bitmapPath = MediaStore.Images.Media.insertImage(getContentResolver(), drawMultilineTextToBitmap(this, R.drawable.background, text),"title", null);
+
+
+        Bitmap bitmap = drawMultilineTextToBitmap(this, R.drawable.background, text);
+        String bitmapPath = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap , "title", "description");
         Uri bitmapUri = Uri.parse(bitmapPath);
 
 
