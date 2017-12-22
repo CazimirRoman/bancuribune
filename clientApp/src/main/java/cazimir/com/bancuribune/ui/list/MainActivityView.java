@@ -1,5 +1,6 @@
 package cazimir.com.bancuribune.ui.list;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,12 +11,12 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
@@ -42,7 +43,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import cazimir.com.bancuribune.Manifest;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.constants.Constants;
@@ -63,6 +63,8 @@ import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_REQUEST;
 
 public class MainActivityView extends BaseActivity implements IMainActivityView, OnJokeItemClickListener {
 
+    private static final String TAG = MainActivityView.class.getName();
+    private static final int MY_STORAGE_REQUEST_CODE = 523;
     private MyAlertDialog alertDialog;
     private CommonPresenter presenter;
     private JokesAdapter adapter;
@@ -221,7 +223,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         } else {
             navigateToAddJokeActivity();
         }
-
     }
 
     @OnClick(R.id.myJokesButtonFAB)
@@ -362,25 +363,39 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     private void shareJoke(String text) {
 
-
-
-        Bitmap bitmap = drawMultilineTextToBitmap(this, R.drawable.background, text);
-        String bitmapPath = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap , "title", "description");
-        Uri bitmapUri = Uri.parse(bitmapPath);
-
-
-        Intent sendIntent = new Intent();
-        sendIntent.setAction(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
-        //sendIntent.putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.share_text), getString(R.string.app_name)) + "\n\n" + text);
-        //sendIntent.setType("text/plain");
-        startActivity(Intent.createChooser(sendIntent, "Share"));
+        if (!requestWriteStoragePermissions()) {
+            Bitmap bitmap = drawMultilineTextToBitmap(this, R.drawable.share_background, text);
+            String bitmapPath = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, "title", "description");
+            Uri bitmapUri = Uri.parse(bitmapPath);
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
+            sendIntent.setType("image/*");
+            startActivity(Intent.createChooser(sendIntent, "Share"));
+        }
     }
 
-    public Bitmap drawMultilineTextToBitmap(Context gContext,
-                                            int gResId,
-                                            String gText) {
+    private boolean requestWriteStoragePermissions() {
+        if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_STORAGE_REQUEST_CODE);
+            return true;
+        }
+        return false;
+    }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_STORAGE_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //try again
+            } else {
+                Toast.makeText(this, "Permission denied. Please accept permission request", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public Bitmap drawMultilineTextToBitmap(Context gContext, int gResId, String gText) {
         // prepare canvas
         Resources resources = gContext.getResources();
         float scale = resources.getDisplayMetrics().density;
@@ -388,7 +403,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
         android.graphics.Bitmap.Config bitmapConfig = bitmap.getConfig();
         // set default bitmap config if none
-        if(bitmapConfig == null) {
+        if (bitmapConfig == null) {
             bitmapConfig = android.graphics.Bitmap.Config.ARGB_8888;
         }
         // resource bitmaps are imutable,
@@ -398,11 +413,11 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         Canvas canvas = new Canvas(bitmap);
 
         // new antialiased Paint
-        TextPaint paint=new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        TextPaint paint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         // text color - #3D3D3D
         paint.setColor(Color.rgb(61, 61, 61));
         // text size in pixels
-        paint.setTextSize((int) (14 * scale));
+        paint.setTextSize((int) (18 * scale));
         // text shadow
         paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
 
@@ -417,8 +432,8 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         int textHeight = textLayout.getHeight();
 
         // get position of text's top left corner
-        float x = (bitmap.getWidth() - textWidth)/2;
-        float y = (bitmap.getHeight() - textHeight)/2;
+        float x = (bitmap.getWidth() - textWidth) / 2;
+        float y = (bitmap.getHeight() - textHeight) / 2;
 
         // draw text to the Canvas center
         canvas.save();
