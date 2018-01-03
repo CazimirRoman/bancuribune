@@ -399,18 +399,18 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         // prepare canvas
         Resources resources = gContext.getResources();
         float scale = resources.getDisplayMetrics().density;
-        Bitmap bitmap = BitmapFactory.decodeResource(resources, gResId);
+        Bitmap background = BitmapFactory.decodeResource(resources, gResId);
 
-        android.graphics.Bitmap.Config bitmapConfig = bitmap.getConfig();
-        // set default bitmap config if none
+        android.graphics.Bitmap.Config bitmapConfig = background.getConfig();
+        // set default share_background config if none
         if (bitmapConfig == null) {
             bitmapConfig = android.graphics.Bitmap.Config.ARGB_8888;
         }
         // resource bitmaps are imutable,
         // so we need to convert it to mutable one
-        bitmap = bitmap.copy(bitmapConfig, true);
+        background = background.copy(bitmapConfig, true);
 
-        Canvas canvas = new Canvas(bitmap);
+        Canvas canvas = new Canvas(background);
 
         // new antialiased Paint
         TextPaint paint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -432,8 +432,8 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         int textHeight = textLayout.getHeight();
 
         // get position of text's top left corner
-        float x = (bitmap.getWidth() - textWidth) / 2;
-        float y = (bitmap.getHeight() - textHeight) / 2;
+        float x = (background.getWidth() - textWidth) / 2;
+        float y = (background.getHeight() - textHeight) / 2;
 
         // draw text to the Canvas center
         canvas.save();
@@ -441,7 +441,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         textLayout.draw(canvas);
         canvas.restore();
 
-        return bitmap;
+        return background;
     }
 
     @Override
