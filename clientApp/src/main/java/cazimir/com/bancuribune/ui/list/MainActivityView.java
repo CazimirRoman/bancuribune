@@ -415,7 +415,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         // new antialiased Paint
         TextPaint paint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         // text color - #3D3D3D
-        paint.setColor(Color.rgb(61, 61, 61));
+        paint.setColor(Color.rgb(255, 255, 255));
         // text size in pixels
         paint.setTextSize((int) (18 * scale));
         // text shadow
