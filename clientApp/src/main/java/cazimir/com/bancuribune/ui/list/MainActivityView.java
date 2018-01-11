@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.AudioTrack;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -415,7 +416,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         // new antialiased Paint
         TextPaint paint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         // text color - #3D3D3D
-        paint.setColor(Color.rgb(255, 255, 255));
+        paint.setColor(Color.rgb(0, 0, 0));
         // text size in pixels
         paint.setTextSize((int) (18 * scale));
         // text shadow
@@ -447,10 +448,5 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @Override
     public void checkIfAdmin() {
         presenter.checkIfAdmin();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 }
