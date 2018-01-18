@@ -11,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.media.AudioTrack;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -50,7 +49,6 @@ import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
-import cazimir.com.bancuribune.repository.JokesRepository;
 import cazimir.com.bancuribune.ui.MyRecylerScroll;
 import cazimir.com.bancuribune.ui.add.AddJokeActivityView;
 import cazimir.com.bancuribune.ui.admin.AdminActivityView;
@@ -88,7 +86,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @BindView(R.id.fab)
     LinearLayout fab;
     private String currentRank;
-
+    private int currentPage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,23 +103,23 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getAllJokesData();
+                getAllJokesData(currentPage);
             }
         });
 
         initRecycleView();
         initSearch();
-        presenter = new CommonPresenter(this, new JokesRepository());
+        presenter = new CommonPresenter(this);
         getMyRank();
-        getAllJokesData();
+        getAllJokesData(currentPage);
     }
 
     private void getMyRank() {
         presenter.checkAndGetMyRank();
     }
 
-    private void getAllJokesData() {
-        presenter.getAllJokesData();
+    private void getAllJokesData(int currentPage) {
+        presenter.getAllJokesData(currentPage);
     }
 
     private void initSearch() {
@@ -141,7 +139,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
             public void afterTextChanged(Editable editable) {
 
                 if (editable.toString().isEmpty()) {
-                    presenter.getAllJokesData();
+                    presenter.getAllJokesData(currentPage);
                 } else {
                     if (editable.toString().length() >= Constants.FILTER_MINIMUM_CHARACTERS) {
                         showProgressBar();
@@ -159,7 +157,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         jokesListRecyclerView.setLayoutManager(layoutManager);
         adapter = new JokesAdapter(this);
 
-        jokesListRecyclerView.setOnScrollListener(new MyRecylerScroll() {
+        jokesListRecyclerView.setOnScrollListener(new MyRecylerScroll((LinearLayoutManager) layoutManager) {
 
             @Override
             public void show() {
@@ -169,6 +167,13 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
             @Override
             public void hide() {
                 fab.animate().translationY(fab.getHeight()).setInterpolator(new AccelerateInterpolator(2)).start();
+            }
+
+            @Override
+            public void onLoadMore(int current_page) {
+                currentPage = current_page+1;
+                getAllJokesData(currentPage);
+
             }
         });
 
@@ -182,8 +187,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     @Override
     public void displayJokes(List<Joke> jokes) {
-        adapter = new JokesAdapter(this);
-        jokesListRecyclerView.setAdapter(adapter);
         for (Joke joke : jokes) {
             adapter.add(joke);
         }
@@ -259,7 +262,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         if (requestCode == ADD_JOKE_REQUEST) {
             if (resultCode == RESULT_OK) {
                 showAddSuccessDialog();
-                getAllJokesData();
+                getAllJokesData(currentPage);
             }
         }
     }

@@ -46,33 +46,119 @@ public class JokesRepository implements IJokesRepository {
     private DatabaseReference ranksRef = database.getReference("ranks");
     private DatabaseReference usersRef = database.getReference("users");
 
-    @Override
-    public void getAllJokes(final OnGetJokesListener listener) {
+    private String keyStart;
+    private String keyOldest;
 
-        jokesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+    @Override
+    public void getAllJokes(final OnGetJokesListener listener, int currentPage) {
+
+        if (keyStart != null) {
+            sendJokesBackToView(listener);
+        }else{
+            getLastEntry(listener);
+        }
+    }
+
+    private void getLastEntry(final OnGetJokesListener listener) {
+
+        Query lastQuery = jokesRef.orderByKey().limitToLast(1);
+        lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                final List<Joke> jokes = new ArrayList<>();
-
                 for (DataSnapshot jokeSnapshot : dataSnapshot.getChildren()) {
                     Joke joke = jokeSnapshot.getValue(Joke.class);
-                    assert joke != null;
-                    if (joke.isApproved()) {
-                        jokes.add(joke);
+                    if (joke != null) {
+                        keyStart = jokeSnapshot.getKey();
                     }
                 }
 
-                Collections.reverse(jokes);
-
-                listener.OnGetJokesSuccess(jokes);
+                sendJokesBackToView(listener);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                listener.OnGetJokesFailed(databaseError.getMessage());
+                //Handle possible errors.
             }
         });
+    }
+
+    private void sendJokesBackToView(final OnGetJokesListener listener) {
+
+        if (keyOldest != null) {
+            jokesRef.endAt(keyOldest).limitToLast(Constants.TOTAL_ITEM_EACH_LOAD)
+                    .orderByKey()
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            final List<Joke> jokes = new ArrayList<>();
+
+                            for (DataSnapshot jokeSnapshot : dataSnapshot.getChildren()) {
+
+                                Joke joke = jokeSnapshot.getValue(Joke.class);
+                                assert joke != null;
+                                if (joke.isApproved()) {
+                                    jokes.add(joke);
+                                }
+                            }
+
+                            //return if one joke left to prevent array out o bound exception on the following lines
+                            if(jokes.size() == 1){
+                                return;
+                            }
+
+                            Collections.reverse(jokes);
+
+                            keyOldest = jokes.get(jokes.size()-1).getUid();
+
+                            listener.OnGetJokesSuccess(jokes);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            listener.OnGetJokesFailed(databaseError.getMessage());
+                        }
+                    });
+        } else {
+            jokesRef.limitToLast(Constants.TOTAL_ITEM_EACH_LOAD)
+                    .endAt(keyStart)
+                    .orderByKey()
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            if (!dataSnapshot.hasChildren()) {
+                                listener.OnGetJokesFailed("No more jokes to display");
+                            }
+
+                            final List<Joke> jokes = new ArrayList<>();
+
+                            for (DataSnapshot jokeSnapshot : dataSnapshot.getChildren()) {
+
+                                if(keyOldest == null){
+                                    keyOldest = jokeSnapshot.getKey();
+                                }
+
+                                Joke joke = jokeSnapshot.getValue(Joke.class);
+                                assert joke != null;
+                                if (joke.isApproved()) {
+                                    jokes.add(joke);
+                                }
+                            }
+
+                            jokes.remove(0);
+
+                            Collections.reverse(jokes);
+
+                            listener.OnGetJokesSuccess(jokes);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            listener.OnGetJokesFailed(databaseError.getMessage());
+                        }
+                    });
+        }
     }
 
     @Override
@@ -244,15 +330,15 @@ public class JokesRepository implements IJokesRepository {
     @Override
     public void updateJokePoints(final OnUpdatePointsFinishedListener listener, final Joke joke) {
 
-        jokesRef.child(joke.getUid()).child("points").setValue(joke.getPoints() + 1, new DatabaseReference.CompletionListener(){
+        jokesRef.child(joke.getUid()).child("points").setValue(joke.getPoints() + 1, new DatabaseReference.CompletionListener() {
 
             @Override
             public void onComplete(final DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
-                            listener.OnUpdatePointsFailed(databaseError.getMessage());
-                        } else {
+                    listener.OnUpdatePointsFailed(databaseError.getMessage());
+                } else {
 
-                            Query query = jokesRef.orderByChild("uid").equalTo(joke.getUid());
+                    Query query = jokesRef.orderByChild("uid").equalTo(joke.getUid());
 
                     query.addChildEventListener(new ChildEventListener() {
                         @Override
@@ -283,8 +369,7 @@ public class JokesRepository implements IJokesRepository {
                     });
 
 
-
-                        }
+                }
             }
         });
 
@@ -577,9 +662,9 @@ public class JokesRepository implements IJokesRepository {
                     assert user != null;
                 }
 
-                if(user.getRole().equals("Admin")){
+                if (user.getRole().equals("Admin")) {
                     listener.OnAdminCheckTrue();
-                }else{
+                } else {
                     listener.OnAdminCheckFalse();
                 }
 

@@ -21,7 +21,7 @@ import cazimir.com.bancuribune.ui.list.OnUpdateVotedByFinishedListener;
 import cazimir.com.bancuribune.ui.myjokes.OnFirebaseGetMyJokesListener;
 
 public interface IJokesRepository {
-    void getAllJokes(OnGetJokesListener listener);
+    void getAllJokes(OnGetJokesListener listener, int currentPage);
     void getAllFilteredJokes(OnGetJokesListener listener, String text);
     void getAllPendingJokes(OnGetAllPendingJokesListener listener);
     void getMyJokes(OnFirebaseGetMyJokesListener listener, String userId);

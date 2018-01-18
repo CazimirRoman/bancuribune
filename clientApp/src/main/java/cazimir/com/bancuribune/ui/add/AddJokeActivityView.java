@@ -38,7 +38,7 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
         }
 
         alertDialog = new MyAlertDialog(this);
-        presenter = new CommonPresenter(this, new JokesRepository());
+        presenter = new CommonPresenter(this);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
 
     @Override
     public void onDataValidated() {
-        presenter.getAllJokesData();
+        presenter.getAllJokesData(0);
     }
 
     @Override
