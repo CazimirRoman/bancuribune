@@ -216,6 +216,13 @@ public class CommonPresenter implements ICommonPresenter, OnAdminCheckFinishedLi
     public void OnGetJokesFailed(String error) {
         mainView.requestFailed(error);
         mainView.hideProgressBar();
+        mainView.hideSwipeRefresh();
+    }
+
+    @Override
+    public void OnEndOfListReached() {
+        mainView.hideProgressBar();
+        mainView.hideSwipeRefresh();
     }
 
     @Override

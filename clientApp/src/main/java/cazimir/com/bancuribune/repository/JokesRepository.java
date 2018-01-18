@@ -104,6 +104,7 @@ public class JokesRepository implements IJokesRepository {
 
                             //return if one joke left to prevent array out o bound exception on the following lines
                             if(jokes.size() == 1){
+                                listener.OnEndOfListReached();
                                 return;
                             }
 
