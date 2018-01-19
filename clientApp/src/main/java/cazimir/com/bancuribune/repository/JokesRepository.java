@@ -46,13 +46,13 @@ public class JokesRepository implements IJokesRepository {
     private DatabaseReference ranksRef = database.getReference("ranks");
     private DatabaseReference usersRef = database.getReference("users");
 
-    private String keyStart;
+    private String keyLast;
     private String keyOldest;
 
     @Override
     public void getAllJokes(final OnGetJokesListener listener, int currentPage) {
 
-        if (keyStart != null) {
+        if (keyLast != null) {
             sendJokesBackToView(listener);
         }else{
             getLastEntry(listener);
@@ -68,7 +68,7 @@ public class JokesRepository implements IJokesRepository {
                 for (DataSnapshot jokeSnapshot : dataSnapshot.getChildren()) {
                     Joke joke = jokeSnapshot.getValue(Joke.class);
                     if (joke != null) {
-                        keyStart = jokeSnapshot.getKey();
+                        keyLast = jokeSnapshot.getKey();
                     }
                 }
 
@@ -105,6 +105,8 @@ public class JokesRepository implements IJokesRepository {
                             //return if one joke left to prevent array out o bound exception on the following lines
                             if(jokes.size() == 1){
                                 listener.OnEndOfListReached();
+                                keyLast = null;
+                                keyOldest = null;
                                 return;
                             }
 
@@ -122,7 +124,7 @@ public class JokesRepository implements IJokesRepository {
                     });
         } else {
             jokesRef.limitToLast(Constants.TOTAL_ITEM_EACH_LOAD)
-                    .endAt(keyStart)
+                    .endAt(keyLast)
                     .orderByKey()
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
