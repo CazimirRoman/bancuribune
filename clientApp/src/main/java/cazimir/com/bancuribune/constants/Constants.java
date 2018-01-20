@@ -27,4 +27,6 @@ public class Constants {
     public static final String DEFAULT = "Default";
     public static final String ROLE_USER = "User";
     public static int FILTER_MINIMUM_CHARACTERS = 3;
+
+    public static final int TOTAL_ITEM_EACH_LOAD = 10;
 }

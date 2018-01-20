@@ -8,7 +8,7 @@ import cazimir.com.bancuribune.ui.myjokes.OnCalculatePointsListener;
 import cazimir.com.bancuribune.ui.myjokes.OnGetFacebookNameListener;
 
 public interface ICommonPresenter {
-    void getAllJokesData();
+    void getAllJokesData(boolean reset);
     void getFilteredJokesData(String text);
     void getAllPendingJokesData();
     void getMyJokes();

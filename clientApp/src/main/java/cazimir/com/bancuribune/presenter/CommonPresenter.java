@@ -12,6 +12,7 @@ import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.model.Vote;
 import cazimir.com.bancuribune.repository.IJokesRepository;
+import cazimir.com.bancuribune.repository.JokesRepository;
 import cazimir.com.bancuribune.ui.add.IAddJokeActivityView;
 import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
 import cazimir.com.bancuribune.ui.add.OnAddJokeVoteFinishedListener;
@@ -40,17 +41,16 @@ public class CommonPresenter implements ICommonPresenter, OnAdminCheckFinishedLi
     private String currentUserID;
     private Boolean isAdmin = false;
 
-    public CommonPresenter(IMainActivityView view, IJokesRepository repository) {
+    public CommonPresenter(IMainActivityView view) {
         this.mainView = view;
-        this.repository = repository;
+        this.repository = new JokesRepository();
         this.authPresenter = new AuthPresenter(view);
         setCurrentLoggedInUserId();
-
     }
 
-    public CommonPresenter(IAddJokeActivityView view, IJokesRepository repository) {
+    public CommonPresenter(IAddJokeActivityView view) {
         this.addView = view;
-        this.repository = repository;
+        this.repository = new JokesRepository();
         this.authPresenter = new AuthPresenter(view);
         setCurrentLoggedInUserId();
     }
@@ -73,8 +73,11 @@ public class CommonPresenter implements ICommonPresenter, OnAdminCheckFinishedLi
         currentUserID = authPresenter.getCurrentUserID();
     }
 
-    public void getAllJokesData(){
-        repository.getAllJokes(this);
+    public void getAllJokesData(boolean reset){
+        if(reset){
+            mainView.refreshJokesListAdapter();
+        }
+        repository.getAllJokes(this, reset);
         mainView.showProgressBar();
     }
 
@@ -208,12 +211,21 @@ public class CommonPresenter implements ICommonPresenter, OnAdminCheckFinishedLi
     @Override
     public void OnGetJokesSuccess(List<Joke> jokes) {
         mainView.displayJokes(jokes);
+        mainView.hideProgressBar();
         mainView.hideSwipeRefresh();
     }
 
     @Override
     public void OnGetJokesFailed(String error) {
         mainView.requestFailed(error);
+        mainView.hideProgressBar();
+        mainView.hideSwipeRefresh();
+    }
+
+    @Override
+    public void OnEndOfListReached() {
+        mainView.hideProgressBar();
+        mainView.hideSwipeRefresh();
     }
 
     @Override
