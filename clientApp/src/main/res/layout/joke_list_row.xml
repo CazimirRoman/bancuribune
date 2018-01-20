@@ -102,6 +102,7 @@
                         <cazimir.com.bancuribune.ui.FontAwesomeTextView
                             android:id="@+id/authorText"
                             style="@style/fontAwesome.secondaryText"
+                            android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             tools:text="AuthorText"/>
@@ -114,19 +115,20 @@
                         android:padding="2dp">
 
                         <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                            android:id="@+id/points"
+                            android:layout_gravity="center_vertical"
+                            style="@style/fontAwesome.secondaryText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="123"/>
+
+                        <cazimir.com.bancuribune.ui.FontAwesomeTextView
                             style="@style/fontAwesome.secondaryText"
                             android:layout_width="wrap_content"
                             android:textColor="@android:color/holo_red_light"
                             android:padding="5dp"
                             android:layout_height="wrap_content"
                             android:text="@string/fa_icon_heart"/>
-
-                        <cazimir.com.bancuribune.ui.FontAwesomeTextView
-                            android:id="@+id/points"
-                            style="@style/fontAwesome.secondaryText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            tools:text="123"/>
 
                     </LinearLayout>
 
@@ -139,6 +141,7 @@
                         <cazimir.com.bancuribune.ui.FontAwesomeTextView
                             android:id="@+id/date"
                             style="@style/fontAwesome.secondaryText"
+                            android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             tools:text="24/07/2012"/>

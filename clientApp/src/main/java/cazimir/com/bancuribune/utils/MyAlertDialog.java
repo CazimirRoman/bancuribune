@@ -29,7 +29,7 @@ public class MyAlertDialog extends AlertDialog {
         return dialog;
     }
 
-    public void showAlertDialog(String message){
+    public void show(String message){
         getAlertDialog().setMessage(message);
         if (!getAlertDialog().isShowing()) getAlertDialog().show();
     }

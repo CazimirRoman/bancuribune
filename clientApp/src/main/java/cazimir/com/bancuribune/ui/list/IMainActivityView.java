@@ -18,7 +18,6 @@ public interface IMainActivityView {
     void showProgressBar();
     void hideProgressBar();
     void showAdminButton();
-    void showAlertDialog(String message);
     void saveRankDataToSharedPreferences (Rank rank);
     void saveAdminDataToSharedPreferences (Boolean isAdmin);
     void updateCurrentRank(String rank);
@@ -27,4 +26,5 @@ public interface IMainActivityView {
     void hideSwipeRefresh();
     void refreshAdapter(Joke joke);
     void refreshJokesListAdapter();
+    void showAlertDialog(String message);
 }

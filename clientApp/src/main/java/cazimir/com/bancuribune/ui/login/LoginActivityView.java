@@ -17,10 +17,14 @@ import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.presenter.AuthPresenter;
 import cazimir.com.bancuribune.ui.list.MainActivityView;
+import cazimir.com.bancuribune.utils.MyAlertDialog;
+import cazimir.com.bancuribune.utils.Utils;
 
 import static cazimir.com.bancuribune.R.id.login_button_dummy;
 
 public class LoginActivityView extends BaseActivity implements ILoginActivityView, OnClickListener {
+
+    private MyAlertDialog alertDialog;
 
     private AuthPresenter authPresenter;
     private CallbackManager callbackManager;
@@ -34,6 +38,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        alertDialog = new MyAlertDialog(this);
         callbackManager = CallbackManager.Factory.create();
         authPresenter = new AuthPresenter(this);
         authPresenter.checkIfUserLoggedIn();
@@ -68,6 +73,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
 
     @OnClick(R.id.login_button)
     void performFacebookLogin() {
+
         facebookButton.setReadPermissions("email", "public_profile");
         facebookButton.registerCallback(callbackManager, authPresenter.loginWithFacebook());
         facebookButton.setVisibility(View.GONE);
@@ -82,8 +88,12 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     @Override
     public void onClick(View view) {
         if (view == loginButton) {
-            facebookButton.performClick();
-            loginButton.setText(getString(R.string.loading_data));
+            if (Utils.isInternetAvailable(this)) {
+                facebookButton.performClick();
+                loginButton.setText(getString(R.string.loading_data));
+            } else {
+                alertDialog.show(getString(R.string.no_internet));
+            }
         }
     }
 }

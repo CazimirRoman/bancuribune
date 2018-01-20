@@ -73,12 +73,16 @@ public class CommonPresenter implements ICommonPresenter, OnAdminCheckFinishedLi
         currentUserID = authPresenter.getCurrentUserID();
     }
 
-    public void getAllJokesData(boolean reset){
+    public void getAllJokesData(boolean reset, boolean shouldShowProgress){
         if(reset){
             mainView.refreshJokesListAdapter();
         }
+
+        if(!shouldShowProgress){
+            mainView.showProgressBar();
+        }
+
         repository.getAllJokes(this, reset);
-        mainView.showProgressBar();
     }
 
     @Override

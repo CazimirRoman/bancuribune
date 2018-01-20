@@ -1,5 +1,7 @@
 package cazimir.com.bancuribune.utils;
 
+import android.content.Context;
+
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.text.SimpleDateFormat;
@@ -29,5 +31,7 @@ public class Utils {
         return sdf.format(new Date(epoch));
     }
 
-
+    public static boolean isInternetAvailable(Context context) {
+        return NetworkStatus.getInstance(context).isOnline();
+    }
 }
