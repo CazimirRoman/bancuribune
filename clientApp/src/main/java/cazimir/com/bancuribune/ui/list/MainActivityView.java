@@ -83,6 +83,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     ProgressBar progressMain;
     @BindView(R.id.search)
     EditText search;
+
     @BindView(R.id.fab)
     LinearLayout fab;
     private String currentRank;
@@ -102,14 +103,14 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getAllJokesData(true);
+                getAllJokesData(true, true);
             }
         });
 
         initSearch();
         presenter = new CommonPresenter(this);
         getMyRank();
-        getAllJokesData(true);
+        getAllJokesData(true, false);
     }
 
     public void refreshJokesListAdapter() {
@@ -120,12 +121,17 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     }
 
+    @Override
+    public void showAlertDialog(String message) {
+        alertDialog.show(message);
+    }
+
     private void getMyRank() {
         presenter.checkAndGetMyRank();
     }
 
-    private void getAllJokesData(boolean reset) {
-        presenter.getAllJokesData(reset);
+    private void getAllJokesData(boolean reset, boolean swipe) {
+        presenter.getAllJokesData(reset, swipe);
     }
 
     private void initSearch() {
@@ -145,7 +151,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
             public void afterTextChanged(Editable editable) {
 
                 if (editable.toString().isEmpty()) {
-                    presenter.getAllJokesData(true);
+                    presenter.getAllJokesData(true, false);
                 } else {
                     if (editable.toString().length() >= Constants.FILTER_MINIMUM_CHARACTERS) {
                         showProgressBar();
@@ -179,7 +185,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
             @Override
             public void onLoadMore(int current_page) {
-                getAllJokesData(false);
+                getAllJokesData(false, false);
 
             }
         });
@@ -260,6 +266,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @Override
     public void isNotAllowedToAdd(int addLimit) {
         showAlertDialog(String.format(getString(R.string.add_limit_reached), String.valueOf(addLimit)));
+
     }
 
     @Override
@@ -268,12 +275,13 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         if (requestCode == ADD_JOKE_REQUEST) {
             if (resultCode == RESULT_OK) {
                 showAddSuccessDialog();
-                getAllJokesData(true);
+                getAllJokesData(true, false);
             }
         }
     }
 
     public void showAddSuccessDialog() {
+
         showAlertDialog(getString(R.string.add_success));
     }
 
@@ -306,11 +314,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @Override
     public void showAdminButton() {
         admin.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void showAlertDialog(String message) {
-        alertDialog.showAlertDialog(message);
     }
 
     @Override

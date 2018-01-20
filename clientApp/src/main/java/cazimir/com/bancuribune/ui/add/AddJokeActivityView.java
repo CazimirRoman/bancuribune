@@ -15,8 +15,8 @@ import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
-import cazimir.com.bancuribune.repository.JokesRepository;
 import cazimir.com.bancuribune.utils.MyAlertDialog;
+import cazimir.com.bancuribune.utils.Utils;
 
 public class AddJokeActivityView extends BaseActivity implements IAddJokeActivityView {
 
@@ -47,12 +47,6 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
     }
 
     @Override
-    public void showAlertDialog(String message) {
-        alertDialog.getAlertDialog().setMessage(message);
-        if (!alertDialog.getAlertDialog().isShowing()) alertDialog.getAlertDialog().show();
-    }
-
-    @Override
     public boolean dataValid() {
         if(addJokeEdit.getText().toString().isEmpty()){
             onError();
@@ -64,7 +58,7 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
 
     @Override
     public void onDataValidated() {
-        presenter.getAllJokesData(true);
+        presenter.getAllJokesData(true, false);
     }
 
     @Override
@@ -78,8 +72,7 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
 
     @Override
     public void onError() {
-        alertDialog.getAlertDialog().setMessage(getString(R.string.add_joke_empty));
-        if (!alertDialog.getAlertDialog().isShowing()) alertDialog.getAlertDialog().show();
+        alertDialog.show(getString(R.string.add_joke_empty));
     }
 
     @Override
@@ -92,9 +85,14 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
     @OnClick(R.id.addNewJokeButtonFAB)
     public void addJoke(View view){
         if(dataValid()){
-            sendDataToDatabase(constructJokeObject());
-            hideSoftInput(addJokeEdit);
-            closeAdd();
+            if(Utils.isInternetAvailable(this)){
+                sendDataToDatabase(constructJokeObject());
+                hideSoftInput(addJokeEdit);
+                closeAdd();
+            }else{
+                alertDialog.show(getString(R.string.no_internet));
+            }
+
         }
     }
 

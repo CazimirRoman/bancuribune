@@ -233,6 +233,7 @@ public class JokesRepository implements IJokesRepository {
                     myJokes.add(joke);
                 }
 
+                //show jokes with most votes on top
                 Collections.sort(myJokes, new Comparator<Joke>() {
                     @Override
                     public int compare(Joke j1, Joke j2) {
