@@ -109,6 +109,8 @@ public class JokesRepository implements IJokesRepository {
                                 return;
                             }
 
+                            jokes.remove(jokes.size()-1);
+
                             Collections.reverse(jokes);
 
                             keyStep = jokes.get(jokes.size()-1).getUid();
