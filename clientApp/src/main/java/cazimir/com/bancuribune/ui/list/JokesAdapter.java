@@ -32,6 +32,11 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
     @BindView(R.id.share)
     ImageButton share;
 
+    public void clearJokesList() {
+        jokes.removeAll(jokes);
+        this.notifyDataSetChanged();
+    }
+
     class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView text;

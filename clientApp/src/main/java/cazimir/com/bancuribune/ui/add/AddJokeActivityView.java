@@ -64,7 +64,7 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
 
     @Override
     public void onDataValidated() {
-        presenter.getAllJokesData(0);
+        presenter.getAllJokesData(true);
     }
 
     @Override

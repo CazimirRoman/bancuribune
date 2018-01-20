@@ -46,20 +46,20 @@ public class JokesRepository implements IJokesRepository {
     private DatabaseReference ranksRef = database.getReference("ranks");
     private DatabaseReference usersRef = database.getReference("users");
 
-    private String keyLast;
-    private String keyOldest;
+    private String keyNewest;
+    private String keyStep;
 
     @Override
-    public void getAllJokes(final OnGetJokesListener listener, int currentPage) {
+    public void getAllJokes(final OnGetJokesListener listener, boolean reset) {
 
-        if (keyLast != null) {
-            sendJokesBackToView(listener);
-        }else{
-            getLastEntry(listener);
+        if(reset){
+            keyStep = null;
         }
+
+        getNewestEntry(listener);
     }
 
-    private void getLastEntry(final OnGetJokesListener listener) {
+    private void getNewestEntry(final OnGetJokesListener listener) {
 
         Query lastQuery = jokesRef.orderByKey().limitToLast(1);
         lastQuery.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -68,7 +68,7 @@ public class JokesRepository implements IJokesRepository {
                 for (DataSnapshot jokeSnapshot : dataSnapshot.getChildren()) {
                     Joke joke = jokeSnapshot.getValue(Joke.class);
                     if (joke != null) {
-                        keyLast = jokeSnapshot.getKey();
+                        keyNewest = jokeSnapshot.getKey();
                     }
                 }
 
@@ -84,8 +84,9 @@ public class JokesRepository implements IJokesRepository {
 
     private void sendJokesBackToView(final OnGetJokesListener listener) {
 
-        if (keyOldest != null) {
-            jokesRef.endAt(keyOldest).limitToLast(Constants.TOTAL_ITEM_EACH_LOAD)
+        //if no keystep, start from newest entry
+        if (keyStep != null) {
+            jokesRef.endAt(keyStep).limitToLast(Constants.TOTAL_ITEM_EACH_LOAD)
                     .orderByKey()
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -102,17 +103,15 @@ public class JokesRepository implements IJokesRepository {
                                 }
                             }
 
-                            //return if one joke left to prevent array out o bound exception on the following lines
                             if(jokes.size() == 1){
                                 listener.OnEndOfListReached();
-                                keyLast = null;
-                                keyOldest = null;
+                                keyStep = null;
                                 return;
                             }
 
                             Collections.reverse(jokes);
 
-                            keyOldest = jokes.get(jokes.size()-1).getUid();
+                            keyStep = jokes.get(jokes.size()-1).getUid();
 
                             listener.OnGetJokesSuccess(jokes);
                         }
@@ -123,8 +122,9 @@ public class JokesRepository implements IJokesRepository {
                         }
                     });
         } else {
+            //start from newest up to 10 entries
             jokesRef.limitToLast(Constants.TOTAL_ITEM_EACH_LOAD)
-                    .endAt(keyLast)
+                    .endAt(keyNewest)
                     .orderByKey()
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -137,11 +137,6 @@ public class JokesRepository implements IJokesRepository {
                             final List<Joke> jokes = new ArrayList<>();
 
                             for (DataSnapshot jokeSnapshot : dataSnapshot.getChildren()) {
-
-                                if(keyOldest == null){
-                                    keyOldest = jokeSnapshot.getKey();
-                                }
-
                                 Joke joke = jokeSnapshot.getValue(Joke.class);
                                 assert joke != null;
                                 if (joke.isApproved()) {
@@ -149,7 +144,7 @@ public class JokesRepository implements IJokesRepository {
                                 }
                             }
 
-                            jokes.remove(0);
+                            keyStep = jokes.get(0).getUid();
 
                             Collections.reverse(jokes);
 

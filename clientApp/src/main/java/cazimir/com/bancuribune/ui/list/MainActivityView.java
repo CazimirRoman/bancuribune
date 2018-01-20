@@ -86,7 +86,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @BindView(R.id.fab)
     LinearLayout fab;
     private String currentRank;
-    private int currentPage = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,23 +102,30 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getAllJokesData(currentPage);
+                getAllJokesData(true);
             }
         });
 
-        initRecycleView();
         initSearch();
         presenter = new CommonPresenter(this);
         getMyRank();
-        getAllJokesData(currentPage);
+        getAllJokesData(true);
+    }
+
+    public void refreshJokesListAdapter() {
+
+        setOnScrollListener((LinearLayoutManager) initRecycleView());
+        adapter = new JokesAdapter(this);
+        jokesListRecyclerView.setAdapter(adapter);
+
     }
 
     private void getMyRank() {
         presenter.checkAndGetMyRank();
     }
 
-    private void getAllJokesData(int currentPage) {
-        presenter.getAllJokesData(currentPage);
+    private void getAllJokesData(boolean reset) {
+        presenter.getAllJokesData(reset);
     }
 
     private void initSearch() {
@@ -139,7 +145,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
             public void afterTextChanged(Editable editable) {
 
                 if (editable.toString().isEmpty()) {
-                    presenter.getAllJokesData(currentPage);
+                    presenter.getAllJokesData(true);
                 } else {
                     if (editable.toString().length() >= Constants.FILTER_MINIMUM_CHARACTERS) {
                         showProgressBar();
@@ -152,12 +158,14 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         });
     }
 
-    private void initRecycleView() {
+    private RecyclerView.LayoutManager initRecycleView() {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         jokesListRecyclerView.setLayoutManager(layoutManager);
-        adapter = new JokesAdapter(this);
+        return layoutManager;
+    }
 
-        jokesListRecyclerView.setOnScrollListener(new MyRecylerScroll((LinearLayoutManager) layoutManager) {
+    private void setOnScrollListener(final LinearLayoutManager layoutManager) {
+        jokesListRecyclerView.setOnScrollListener(new MyRecylerScroll(layoutManager) {
 
             @Override
             public void show() {
@@ -171,13 +179,10 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
             @Override
             public void onLoadMore(int current_page) {
-                currentPage = current_page+1;
-                getAllJokesData(currentPage);
+                getAllJokesData(false);
 
             }
         });
-
-        jokesListRecyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -187,6 +192,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     @Override
     public void displayJokes(List<Joke> jokes) {
+
         for (Joke joke : jokes) {
             adapter.add(joke);
         }
@@ -262,7 +268,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         if (requestCode == ADD_JOKE_REQUEST) {
             if (resultCode == RESULT_OK) {
                 showAddSuccessDialog();
-                getAllJokesData(currentPage);
+                getAllJokesData(true);
             }
         }
     }
