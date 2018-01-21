@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="cazimir.com.bancuribune">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="cazimir.com.bancuribune">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
 
     <application
         android:name=".base.BaseApplication"
@@ -18,54 +17,52 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ui.login.LoginActivityView">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.add.AddJokeActivityView">
-        </activity>
-        <activity android:name=".ui.list.MainActivityView">
-        </activity>
+        <activity android:name=".ui.add.AddJokeActivityView" />
+        <activity android:name=".ui.list.MainActivityView" />
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppCompat"
-            tools:replace="android:theme"/>
+            tools:replace="android:theme" />
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
 
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="@string/fb_login_protocol_scheme"/>
+                <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
+            android:value="@string/facebook_app_id" />
 
-        <activity android:name=".ui.myjokes.MyJokesActivityView">
-        </activity>
-        <activity android:name=".ui.admin.AdminActivityView">
-        </activity>
+        <activity android:name=".ui.myjokes.MyJokesActivityView" />
+        <activity android:name=".ui.admin.AdminActivityView" />
 
         <service android:name=".utils.FirebasePush.MyFirebaseMessagingService">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".utils.FirebasePush.FirebaseIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
-        <service android:name=".utils.FirebasePush.FirebaseIDService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
-            </intent-filter>
-        </service>
+        <activity android:name=".ui.register.RegisterActivityView" />
+        <activity android:name=".ui.forgotPassword.ForgotPasswordActivityView"></activity>
     </application>
 
 </manifest>

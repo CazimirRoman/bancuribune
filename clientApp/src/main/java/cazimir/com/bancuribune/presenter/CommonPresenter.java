@@ -19,19 +19,25 @@ import cazimir.com.bancuribune.ui.add.OnAddJokeVoteFinishedListener;
 import cazimir.com.bancuribune.ui.admin.IAdminActivityView;
 import cazimir.com.bancuribune.ui.admin.OnGetAllPendingJokesListener;
 import cazimir.com.bancuribune.ui.admin.OnUpdateApproveStatusListener;
+import cazimir.com.bancuribune.ui.forgotPassword.IForgotPasswordActivityView;
 import cazimir.com.bancuribune.ui.list.IMainActivityView;
 import cazimir.com.bancuribune.ui.list.OnAllowedToAddFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnCheckIfVotedFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnGetJokesListener;
 import cazimir.com.bancuribune.ui.list.OnUpdatePointsFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnUpdateVotedByFinishedListener;
+import cazimir.com.bancuribune.ui.login.ILoginActivityView;
 import cazimir.com.bancuribune.ui.myjokes.IMyJokesActivityView;
 import cazimir.com.bancuribune.ui.myjokes.OnCalculatePointsListener;
 import cazimir.com.bancuribune.ui.myjokes.OnFirebaseGetMyJokesListener;
 import cazimir.com.bancuribune.ui.myjokes.OnGetFacebookNameListener;
+import cazimir.com.bancuribune.ui.register.IRegisterActivityView;
 
-public class CommonPresenter implements ICommonPresenter, OnAdminCheckFinishedListener, OnGetJokesListener, OnAddUserListener, OnGetAllPendingJokesListener, OnAddRankFinishedListener, OnUpdateRankPointsSuccess, OnCheckIfRankDataInDBListener, OnUpdateApproveStatusListener, OnFirebaseGetMyJokesListener, OnAddFinishedListener, OnUpdatePointsFinishedListener, OnUpdateVotedByFinishedListener, OnCheckIfVotedFinishedListener, OnAddJokeVoteFinishedListener, OnAllowedToAddFinishedListener {
+public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinishedListener, OnResetPasswordListener, OnRegistrationFinishedListener, OnAdminCheckFinishedListener, OnGetJokesListener, OnAddUserListener, OnGetAllPendingJokesListener, OnAddRankFinishedListener, OnUpdateRankPointsSuccess, OnCheckIfRankDataInDBListener, OnUpdateApproveStatusListener, OnFirebaseGetMyJokesListener, OnAddFinishedListener, OnUpdatePointsFinishedListener, OnUpdateVotedByFinishedListener, OnCheckIfVotedFinishedListener, OnAddJokeVoteFinishedListener, OnAllowedToAddFinishedListener {
 
+    private ILoginActivityView loginView;
+    private IRegisterActivityView registerView;
+    private IForgotPasswordActivityView forgotPasswordView;
     private IMainActivityView mainView;
     private IAddJokeActivityView addView;
     private IMyJokesActivityView myJokesView;
@@ -39,7 +45,12 @@ public class CommonPresenter implements ICommonPresenter, OnAdminCheckFinishedLi
     private IJokesRepository repository;
     private IAuthPresenter authPresenter;
     private String currentUserID;
-    private Boolean isAdmin = false;
+
+    public CommonPresenter(IRegisterActivityView view) {
+        this.registerView = view;
+        this.authPresenter = new AuthPresenter(view);
+        setCurrentLoggedInUserId();
+    }
 
     public CommonPresenter(IMainActivityView view) {
         this.mainView = view;
@@ -69,8 +80,24 @@ public class CommonPresenter implements ICommonPresenter, OnAdminCheckFinishedLi
         setCurrentLoggedInUserId();
     }
 
+    public CommonPresenter(ILoginActivityView view) {
+        this.loginView = view;
+        this.authPresenter = new AuthPresenter(view);
+    }
+
+    public CommonPresenter(IForgotPasswordActivityView view) {
+        this.forgotPasswordView = view;
+        this.authPresenter = new AuthPresenter(view);
+    }
+
     private void setCurrentLoggedInUserId() {
         currentUserID = authPresenter.getCurrentUserID();
+    }
+
+    @Override
+    public void registerUser(String email, String password) {
+        registerView.showProgress();
+        authPresenter.registerUser(this, email, password);
     }
 
     public void getAllJokesData(boolean reset, boolean shouldShowProgress){
@@ -180,20 +207,38 @@ public class CommonPresenter implements ICommonPresenter, OnAdminCheckFinishedLi
 
     @Override
     public void getFacebookProfilePicture(final OnGetProfilePictureListener listener) throws IOException {
-        String id = Profile.getCurrentProfile().getId();
-        final URL imageURL = new URL("https://graph.facebook.com/" + id + "/picture?type=large");
-        listener.OnGetProfilePictureSuccess(imageURL);
+        if(loggedInViaFacebook()){
+            String id = Profile.getCurrentProfile().getId();
+            final URL imageURL = new URL("https://graph.facebook.com/" + id + "/picture?type=large");
+            listener.OnGetProfilePictureSuccess(imageURL);
+        }else{
+            listener.OnGetProfilePictureFailed();
+        }
+
+
     }
 
     @Override
-    public void getFacebookName(OnGetFacebookNameListener listener) {
-        String name = Profile.getCurrentProfile().getName();
-        if(name != null){
-            listener.OnGetFacebookNameSuccess(name);
+    public void getProfileName(OnGetFacebookNameListener listener) {
+
+        if(loggedInViaFacebook()){
+            String name = Profile.getCurrentProfile().getName();
+            if(name != null){
+                listener.OnGetFacebookNameSuccess(name);
+            }else{
+                listener.OnGetFacebookNameFailed();
+            }
         }else{
-            listener.OnGetFacebookNameFailed();
+            listener.OnGetFacebookNameSuccess(authPresenter.getCurrentUserName());
+        }
+    }
+
+    private boolean loggedInViaFacebook() {
+        if(Profile.getCurrentProfile() != null){
+            return true;
         }
 
+        return false;
     }
 
     @Override
@@ -362,13 +407,59 @@ public class CommonPresenter implements ICommonPresenter, OnAdminCheckFinishedLi
 
     @Override
     public void OnAdminCheckTrue() {
-        mainView.saveAdminDataToSharedPreferences(true);
         mainView.showAdminButton();
+        mainView.setAdmin(true);
     }
 
     @Override
     public void OnAdminCheckFalse() {
-        mainView.saveAdminDataToSharedPreferences(false);
+        mainView.setAdmin(false);
 
+    }
+
+    @Override
+    public void onRegistrationSuccess(String message) {
+        registerView.showToast(message);
+        registerView.hideProgress();
+        registerView.redirectToLogin();
+    }
+
+    @Override
+    public void onRegistrationFailed(String error) {
+        registerView.showAlertDialog(error);
+        registerView.hideProgress();
+    }
+
+    @Override
+    public void sendResetInstructions(String email) {
+        authPresenter.performPasswordReset(this, email);
+    }
+
+    @Override
+    public void performLogin(String email, String password) {
+        authPresenter.login(this, email, password);
+    }
+
+    @Override
+    public void onLoginWithEmailSuccess() {
+        loginView.launchMainActivity();
+        loginView.hideProgress();
+    }
+
+    @Override
+    public void onLoginWithEmailFailed(String error) {
+        loginView.showAlertDialog(error);
+        loginView.hideProgress();
+    }
+
+    @Override
+    public void onResetPasswordSuccess(String message) {
+        forgotPasswordView.showToast(message);
+        forgotPasswordView.redirectToLogin();
+    }
+
+    @Override
+    public void onResetPasswordFailed(String error) {
+        forgotPasswordView.showToast(error);
     }
 }

@@ -1,6 +1,7 @@
 package cazimir.com.bancuribune.utils;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
@@ -33,5 +34,13 @@ public class Utils {
 
     public static boolean isInternetAvailable(Context context) {
         return NetworkStatus.getInstance(context).isOnline();
+    }
+
+    public static boolean isValidEmail(CharSequence target) {
+        if (TextUtils.isEmpty(target)) {
+            return false;
+        } else {
+            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+        }
     }
 }

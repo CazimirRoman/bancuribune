@@ -62,7 +62,7 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
     }
 
     private void getProfileNameFromFacebook() {
-        presenter.getFacebookName(this);
+        presenter.getProfileName(this);
     }
 
     private void getProfilePictureFromFacebook() throws IOException {

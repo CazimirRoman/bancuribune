@@ -63,11 +63,7 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
 
     @Override
     public void sendDataToDatabase(Joke joke) {
-
-        SharedPreferences prefs = getSharedPreferences(Constants.ADMIN, MODE_PRIVATE);
-        Boolean isAdmin =  prefs.getBoolean(Constants.ADMIN, false);
-
-        presenter.addJoke(joke, isAdmin);
+        presenter.addJoke(joke, getIntent().getExtras().getBoolean(Constants.ADMIN));
     }
 
     @Override
@@ -92,7 +88,6 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
             }else{
                 alertDialog.show(getString(R.string.no_internet));
             }
-
         }
     }
 
