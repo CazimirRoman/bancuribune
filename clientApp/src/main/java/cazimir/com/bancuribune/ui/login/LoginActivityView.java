@@ -21,6 +21,7 @@ import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.presenter.AuthPresenter;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
+import cazimir.com.bancuribune.ui.forgotPassword.ForgotPasswordActivityView;
 import cazimir.com.bancuribune.ui.list.MainActivityView;
 import cazimir.com.bancuribune.ui.register.RegisterActivityView;
 import cazimir.com.bancuribune.utils.MyAlertDialog;
@@ -173,5 +174,10 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     @Override
     public void showAlertDialog(String message) {
         alertDialog.show(message);
+    }
+
+    @OnClick(R.id.btnForgotPassword)
+    public void onViewClicked() {
+        startActivity(new Intent(LoginActivityView.this, ForgotPasswordActivityView.class));
     }
 }

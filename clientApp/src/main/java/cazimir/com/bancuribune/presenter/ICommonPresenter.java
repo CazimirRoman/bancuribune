@@ -6,9 +6,9 @@ import java.util.List;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.ui.myjokes.OnCalculatePointsListener;
 import cazimir.com.bancuribune.ui.myjokes.OnGetFacebookNameListener;
-import cazimir.com.bancuribune.ui.register.OnRegisterListener;
 
 public interface ICommonPresenter {
+    void sendResetInstructions(String email);
     void performLogin(String email, String password);
     void registerUser(String email, String password);
     void getAllJokesData(boolean reset, boolean swipe);

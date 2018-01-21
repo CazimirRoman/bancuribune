@@ -112,7 +112,6 @@ public class RegisterActivityView extends BaseActivity implements IRegisterActiv
 
     @Override
     public void redirectToLogin() {
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

@@ -44,5 +44,9 @@
     <string name="hint_password_confirm">Confirma parola</string>
     <string name="password_not_matching">Parola nu este aceeasi</string>
     <string name="password_forgot">Parola uitata</string>
+    <string name="forgot_password">Ai uitat parola?</string>
+    <string name="forgot_password_msg">Te rog sa introduci mailul tau ca sa iti trimitem instructiunile de resetare</string>
+    <string name="btn_reset_password">Reseteaza</string>
+    <string name="btn_back">Inapoi</string>
 
 </resources>

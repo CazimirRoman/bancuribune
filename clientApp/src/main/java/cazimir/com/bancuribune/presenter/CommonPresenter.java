@@ -19,6 +19,7 @@ import cazimir.com.bancuribune.ui.add.OnAddJokeVoteFinishedListener;
 import cazimir.com.bancuribune.ui.admin.IAdminActivityView;
 import cazimir.com.bancuribune.ui.admin.OnGetAllPendingJokesListener;
 import cazimir.com.bancuribune.ui.admin.OnUpdateApproveStatusListener;
+import cazimir.com.bancuribune.ui.forgotPassword.IForgotPasswordActivityView;
 import cazimir.com.bancuribune.ui.list.IMainActivityView;
 import cazimir.com.bancuribune.ui.list.OnAllowedToAddFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnCheckIfVotedFinishedListener;
@@ -32,10 +33,11 @@ import cazimir.com.bancuribune.ui.myjokes.OnFirebaseGetMyJokesListener;
 import cazimir.com.bancuribune.ui.myjokes.OnGetFacebookNameListener;
 import cazimir.com.bancuribune.ui.register.IRegisterActivityView;
 
-public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinishedListener, OnRegistrationFinishedListener, OnAdminCheckFinishedListener, OnGetJokesListener, OnAddUserListener, OnGetAllPendingJokesListener, OnAddRankFinishedListener, OnUpdateRankPointsSuccess, OnCheckIfRankDataInDBListener, OnUpdateApproveStatusListener, OnFirebaseGetMyJokesListener, OnAddFinishedListener, OnUpdatePointsFinishedListener, OnUpdateVotedByFinishedListener, OnCheckIfVotedFinishedListener, OnAddJokeVoteFinishedListener, OnAllowedToAddFinishedListener {
+public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinishedListener, OnResetPasswordListener, OnRegistrationFinishedListener, OnAdminCheckFinishedListener, OnGetJokesListener, OnAddUserListener, OnGetAllPendingJokesListener, OnAddRankFinishedListener, OnUpdateRankPointsSuccess, OnCheckIfRankDataInDBListener, OnUpdateApproveStatusListener, OnFirebaseGetMyJokesListener, OnAddFinishedListener, OnUpdatePointsFinishedListener, OnUpdateVotedByFinishedListener, OnCheckIfVotedFinishedListener, OnAddJokeVoteFinishedListener, OnAllowedToAddFinishedListener {
 
     private ILoginActivityView loginView;
     private IRegisterActivityView registerView;
+    private IForgotPasswordActivityView forgotPasswordView;
     private IMainActivityView mainView;
     private IAddJokeActivityView addView;
     private IMyJokesActivityView myJokesView;
@@ -80,6 +82,11 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
 
     public CommonPresenter(ILoginActivityView view) {
         this.loginView = view;
+        this.authPresenter = new AuthPresenter(view);
+    }
+
+    public CommonPresenter(IForgotPasswordActivityView view) {
+        this.forgotPasswordView = view;
         this.authPresenter = new AuthPresenter(view);
     }
 
@@ -424,6 +431,11 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
     }
 
     @Override
+    public void sendResetInstructions(String email) {
+        authPresenter.performPasswordReset(this, email);
+    }
+
+    @Override
     public void performLogin(String email, String password) {
         authPresenter.login(this, email, password);
     }
@@ -438,5 +450,16 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
     public void onLoginWithEmailFailed(String error) {
         loginView.showAlertDialog(error);
         loginView.hideProgress();
+    }
+
+    @Override
+    public void onResetPasswordSuccess(String message) {
+        forgotPasswordView.showToast(message);
+        forgotPasswordView.redirectToLogin();
+    }
+
+    @Override
+    public void onResetPasswordFailed(String error) {
+        forgotPasswordView.showToast(error);
     }
 }

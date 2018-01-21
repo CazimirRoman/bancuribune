@@ -1,10 +1,7 @@
 package cazimir.com.bancuribune.presenter;
 
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.view.View;
-import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.FacebookCallback;
@@ -21,6 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import cazimir.com.bancuribune.ui.add.IAddJokeActivityView;
 import cazimir.com.bancuribune.ui.admin.IAdminActivityView;
+import cazimir.com.bancuribune.ui.forgotPassword.IForgotPasswordActivityView;
 import cazimir.com.bancuribune.ui.list.IMainActivityView;
 import cazimir.com.bancuribune.ui.login.ILoginActivityView;
 import cazimir.com.bancuribune.ui.myjokes.IMyJokesActivityView;
@@ -30,6 +28,7 @@ public class AuthPresenter implements IAuthPresenter {
 
     private FirebaseAuth auth;
     private IRegisterActivityView register;
+    private IForgotPasswordActivityView forgot;
     private ILoginActivityView login;
     private IMainActivityView jokes;
     private IAddJokeActivityView add;
@@ -64,6 +63,11 @@ public class AuthPresenter implements IAuthPresenter {
     public AuthPresenter(IAdminActivityView view) {
         auth = FirebaseAuth.getInstance();
         this.adminView = view;
+    }
+
+    public AuthPresenter(IForgotPasswordActivityView view) {
+        auth = FirebaseAuth.getInstance();
+        this.forgot = view;
     }
 
     @Override
@@ -184,6 +188,20 @@ public class AuthPresenter implements IAuthPresenter {
                             login.loginFailed(task.getException().toString());
                         }
 
+                    }
+                });
+    }
+
+    public void performPasswordReset(final OnResetPasswordListener listener, String email){
+        auth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            listener.onResetPasswordSuccess("We have sent you instructions to reset your password!");
+                        } else {
+                            listener.onResetPasswordFailed(task.getException().getMessage());
+                        }
                     }
                 });
     }

@@ -22,8 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.add.AddJokeActivityView"></activity>
-        <activity android:name=".ui.list.MainActivityView"></activity>
+        <activity android:name=".ui.add.AddJokeActivityView" />
+        <activity android:name=".ui.list.MainActivityView" />
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -47,8 +47,8 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".ui.myjokes.MyJokesActivityView"></activity>
-        <activity android:name=".ui.admin.AdminActivityView"></activity>
+        <activity android:name=".ui.myjokes.MyJokesActivityView" />
+        <activity android:name=".ui.admin.AdminActivityView" />
 
         <service android:name=".utils.FirebasePush.MyFirebaseMessagingService">
             <intent-filter>
@@ -61,7 +61,8 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".ui.register.RegisterActivityView"></activity>
+        <activity android:name=".ui.register.RegisterActivityView" />
+        <activity android:name=".ui.forgotPassword.ForgotPasswordActivityView"></activity>
     </application>
 
 </manifest>
