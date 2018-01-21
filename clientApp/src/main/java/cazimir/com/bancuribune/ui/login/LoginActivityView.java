@@ -28,51 +28,91 @@ import cazimir.com.bancuribune.utils.MyAlertDialog;
 import cazimir.com.bancuribune.utils.Utils;
 
 import static cazimir.com.bancuribune.R.id.login_button_dummy;
-import static cazimir.com.bancuribune.R.id.register_button;
 
-public class LoginActivityView extends BaseActivity implements ILoginActivityView, OnClickListener {
+public class LoginActivityView extends BaseActivity implements ILoginActivityView {
+
+    private MyAlertDialog mAlertDialog;
+    private AuthPresenter mAuthPresenter;
+    private CallbackManager mCallbackManager;
+    private CommonPresenter mPresenter;
 
     @BindView(R.id.progress)
     ProgressBar progress;
     @BindView(R.id.btnForgotPassword)
-    Button btnForgotPassword;
-    private MyAlertDialog alertDialog;
-    private AuthPresenter authPresenter;
-    private CallbackManager callbackManager;
-    private CommonPresenter presenter;
-
+    TextView btnForgotPassword;
     @BindView(R.id.etEmail)
     EditText etEmail;
     @BindView(R.id.etPassword)
     EditText etPassword;
     @BindView(R.id.btnLoginWithEmail)
-    Button btnLoginWithEmail;
-
+    TextView btnLoginWithEmail;
     @BindView(R.id.login_button)
     LoginButton facebookButton;
-
     @BindView(login_button_dummy)
-    TextView loginButton;
-
-    @BindView(register_button)
-    TextView registerButton;
+    TextView loginButtonDummy;
+    @BindView(R.id.btnRegister)
+    TextView btnRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        alertDialog = new MyAlertDialog(this);
-        callbackManager = CallbackManager.Factory.create();
-        authPresenter = new AuthPresenter(this);
-        authPresenter.checkIfUserLoggedIn();
-        presenter = new CommonPresenter(this);
-        loginButton.setOnClickListener(this);
-        registerButton.setOnClickListener(this);
-        btnLoginWithEmail.setOnClickListener(this);
+        mAlertDialog = new MyAlertDialog(this);
+        mCallbackManager = CallbackManager.Factory.create();
+        mAuthPresenter = new AuthPresenter(this);
+        mAuthPresenter.checkIfUserLoggedIn();
+        mPresenter = new CommonPresenter(this);
+        setFacebookClickListener();
+    }
+
+    @Override
+    public Activity getContext() {
+        return this;
     }
 
     @Override
     protected int getLayoutId() {
         return R.layout.activity_login_view;
+    }
+
+    @OnClick({R.id.btnLoginWithEmail, R.id.login_button_dummy, R.id.btnRegister, R.id.btnForgotPassword})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.btnLoginWithEmail:
+                String email = etEmail.getText().toString();
+                String password = etPassword.getText().toString();
+
+                if (isFormDataValid()) {
+                    mPresenter.performLogin(email, password);
+                    showProgress();
+                }
+                break;
+            case R.id.login_button_dummy:
+                if (Utils.isInternetAvailable(this)) {
+                    facebookButton.performClick();
+                    loginButtonDummy.setText(getString(R.string.loading_data));
+                } else {
+                    mAlertDialog.show(getString(R.string.no_internet));
+                }
+                break;
+            case R.id.btnRegister:
+                startActivity(new Intent(LoginActivityView.this, RegisterActivityView.class));
+                break;
+
+            case R.id.btnForgotPassword:
+                startActivity(new Intent(LoginActivityView.this, ForgotPasswordActivityView.class));
+                break;
+        }
+    }
+
+    private void setFacebookClickListener() {
+        facebookButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                facebookButton.setReadPermissions("email", "public_profile");
+                facebookButton.registerCallback(mCallbackManager, mAuthPresenter.loginWithFacebook());
+                facebookButton.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
@@ -92,45 +132,9 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     }
 
     @Override
-    public Activity getContext() {
-        return this;
-    }
-
-    @OnClick(R.id.login_button)
-    void performFacebookLogin() {
-
-        facebookButton.setReadPermissions("email", "public_profile");
-        facebookButton.registerCallback(callbackManager, authPresenter.loginWithFacebook());
-        facebookButton.setVisibility(View.GONE);
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (view == loginButton) {
-            if (Utils.isInternetAvailable(this)) {
-                facebookButton.performClick();
-                loginButton.setText(getString(R.string.loading_data));
-            } else {
-                alertDialog.show(getString(R.string.no_internet));
-            }
-        } else if (view == registerButton) {
-            startActivity(new Intent(LoginActivityView.this, RegisterActivityView.class));
-        } else if (view == btnLoginWithEmail) {
-
-            String email = etEmail.getText().toString();
-            String password = etPassword.getText().toString();
-
-            if (isFormDataValid()) {
-                presenter.performLogin(email, password);
-                showProgress();
-            }
-        }
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     public boolean isFormDataValid() {
@@ -173,11 +177,6 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
 
     @Override
     public void showAlertDialog(String message) {
-        alertDialog.show(message);
-    }
-
-    @OnClick(R.id.btnForgotPassword)
-    public void onViewClicked() {
-        startActivity(new Intent(LoginActivityView.this, ForgotPasswordActivityView.class));
+        mAlertDialog.show(message);
     }
 }
