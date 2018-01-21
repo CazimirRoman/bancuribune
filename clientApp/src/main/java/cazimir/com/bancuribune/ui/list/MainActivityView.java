@@ -87,6 +87,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @BindView(R.id.fab)
     LinearLayout fab;
     private String currentRank;
+    private Boolean isAdmin = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +110,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
         initSearch();
         presenter = new CommonPresenter(this);
+        checkIfAdmin();
         getMyRank();
         getAllJokesData(true, false);
     }
@@ -197,6 +199,11 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     }
 
     @Override
+    public void setAdmin(Boolean value) {
+        isAdmin = value;
+    }
+
+    @Override
     public void displayJokes(List<Joke> jokes) {
 
         for (Joke joke : jokes) {
@@ -212,15 +219,14 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         //TODO : refactor
         hideProgressBar();
         if (Profile.getCurrentProfile() != null) {
-            alertDialog.getAlertDialog().setMessage(error);
-            if (!alertDialog.getAlertDialog().isShowing()) alertDialog.getAlertDialog().show();
+            alertDialog.show(error);
         }
     }
 
     @OnClick(addJokeButtonFAB)
     public void checkIfAllowedToAdd() {
 
-        Boolean isAdmin = getAdminDataFromSharedPreferences();
+        checkIfAdmin();
 
         if (!isAdmin) {
 
@@ -260,13 +266,13 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @Override
     public void navigateToAddJokeActivity() {
         Intent addJokeIntent = new Intent(this, AddJokeActivityView.class);
+        addJokeIntent.putExtra(Constants.ADMIN, isAdmin);
         startActivityForResult(addJokeIntent, ADD_JOKE_REQUEST);
     }
 
     @Override
     public void isNotAllowedToAdd(int addLimit) {
         showAlertDialog(String.format(getString(R.string.add_limit_reached), String.valueOf(addLimit)));
-
     }
 
     @Override
@@ -323,24 +329,10 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         editor.apply();
     }
 
-    @Override
-    public void saveAdminDataToSharedPreferences(Boolean isAdmin) {
-        SharedPreferences.Editor editor = getSharedPreferences(Constants.ADMIN, MODE_PRIVATE).edit();
-        editor.putBoolean(Constants.ADMIN, isAdmin);
-        editor.apply();
-    }
-
     public void saveRemainingDataToSharedPreferences(int remainingAdds) {
         SharedPreferences.Editor editor = getSharedPreferences(Constants.REMAINING_ADDS, MODE_PRIVATE).edit();
         editor.putInt(Constants.REMAINING, remainingAdds);
         editor.apply();
-    }
-
-    @Override
-    public boolean getAdminDataFromSharedPreferences() {
-        SharedPreferences prefs = getSharedPreferences(Constants.ADMIN, MODE_PRIVATE);
-        return prefs.getBoolean(Constants.ADMIN, false);
-
     }
 
     @Override

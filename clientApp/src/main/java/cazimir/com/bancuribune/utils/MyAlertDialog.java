@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 
 import cazimir.com.bancuribune.R;
+import cazimir.com.bancuribune.constants.Constants;
 
 public class MyAlertDialog extends AlertDialog {
 
@@ -17,6 +18,7 @@ public class MyAlertDialog extends AlertDialog {
     }
 
     public AlertDialog getAlertDialog() {
+
         if (dialog == null) {
             dialog = new AlertDialog.Builder(context).create();
             dialog.setButton(AlertDialog.BUTTON_POSITIVE, context.getString(R.string.close), new DialogInterface.OnClickListener() {
@@ -29,7 +31,7 @@ public class MyAlertDialog extends AlertDialog {
         return dialog;
     }
 
-    public void show(String message){
+    public void show(String message) {
         getAlertDialog().setMessage(message);
         if (!getAlertDialog().isShowing()) getAlertDialog().show();
     }

@@ -1,7 +1,10 @@
 package cazimir.com.bancuribune.presenter;
 
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.view.View;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.FacebookCallback;
@@ -14,21 +17,29 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import cazimir.com.bancuribune.ui.add.IAddJokeActivityView;
 import cazimir.com.bancuribune.ui.admin.IAdminActivityView;
 import cazimir.com.bancuribune.ui.list.IMainActivityView;
 import cazimir.com.bancuribune.ui.login.ILoginActivityView;
 import cazimir.com.bancuribune.ui.myjokes.IMyJokesActivityView;
+import cazimir.com.bancuribune.ui.register.IRegisterActivityView;
 
 public class AuthPresenter implements IAuthPresenter {
 
     private FirebaseAuth auth;
+    private IRegisterActivityView register;
     private ILoginActivityView login;
     private IMainActivityView jokes;
     private IAddJokeActivityView add;
     private IMyJokesActivityView myJokes;
     private IAdminActivityView adminView;
+
+    public AuthPresenter(IRegisterActivityView view) {
+        auth = FirebaseAuth.getInstance();
+        this.register = view;
+    }
 
     public AuthPresenter(ILoginActivityView view) {
         auth = FirebaseAuth.getInstance();
@@ -55,6 +66,54 @@ public class AuthPresenter implements IAuthPresenter {
         this.adminView = view;
     }
 
+    @Override
+    public void login(final OnLoginWithEmailFinishedListener listener, String email, String password) {
+        auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (!task.isSuccessful()) {
+                            listener.onLoginWithEmailFailed(task.getException().getMessage());
+                        } else {
+                            if (auth.getCurrentUser().isEmailVerified()) {
+                                listener.onLoginWithEmailSuccess();
+                            } else {
+                                listener.onLoginWithEmailFailed("Please verify your email to login");
+
+                            }
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void registerUser(final OnRegistrationFinishedListener listener, String email, String password) {
+
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (!task.isSuccessful()) {
+                    listener.onRegistrationFailed(task.getException().getMessage().toString());
+                } else {
+                    final FirebaseUser user = auth.getCurrentUser();
+                    if (user != null && !user.isEmailVerified()) {
+                        user.sendEmailVerification()
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+
+                                        if (task.isSuccessful()) {
+                                            listener.onRegistrationSuccess("Verification email sent to " + user.getEmail());
+                                        } else {
+                                            listener.onRegistrationFailed("Failed to send verification email.");
+                                        }
+                                    }
+                                });
+                    }
+                }
+            }
+        });
+    }
 
     @Override
     public FacebookCallback<LoginResult> loginWithFacebook() {
@@ -88,7 +147,7 @@ public class AuthPresenter implements IAuthPresenter {
     @Override
     public String getCurrentUserID() {
 
-        if(auth.getCurrentUser() != null){
+        if (auth.getCurrentUser() != null) {
             return auth.getCurrentUser().getUid();
         }
         return "";
@@ -96,8 +155,8 @@ public class AuthPresenter implements IAuthPresenter {
 
     @Override
     public String getCurrentUserName() {
-        if(auth.getCurrentUser() != null){
-            return auth.getCurrentUser().getDisplayName();
+        if (auth.getCurrentUser() != null) {
+            return auth.getCurrentUser().getEmail();
         }
 
         return "";

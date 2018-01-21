@@ -6,8 +6,11 @@ import java.util.List;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.ui.myjokes.OnCalculatePointsListener;
 import cazimir.com.bancuribune.ui.myjokes.OnGetFacebookNameListener;
+import cazimir.com.bancuribune.ui.register.OnRegisterListener;
 
 public interface ICommonPresenter {
+    void performLogin(String email, String password);
+    void registerUser(String email, String password);
     void getAllJokesData(boolean reset, boolean swipe);
     void getFilteredJokesData(String text);
     void getAllPendingJokesData();
@@ -25,7 +28,7 @@ public interface ICommonPresenter {
     void updateJokeApproval(String uid);
     void writeVoteLogToDB(String uid);
     void getFacebookProfilePicture(OnGetProfilePictureListener listener) throws IOException;
-    void getFacebookName(OnGetFacebookNameListener listener);
+    void getProfileName(OnGetFacebookNameListener listener);
     void calculateTotalPoints(OnCalculatePointsListener listener, List<Joke> jokes);
     void updateRankPointsAndName(int points, String rankName, String rankId);
 
