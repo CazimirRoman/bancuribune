@@ -12,15 +12,14 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
+import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.ui.login.OnFormValidatedListener;
-import cazimir.com.bancuribune.utils.MyAlertDialog;
 import cazimir.com.bancuribune.utils.Utils;
 
 public class RegisterActivityView extends BaseBackActivity implements IRegisterActivityView, OnFormValidatedListener {
 
-    private MyAlertDialog mAlertDialog;
     private CommonPresenter mPresenter;
 
     @BindView(R.id.etEmail)
@@ -37,9 +36,7 @@ public class RegisterActivityView extends BaseBackActivity implements IRegisterA
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mPresenter = new CommonPresenter(this);
-        mAlertDialog = new MyAlertDialog(this);
     }
 
     @OnClick(R.id.btnRegister)
@@ -72,7 +69,7 @@ public class RegisterActivityView extends BaseBackActivity implements IRegisterA
 
     @Override
     public void showAlertDialog(String message) {
-        mAlertDialog.show(message);
+        getAlertDialog().show(message);
     }
 
     @Override
@@ -134,5 +131,10 @@ public class RegisterActivityView extends BaseBackActivity implements IRegisterA
                 setPasswordConfirmError(getString(R.string.password_not_matching));
                 break;
         }
+    }
+
+    @Override
+    public IGeneralView getInstance() {
+        return this;
     }
 }

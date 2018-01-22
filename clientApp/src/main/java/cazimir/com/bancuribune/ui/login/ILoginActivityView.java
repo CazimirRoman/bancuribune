@@ -3,7 +3,9 @@ package cazimir.com.bancuribune.ui.login;
 
 import android.app.Activity;
 
-public interface ILoginActivityView {
+import cazimir.com.bancuribune.base.IGeneralView;
+
+public interface ILoginActivityView extends IGeneralView {
     void showProgress();
     void hideProgress();
     void showAlertDialog(String message);

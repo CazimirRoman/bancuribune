@@ -45,6 +45,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
+import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
@@ -87,6 +88,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     LinearLayout fab;
     private String currentRank;
     private Boolean isAdmin = false;
+    private String sharedText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -372,6 +374,8 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     private void shareJoke(String text) {
 
+        this.sharedText = text;
+
         if (!requestWriteStoragePermissions()) {
             Bitmap bitmap = drawMultilineTextToBitmap(this, R.drawable.share_background, text);
             String bitmapPath = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, "title", "description");
@@ -397,7 +401,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_STORAGE_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //try again
+                shareJoke(sharedText);
             } else {
                 Toast.makeText(this, "Permission denied. Please accept permission request", Toast.LENGTH_SHORT).show();
             }
@@ -456,5 +460,10 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @Override
     public void checkIfAdmin() {
         presenter.checkIfAdmin();
+    }
+
+    @Override
+    public IGeneralView getInstance() {
+        return this;
     }
 }

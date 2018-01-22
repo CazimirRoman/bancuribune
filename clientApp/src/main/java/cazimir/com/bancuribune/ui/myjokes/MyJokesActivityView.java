@@ -17,6 +17,7 @@ import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.base.EmptyRecyclerView;
+import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
@@ -48,7 +49,7 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
         super.onCreate(savedInstanceState);
 
         initRecycleView();
-        presenter = new CommonPresenter(this, new JokesRepository());
+        presenter = new CommonPresenter(this);
         try {
             getProfilePictureFromFacebook();
             getProfileNameFromFacebook();
@@ -196,5 +197,10 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
     @Override
     public void OnGetFacebookNameFailed() {
 
+    }
+
+    @Override
+    public IGeneralView getInstance() {
+        return this;
     }
 }

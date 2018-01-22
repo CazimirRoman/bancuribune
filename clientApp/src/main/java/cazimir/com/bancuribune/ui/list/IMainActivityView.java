@@ -2,10 +2,11 @@ package cazimir.com.bancuribune.ui.list;
 
 import java.util.List;
 
+import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
 
-public interface IMainActivityView {
+public interface IMainActivityView extends IGeneralView {
     void setAdmin(Boolean value);
     void displayJokes(List<Joke> jokes);
     void requestFailed(String error);

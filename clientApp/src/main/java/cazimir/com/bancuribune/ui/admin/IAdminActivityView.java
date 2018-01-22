@@ -2,10 +2,11 @@ package cazimir.com.bancuribune.ui.admin;
 
 import java.util.List;
 
+import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.model.Joke;
 
 
-public interface IAdminActivityView {
+public interface IAdminActivityView extends IGeneralView {
     void getAllPendingJokes();
     void refreshJokes(List<Joke> jokes);
     void showToast(String message);

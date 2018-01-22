@@ -16,6 +16,7 @@ import butterknife.BindView;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.base.BaseBackActivity;
+import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.utils.Utils;
 
@@ -100,5 +101,10 @@ public class ForgotPasswordActivityView extends BaseBackActivity implements IFor
         }
 
         return true;
+    }
+
+    @Override
+    public IGeneralView getInstance() {
+        return this;
     }
 }

@@ -1,9 +1,11 @@
 package cazimir.com.bancuribune.ui.register;
 
+import cazimir.com.bancuribune.base.IGeneralView;
+
 /**
  * TODO: Add a class header comment!
  */
-public interface IRegisterActivityView {
+public interface IRegisterActivityView extends IGeneralView {
     void showProgress();
     void hideProgress();
     void showAlertDialog(String message);

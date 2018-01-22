@@ -17,23 +17,20 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
+import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.presenter.AuthPresenter;
-import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.ui.forgotPassword.ForgotPasswordActivityView;
 import cazimir.com.bancuribune.ui.list.MainActivityView;
 import cazimir.com.bancuribune.ui.register.RegisterActivityView;
-import cazimir.com.bancuribune.utils.MyAlertDialog;
 import cazimir.com.bancuribune.utils.Utils;
 
 import static cazimir.com.bancuribune.R.id.login_button_dummy;
 
 public class LoginActivityView extends BaseActivity implements ILoginActivityView, OnFormValidatedListener {
 
-    private MyAlertDialog mAlertDialog;
     private AuthPresenter mAuthPresenter;
     private CallbackManager mCallbackManager;
-    private CommonPresenter mPresenter;
 
     @BindView(R.id.etEmail)
     EditText etEmail;
@@ -55,11 +52,9 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAlertDialog = new MyAlertDialog(this);
         mCallbackManager = CallbackManager.Factory.create();
         mAuthPresenter = new AuthPresenter(this);
         mAuthPresenter.checkIfUserLoggedIn();
-        mPresenter = new CommonPresenter(this);
         setFacebookButtonClickListener();
     }
 
@@ -91,7 +86,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
                     facebookButton.performClick();
                     loginButtonDummy.setText(getString(R.string.loading_data));
                 } else {
-                    mAlertDialog.show(getString(R.string.no_internet));
+                    getAlertDialog().show(getString(R.string.no_internet));
                 }
                 break;
             case R.id.btnRegister:
@@ -158,12 +153,12 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
 
     @Override
     public void showAlertDialog(String message) {
-        mAlertDialog.show(message);
+        getAlertDialog().show(message);
     }
 
     @Override
     public void onValidateSuccess(String email, String password) {
-        mPresenter.performLogin(email, password);
+        getPresenter().performLogin(email, password);
         showProgress();
     }
 
@@ -186,5 +181,10 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
                 setPasswordError(getString(R.string.password_minimum));
                 break;
         }
+    }
+
+    @Override
+    public IGeneralView getInstance() {
+        return this;
     }
 }

@@ -13,6 +13,7 @@ import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.base.BaseBackActivity;
+import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
@@ -100,5 +101,10 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
 
     private Joke constructJokeObject() {
         return new Joke(addJokeEdit.getText().toString().trim());
+    }
+
+    @Override
+    public IGeneralView getInstance() {
+        return this;
     }
 }
