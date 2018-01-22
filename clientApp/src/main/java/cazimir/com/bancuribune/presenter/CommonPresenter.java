@@ -432,6 +432,7 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
 
     @Override
     public void sendResetInstructions(String email) {
+        forgotPasswordView.showProgress();
         authPresenter.performPasswordReset(this, email);
     }
 
@@ -456,6 +457,7 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
     public void onResetPasswordSuccess(String message) {
         forgotPasswordView.showToast(message);
         forgotPasswordView.redirectToLogin();
+        forgotPasswordView.hideProgress();
     }
 
     @Override

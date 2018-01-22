@@ -663,9 +663,13 @@ public class JokesRepository implements IJokesRepository {
                     assert user != null;
                 }
 
-                if (user.getRole().equals("Admin")) {
-                    listener.OnAdminCheckTrue();
-                } else {
+                if (user != null) {
+                    if (user.getRole().equals("Admin")) {
+                        listener.OnAdminCheckTrue();
+                    } else {
+                        listener.OnAdminCheckFalse();
+                    }
+                }else{
                     listener.OnAdminCheckFalse();
                 }
 

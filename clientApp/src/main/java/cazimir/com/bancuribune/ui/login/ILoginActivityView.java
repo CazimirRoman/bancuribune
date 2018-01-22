@@ -8,7 +8,9 @@ public interface ILoginActivityView {
     void hideProgress();
     void showAlertDialog(String message);
     void launchMainActivity();
-    void loginSucces();
+    void loginSuccess();
     void loginFailed(String message);
+    void setEmailError(String error);
+    void setPasswordError(String error);
     Activity getContext();
 }

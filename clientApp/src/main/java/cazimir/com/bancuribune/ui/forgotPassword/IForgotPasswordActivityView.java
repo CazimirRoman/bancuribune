@@ -5,5 +5,7 @@ package cazimir.com.bancuribune.ui.forgotPassword;
  */
 public interface IForgotPasswordActivityView {
     void showToast(String message);
+    void showProgress();
+    void hideProgress();
     void redirectToLogin();
 }

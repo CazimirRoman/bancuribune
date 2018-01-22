@@ -3,10 +3,8 @@ package cazimir.com.bancuribune.ui.login;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -19,6 +17,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
+import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.presenter.AuthPresenter;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.ui.forgotPassword.ForgotPasswordActivityView;
@@ -29,17 +28,13 @@ import cazimir.com.bancuribune.utils.Utils;
 
 import static cazimir.com.bancuribune.R.id.login_button_dummy;
 
-public class LoginActivityView extends BaseActivity implements ILoginActivityView {
+public class LoginActivityView extends BaseActivity implements ILoginActivityView, OnFormValidatedListener {
 
     private MyAlertDialog mAlertDialog;
     private AuthPresenter mAuthPresenter;
     private CallbackManager mCallbackManager;
     private CommonPresenter mPresenter;
 
-    @BindView(R.id.progress)
-    ProgressBar progress;
-    @BindView(R.id.btnForgotPassword)
-    TextView btnForgotPassword;
     @BindView(R.id.etEmail)
     EditText etEmail;
     @BindView(R.id.etPassword)
@@ -52,6 +47,10 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     TextView loginButtonDummy;
     @BindView(R.id.btnRegister)
     TextView btnRegister;
+    @BindView(R.id.btnForgotPassword)
+    TextView btnForgotPassword;
+    @BindView(R.id.progress)
+    ProgressBar progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +60,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         mAuthPresenter = new AuthPresenter(this);
         mAuthPresenter.checkIfUserLoggedIn();
         mPresenter = new CommonPresenter(this);
-        setFacebookClickListener();
+        setFacebookButtonClickListener();
     }
 
     @Override
@@ -74,17 +73,18 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         return R.layout.activity_login_view;
     }
 
+    @Override
+    protected int setActionBarTitle() {
+        return R.string.login;
+    }
+
     @OnClick({R.id.btnLoginWithEmail, R.id.login_button_dummy, R.id.btnRegister, R.id.btnForgotPassword})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnLoginWithEmail:
                 String email = etEmail.getText().toString();
                 String password = etPassword.getText().toString();
-
-                if (isFormDataValid()) {
-                    mPresenter.performLogin(email, password);
-                    showProgress();
-                }
+                Utils.validateFormData(this, email, password, Constants.EMPTY_STRING_PLACEHOLDER);
                 break;
             case R.id.login_button_dummy:
                 if (Utils.isInternetAvailable(this)) {
@@ -104,7 +104,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         }
     }
 
-    private void setFacebookClickListener() {
+    private void setFacebookButtonClickListener() {
         facebookButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -122,7 +122,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     }
 
     @Override
-    public void loginSucces() {
+    public void loginSuccess() {
         this.launchMainActivity();
     }
 
@@ -137,32 +137,13 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    public boolean isFormDataValid() {
+    public void setEmailError(String error) {
+        etEmail.setError(error);
+    }
 
-        String email = etEmail.getText().toString();
-        String password = etPassword.getText().toString();
-
-        if (TextUtils.isEmpty(email)) {
-            etEmail.setError(getString(R.string.email_missing));
-            return false;
-        } else {
-            if (!Utils.isValidEmail(email)) {
-                etEmail.setError(getString(R.string.email_invalid));
-                return false;
-            }
-        }
-
-        if (TextUtils.isEmpty(password)) {
-            etPassword.setError(getString(R.string.password_missing));
-            return false;
-        } else {
-            if (password.length() < 6) {
-                etPassword.setError(getString(R.string.minimum_password));
-                return false;
-            }
-        }
-
-        return true;
+    @Override
+    public void setPasswordError(String error) {
+        etPassword.setError(error);
     }
 
     @Override
@@ -178,5 +159,32 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     @Override
     public void showAlertDialog(String message) {
         mAlertDialog.show(message);
+    }
+
+    @Override
+    public void onValidateSuccess(String email, String password) {
+        mPresenter.performLogin(email, password);
+        showProgress();
+    }
+
+    @Override
+    public void onValidateFail(String what) {
+        switch (what) {
+            case Constants.EMAIL_EMPTY:
+                setEmailError(getString(R.string.email_missing));
+                break;
+
+            case Constants.EMAIL_INVALID:
+                setEmailError(getString(R.string.email_invalid));
+                break;
+
+            case Constants.PASSWORD_EMPTY:
+                setPasswordError(getString(R.string.password_missing));
+                break;
+
+            case Constants.PASSWORD_INVALID:
+                setPasswordError(getString(R.string.password_minimum));
+                break;
+        }
     }
 }

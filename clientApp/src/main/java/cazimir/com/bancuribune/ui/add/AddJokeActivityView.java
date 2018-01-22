@@ -12,13 +12,14 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
+import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.utils.MyAlertDialog;
 import cazimir.com.bancuribune.utils.Utils;
 
-public class AddJokeActivityView extends BaseActivity implements IAddJokeActivityView {
+public class AddJokeActivityView extends BaseBackActivity implements IAddJokeActivityView {
 
     private MyAlertDialog alertDialog;
     private CommonPresenter presenter;
@@ -32,10 +33,6 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getSupportActionBar() != null){
-            getSupportActionBar().setTitle(getString(R.string.add_joke));
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
 
         alertDialog = new MyAlertDialog(this);
         presenter = new CommonPresenter(this);
@@ -44,6 +41,11 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
     @Override
     protected int getLayoutId() {
         return R.layout.activity_add_joke;
+    }
+
+    @Override
+    protected int setActionBarTitle() {
+        return R.string.add_joke;
     }
 
     @Override
@@ -98,12 +100,5 @@ public class AddJokeActivityView extends BaseActivity implements IAddJokeActivit
 
     private Joke constructJokeObject() {
         return new Joke(addJokeEdit.getText().toString().trim());
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        hideSoftInput(addJokeEdit);
-        return true;
     }
 }

@@ -1,5 +1,4 @@
 <resources>
-
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
@@ -57,8 +56,12 @@
         <item name="android:padding">10sp</item>
     </style>
 
-
-
-
+    <style name="logo">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">210dp</item>
+        <item name="android:padding">20dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:scaleType">fitCenter</item>
+    </style>
 
 </resources>

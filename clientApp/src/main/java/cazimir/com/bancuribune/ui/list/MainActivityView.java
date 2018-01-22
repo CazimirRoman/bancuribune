@@ -83,7 +83,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     ProgressBar progressMain;
     @BindView(R.id.search)
     EditText search;
-
     @BindView(R.id.fab)
     LinearLayout fab;
     private String currentRank;
@@ -196,6 +195,11 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @Override
     protected int getLayoutId() {
         return R.layout.activity_main_view;
+    }
+
+    @Override
+    protected int setActionBarTitle() {
+        return R.string.app_name;
     }
 
     @Override

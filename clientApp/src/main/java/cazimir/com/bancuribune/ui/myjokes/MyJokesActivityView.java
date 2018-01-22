@@ -15,6 +15,7 @@ import java.util.List;
 import butterknife.BindView;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
+import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.base.EmptyRecyclerView;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
@@ -24,7 +25,7 @@ import cazimir.com.bancuribune.repository.JokesRepository;
 import cazimir.com.bancuribune.ui.list.OnJokeItemClickListener;
 
 
-public class MyJokesActivityView extends BaseActivity implements IMyJokesActivityView, OnJokeItemClickListener, OnGetProfilePictureListener, OnCalculatePointsListener, OnGetFacebookNameListener {
+public class MyJokesActivityView extends BaseBackActivity implements IMyJokesActivityView, OnJokeItemClickListener, OnGetProfilePictureListener, OnCalculatePointsListener, OnGetFacebookNameListener {
 
     private CommonPresenter presenter;
     @BindView(R.id.profileName)
@@ -45,10 +46,6 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(getString(R.string.my_jokes_title));
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
 
         initRecycleView();
         presenter = new CommonPresenter(this, new JokesRepository());
@@ -88,6 +85,11 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
         return R.layout.activity_my_jokes_view;
     }
 
+    @Override
+    protected int setActionBarTitle() {
+        return R.string.my_jokes_title;
+    }
+
 
     @Override
     public void showMyJokesList(List<Joke> jokes) {
@@ -121,12 +123,6 @@ public class MyJokesActivityView extends BaseActivity implements IMyJokesActivit
     @Override
     public void onItemVoted(Joke joke) {
 
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
     }
 
     @Override

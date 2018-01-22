@@ -18,8 +18,10 @@ public abstract class BaseActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(setActionBarTitle()));
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     protected abstract int getLayoutId();
+    protected abstract int setActionBarTitle();
 }

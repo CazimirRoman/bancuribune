@@ -62,7 +62,7 @@
         </service>
 
         <activity android:name=".ui.register.RegisterActivityView" />
-        <activity android:name=".ui.forgotPassword.ForgotPasswordActivityView"></activity>
+        <activity android:name=".ui.forgotPassword.ForgotPasswordActivityView" />
     </application>
 
 </manifest>

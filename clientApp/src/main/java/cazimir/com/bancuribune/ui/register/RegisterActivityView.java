@@ -2,53 +2,52 @@ package cazimir.com.bancuribune.ui.register;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
-import cazimir.com.bancuribune.base.BaseActivity;
+import cazimir.com.bancuribune.base.BaseBackActivity;
+import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
+import cazimir.com.bancuribune.ui.login.OnFormValidatedListener;
 import cazimir.com.bancuribune.utils.MyAlertDialog;
 import cazimir.com.bancuribune.utils.Utils;
 
-public class RegisterActivityView extends BaseActivity implements IRegisterActivityView {
+public class RegisterActivityView extends BaseBackActivity implements IRegisterActivityView, OnFormValidatedListener {
+
+    private MyAlertDialog mAlertDialog;
+    private CommonPresenter mPresenter;
 
     @BindView(R.id.etEmail)
     EditText etEmail;
     @BindView(R.id.etPassword)
     EditText etPassword;
-    @BindView(R.id.btnRegister)
-    Button btnRegister;
-    @BindView(R.id.progress)
-    ProgressBar progress;
     @BindView(R.id.etPasswordConfirm)
     EditText etPasswordConfirm;
-
-    private MyAlertDialog alertDialog;
-    private CommonPresenter presenter;
+    @BindView(R.id.btnRegister)
+    TextView btnRegister;
+    @BindView(R.id.progress)
+    ProgressBar progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new CommonPresenter(this);
-        alertDialog = new MyAlertDialog(this);
+
+        mPresenter = new CommonPresenter(this);
+        mAlertDialog = new MyAlertDialog(this);
     }
 
     @OnClick(R.id.btnRegister)
     public void register(View view) {
-
         String email = etEmail.getText().toString();
         String password = etPassword.getText().toString();
-
-        if (isFormDataValid()) {
-            presenter.registerUser(email, password);
-        }
+        String passwordConfirm = etPasswordConfirm.getText().toString();
+        Utils.validateFormData(this, email, password, passwordConfirm);
     }
 
     @Override
@@ -56,38 +55,9 @@ public class RegisterActivityView extends BaseActivity implements IRegisterActiv
         return R.layout.activity_register_view;
     }
 
-    public boolean isFormDataValid() {
-
-        String email = etEmail.getText().toString();
-        String password = etPassword.getText().toString();
-        String passwordConfirm = etPasswordConfirm.getText().toString();
-
-        if (TextUtils.isEmpty(email)) {
-            etEmail.setError(getString(R.string.email_missing));
-            return false;
-        } else {
-            if (!Utils.isValidEmail(email)) {
-                etEmail.setError(getString(R.string.email_invalid));
-                return false;
-            }
-        }
-
-        if (TextUtils.isEmpty(password)) {
-            etPassword.setError(getString(R.string.password_missing));
-            return false;
-        } else {
-            if (password.length() < 6) {
-                etPassword.setError(getString(R.string.minimum_password));
-                return false;
-            }
-        }
-
-        if(!passwordConfirm.equals(password)){
-            etPasswordConfirm.setError(getString(R.string.password_not_matching));
-            return false;
-        }
-
-        return true;
+    @Override
+    protected int setActionBarTitle() {
+        return R.string.register;
     }
 
     @Override
@@ -102,7 +72,7 @@ public class RegisterActivityView extends BaseActivity implements IRegisterActiv
 
     @Override
     public void showAlertDialog(String message) {
-        alertDialog.show(message);
+        mAlertDialog.show(message);
     }
 
     @Override
@@ -118,5 +88,51 @@ public class RegisterActivityView extends BaseActivity implements IRegisterActiv
                 finish();
             }
         }, 1000);
+    }
+
+    @Override
+    public void setEmailError(String error) {
+        etEmail.setError(error);
+    }
+
+    @Override
+    public void setPasswordError(String error) {
+        etPassword.setError(error);
+    }
+
+    @Override
+    public void setPasswordConfirmError(String error) {
+        etPasswordConfirm.setError(error);
+    }
+
+    @Override
+    public void onValidateSuccess(String email, String password) {
+        mPresenter.registerUser(email, password);
+    }
+
+    @Override
+    public void onValidateFail(String what) {
+
+        switch (what) {
+            case Constants.EMAIL_EMPTY:
+                setEmailError(getString(R.string.email_missing));
+                break;
+
+            case Constants.EMAIL_INVALID:
+                setEmailError(getString(R.string.email_invalid));
+                break;
+
+            case Constants.PASSWORD_EMPTY:
+                setPasswordError(getString(R.string.password_missing));
+                break;
+
+            case Constants.PASSWORD_INVALID:
+                setPasswordError(getString(R.string.password_minimum));
+                break;
+
+            case Constants.PASSWORD_MATCH_ERROR:
+                setPasswordConfirmError(getString(R.string.password_not_matching));
+                break;
+        }
     }
 }
