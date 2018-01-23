@@ -9,6 +9,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import cazimir.com.bancuribune.constants.Constants;
+import cazimir.com.bancuribune.ui.login.OnFormValidatedListener;
+
 public class Utils {
 
     public static boolean isSameDay(Date day1, Date day2) {
@@ -42,5 +45,37 @@ public class Utils {
         } else {
             return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
         }
+    }
+
+    public static void validateFormData(OnFormValidatedListener listener, String email, String password, String password2) {
+
+        if (TextUtils.isEmpty(email)) {
+            listener.onValidateFail(Constants.EMAIL_EMPTY);
+            return;
+        } else {
+            if (!isValidEmail(email)) {
+                listener.onValidateFail(Constants.EMAIL_INVALID);
+                return;
+            }
+        }
+
+        if (TextUtils.isEmpty(password)) {
+            listener.onValidateFail(Constants.PASSWORD_EMPTY);
+            return;
+        } else {
+            if (password.length() < 6) {
+                listener.onValidateFail(Constants.PASSWORD_INVALID);
+                return;
+            }
+        }
+
+        if(!password2.equals("")){
+            if(!password2.equals(password)){
+                listener.onValidateFail(Constants.PASSWORD_MATCH_ERROR);
+                return;
+            }
+        }
+
+        listener.onValidateSuccess(email, password);
     }
 }

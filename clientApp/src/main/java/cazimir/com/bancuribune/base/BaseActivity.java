@@ -8,18 +8,35 @@ import android.support.v7.widget.Toolbar;
 
 import butterknife.ButterKnife;
 import cazimir.com.bancuribune.R;
+import cazimir.com.bancuribune.presenter.CommonPresenter;
+import cazimir.com.bancuribune.utils.MyAlertDialog;
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements IGeneralView {
+
+    private MyAlertDialog mAlertDialog;
+    private CommonPresenter mPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
+        mAlertDialog = new MyAlertDialog(this);
+        mPresenter = new CommonPresenter(this);
         ButterKnife.bind(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(setActionBarTitle()));
         setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     protected abstract int getLayoutId();
+    protected abstract int setActionBarTitle();
+
+    protected MyAlertDialog getAlertDialog(){
+        return this.mAlertDialog;
+    }
+
+    protected CommonPresenter getPresenter() {
+        return mPresenter;
+    }
 }

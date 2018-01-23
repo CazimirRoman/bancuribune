@@ -10,11 +10,13 @@ import java.util.List;
 import butterknife.BindView;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
+import cazimir.com.bancuribune.base.BaseBackActivity;
+import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.repository.JokesRepository;
 
-public class AdminActivityView extends BaseActivity implements IAdminActivityView, OnAdminJokeItemClickListener {
+public class AdminActivityView extends BaseBackActivity implements IAdminActivityView, OnAdminJokeItemClickListener {
 
     private CommonPresenter presenter;
     private AdminJokesAdapter adapter;
@@ -24,14 +26,9 @@ public class AdminActivityView extends BaseActivity implements IAdminActivityVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if(getSupportActionBar() != null){
-            getSupportActionBar().setTitle(getString(R.string.admin_title));
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-
         initRecycleView();
 
-        presenter = new CommonPresenter(this, new JokesRepository());
+        presenter = new CommonPresenter(this);
 
         getAllPendingJokes();
 
@@ -47,6 +44,11 @@ public class AdminActivityView extends BaseActivity implements IAdminActivityVie
     @Override
     protected int getLayoutId() {
         return R.layout.activity_admin_view;
+    }
+
+    @Override
+    protected int setActionBarTitle() {
+        return R.string.admin_title;
     }
 
     @Override
@@ -76,8 +78,7 @@ public class AdminActivityView extends BaseActivity implements IAdminActivityVie
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
+    public IGeneralView getInstance() {
+        return this;
     }
 }

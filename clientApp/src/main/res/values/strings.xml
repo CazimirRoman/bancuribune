@@ -39,7 +39,7 @@
     <string name="email_missing">Te rog sa introduci o adresa de mail</string>
     <string name="email_invalid">Nu pare sa fie o adresa de email valida</string>
     <string name="password_missing">Parola lipseste!</string>
-    <string name="minimum_password">Parola este prea scurta, minim 6 caractere</string>
+    <string name="password_minimum">Parola este prea scurta, minim 6 caractere</string>
     <string name="login">Login</string>
     <string name="hint_password_confirm">Confirma parola</string>
     <string name="password_not_matching">Parola nu este aceeasi</string>

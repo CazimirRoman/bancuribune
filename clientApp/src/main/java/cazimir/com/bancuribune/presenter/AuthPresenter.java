@@ -1,6 +1,7 @@
 package cazimir.com.bancuribune.presenter;
 
 
+import android.app.Activity;
 import android.support.annotation.NonNull;
 
 import com.facebook.AccessToken;
@@ -16,58 +17,18 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import cazimir.com.bancuribune.ui.add.IAddJokeActivityView;
-import cazimir.com.bancuribune.ui.admin.IAdminActivityView;
-import cazimir.com.bancuribune.ui.forgotPassword.IForgotPasswordActivityView;
+import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.ui.list.IMainActivityView;
 import cazimir.com.bancuribune.ui.login.ILoginActivityView;
-import cazimir.com.bancuribune.ui.myjokes.IMyJokesActivityView;
-import cazimir.com.bancuribune.ui.register.IRegisterActivityView;
 
 public class AuthPresenter implements IAuthPresenter {
 
     private FirebaseAuth auth;
-    private IRegisterActivityView register;
-    private IForgotPasswordActivityView forgot;
-    private ILoginActivityView login;
-    private IMainActivityView jokes;
-    private IAddJokeActivityView add;
-    private IMyJokesActivityView myJokes;
-    private IAdminActivityView adminView;
+    private IGeneralView view;
 
-    public AuthPresenter(IRegisterActivityView view) {
+    public AuthPresenter(IGeneralView view) {
         auth = FirebaseAuth.getInstance();
-        this.register = view;
-    }
-
-    public AuthPresenter(ILoginActivityView view) {
-        auth = FirebaseAuth.getInstance();
-        this.login = view;
-    }
-
-    public AuthPresenter(IMainActivityView view) {
-        auth = FirebaseAuth.getInstance();
-        this.jokes = view;
-    }
-
-    public AuthPresenter(IAddJokeActivityView view) {
-        auth = FirebaseAuth.getInstance();
-        this.add = view;
-    }
-
-    public AuthPresenter(IMyJokesActivityView view) {
-        auth = FirebaseAuth.getInstance();
-        this.myJokes = view;
-    }
-
-    public AuthPresenter(IAdminActivityView view) {
-        auth = FirebaseAuth.getInstance();
-        this.adminView = view;
-    }
-
-    public AuthPresenter(IForgotPasswordActivityView view) {
-        auth = FirebaseAuth.getInstance();
-        this.forgot = view;
+        this.view = view;
     }
 
     @Override
@@ -144,7 +105,8 @@ public class AuthPresenter implements IAuthPresenter {
     @Override
     public void checkIfUserLoggedIn() {
         if (auth.getCurrentUser() != null) {
-            login.launchMainActivity();
+            ILoginActivityView view = (ILoginActivityView) this.view.getInstance();
+            view.launchMainActivity();
         }
     }
 
@@ -174,14 +136,18 @@ public class AuthPresenter implements IAuthPresenter {
     }
 
     private void handleFacebookAccessToken(AccessToken accessToken) {
+
+        final ILoginActivityView login = (ILoginActivityView) this.view.getInstance();
+        Activity context = login.getContext();
+
         AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
         auth.signInWithCredential(credential)
-                .addOnCompleteListener(login.getContext(), new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(context, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            login.loginSucces();
+                            login.loginSuccess();
 
                         } else {
                             // If sign in fails, display a message to the user.
