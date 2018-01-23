@@ -1,27 +1,25 @@
-package cazimir.com.bancuribune.ui;
+package cazimir.com.bancuribune.base;
 
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-public abstract class MyRecylerScroll extends RecyclerView.OnScrollListener {
+public abstract class ScrollListenerRecycleView extends RecyclerView.OnScrollListener {
 
-    public static String TAG = MyRecylerScroll.class.getSimpleName();
+    public static String TAG = ScrollListenerRecycleView.class.getSimpleName();
 
-    int scrollDist = 0;
-    boolean isVisible = true;
-    static final float MINIMUM = 25;
+    private int scrollDist = 0;
+    private boolean isVisible = true;
+    private static final float MINIMUM = 25;
 
     private int previousTotal = 0; // The total number of items in the dataset after the last load
     private boolean loading = true; // True if we are still waiting for the last set of data to load.
-    private int visibleThreshold = 5; // The minimum amount of items to have below your current scroll position before loading more.
-    int firstVisibleItem, visibleItemCount, totalItemCount;
 
     private int current_page = 1;
 
     private LinearLayoutManager mLinearLayoutManager;
 
-    public MyRecylerScroll(LinearLayoutManager mLinearLayoutManager) {
+    public ScrollListenerRecycleView(LinearLayoutManager mLinearLayoutManager) {
         this.mLinearLayoutManager = mLinearLayoutManager;
     }
 
@@ -44,9 +42,9 @@ public abstract class MyRecylerScroll extends RecyclerView.OnScrollListener {
             scrollDist += dy;
         }
 
-        visibleItemCount = recyclerView.getChildCount();
-        totalItemCount = mLinearLayoutManager.getItemCount();
-        firstVisibleItem = mLinearLayoutManager.findFirstVisibleItemPosition();
+        int visibleItemCount = recyclerView.getChildCount();
+        int totalItemCount = mLinearLayoutManager.getItemCount();
+        int firstVisibleItem = mLinearLayoutManager.findFirstVisibleItemPosition();
 
         if (loading) {
             if (totalItemCount > previousTotal) {
@@ -54,6 +52,7 @@ public abstract class MyRecylerScroll extends RecyclerView.OnScrollListener {
                 previousTotal = totalItemCount;
             }
         }
+        int visibleThreshold = 5;
         if (!loading && (totalItemCount - visibleItemCount)
                 <= (firstVisibleItem + visibleThreshold)) {
             // End has been reached
@@ -65,7 +64,6 @@ public abstract class MyRecylerScroll extends RecyclerView.OnScrollListener {
 
             loading = true;
         }
-
     }
 
     public abstract void show();

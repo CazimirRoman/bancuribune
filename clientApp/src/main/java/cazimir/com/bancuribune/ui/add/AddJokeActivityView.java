@@ -2,7 +2,6 @@ package cazimir.com.bancuribune.ui.add;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -11,14 +10,13 @@ import android.widget.EditText;
 import butterknife.BindView;
 import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
-import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.utils.MyAlertDialog;
-import cazimir.com.bancuribune.utils.Utils;
+import cazimir.com.bancuribune.utils.UtilHelperClass;
 
 public class AddJokeActivityView extends BaseBackActivity implements IAddJokeActivityView {
 
@@ -84,7 +82,7 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
     @OnClick(R.id.addNewJokeButtonFAB)
     public void addJoke(View view){
         if(dataValid()){
-            if(Utils.isInternetAvailable(this)){
+            if(UtilHelperClass.isInternetAvailable(this)){
                 sendDataToDatabase(constructJokeObject());
                 hideSoftInput(addJokeEdit);
                 closeAdd();

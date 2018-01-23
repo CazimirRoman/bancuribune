@@ -50,12 +50,12 @@
         <activity android:name=".ui.myjokes.MyJokesActivityView" />
         <activity android:name=".ui.admin.AdminActivityView" />
 
-        <service android:name=".utils.FirebasePush.MyFirebaseMessagingService">
+        <service android:name=".utils.Firebase.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".utils.FirebasePush.FirebaseIDService">
+        <service android:name=".utils.Firebase.FirebaseIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>

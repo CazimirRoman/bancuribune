@@ -81,7 +81,7 @@ public class JokesPresenterTest {
         }
 
         @Override
-        public void showTestToast(String message) {
+        public void showToast(String message) {
 
         }
 
