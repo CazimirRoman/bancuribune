@@ -77,16 +77,18 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnLoginWithEmail:
-                String email = etEmail.getText().toString();
-                String password = etPassword.getText().toString();
-                UtilHelperClass.validateFormData(this, email, password, Constants.EMPTY_STRING_PLACEHOLDER);
+
+                if (isInternetAvailable()) {
+                    String email = etEmail.getText().toString();
+                    String password = etPassword.getText().toString();
+                    UtilHelperClass.validateFormData(this, email, password, Constants.EMPTY_STRING_PLACEHOLDER);
+                }
+
                 break;
             case R.id.login_button_dummy:
-                if (UtilHelperClass.isInternetAvailable(this)) {
+                if (isInternetAvailable()) {
                     facebookButton.performClick();
                     loginButtonDummy.setText(getString(R.string.loading_data));
-                } else {
-                    getAlertDialog().show(getString(R.string.no_internet));
                 }
                 break;
             case R.id.btnRegister:

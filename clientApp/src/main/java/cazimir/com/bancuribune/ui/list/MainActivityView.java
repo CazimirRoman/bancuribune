@@ -56,6 +56,7 @@ import cazimir.com.bancuribune.ui.likedJokes.MyLikedJokesActivityView;
 import cazimir.com.bancuribune.ui.login.LoginActivityView;
 import cazimir.com.bancuribune.ui.myjokes.MyJokesActivityView;
 import cazimir.com.bancuribune.utils.MyAlertDialog;
+import cazimir.com.bancuribune.utils.UtilHelperClass;
 
 import static cazimir.com.bancuribune.R.id.addJokeButtonFAB;
 import static cazimir.com.bancuribune.R.id.adminFAB;
@@ -63,9 +64,6 @@ import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_REQUEST;
 
 public class MainActivityView extends BaseActivity implements IMainActivityView, OnJokeItemClickListener {
 
-    private static final int MY_STORAGE_REQUEST_CODE = 523;
-
-    private MyAlertDialog alertDialog;
     private JokesAdapter adapter;
     private String currentRank;
     private Boolean isAdmin = false;
@@ -96,29 +94,32 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("  " + getString(R.string.app_name));
-            getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-            getSupportActionBar().setIcon(R.mipmap.ic_launcher);
-        }
-
-        alertDialog = new MyAlertDialog(this);
-
-        swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                getAllJokesData(true, true);
-            }
-        });
-
+        setUpActionbar();
+        setSwipeRefreshListener();
         initSearch();
         checkIfAdmin();
         getMyRank();
         getAllJokesData(true, false);
     }
 
-    public void refreshJokesListAdapter() {
+    private void setSwipeRefreshListener() {
+        swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getAllJokesData(true, true);
+            }
+        });
+    }
 
+    private void setUpActionbar() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("  " + getString(R.string.app_name));
+            getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+            getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+        }
+    }
+
+    public void refreshJokesListAdapter() {
         setOnScrollListener((LinearLayoutManager) initRecycleView());
         adapter = new JokesAdapter(this);
         jokesListRecyclerView.setAdapter(adapter);
@@ -127,7 +128,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     @Override
     public void showAlertDialog(String message) {
-        alertDialog.show(message);
+        getAlertDialog().show(message);
     }
 
     private void getMyRank() {
@@ -223,52 +224,64 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         //TODO : refactor
         hideProgressBar();
         if (Profile.getCurrentProfile() != null) {
-            alertDialog.show(error);
+            getAlertDialog().show(error);
         }
     }
 
     @OnClick(addJokeButtonFAB)
     public void checkIfAllowedToAdd() {
 
-        checkIfAdmin();
+        if(isInternetAvailable()){
 
-        if (!isAdmin) {
+            checkIfAdmin();
 
-            if (currentRank.equals(Constants.HAMSIE)) {
-                getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_HAMSIE);
-            } else if (currentRank.equals(Constants.HERING)) {
-                getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_HERING);
-            } else if (currentRank.equals(Constants.SOMON)) {
-                getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_SOMON);
-            } else if (currentRank.equals(Constants.STIUCA)) {
-                getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_STIUCA);
-            } else if (currentRank.equals(Constants.RECHIN)) {
-                getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_RECHIN);
+            if (!isAdmin) {
+
+                if (currentRank.equals(Constants.HAMSIE)) {
+                    getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_HAMSIE);
+                } else if (currentRank.equals(Constants.HERING)) {
+                    getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_HERING);
+                } else if (currentRank.equals(Constants.SOMON)) {
+                    getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_SOMON);
+                } else if (currentRank.equals(Constants.STIUCA)) {
+                    getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_STIUCA);
+                } else if (currentRank.equals(Constants.RECHIN)) {
+                    getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_RECHIN);
+                }
+
+            } else {
+                navigateToAddJokeActivity();
             }
-
-        } else {
-            navigateToAddJokeActivity();
         }
     }
 
     @OnClick(R.id.myJokesButtonFAB)
     public void startMyJokesActivity() {
-        startActivity(new Intent(new Intent(this, MyJokesActivityView.class)));
+
+        if(isInternetAvailable()){
+            startActivity(new Intent(new Intent(this, MyJokesActivityView.class)));
+        }
     }
 
     @OnClick(adminFAB)
     public void startAdminJokesActivity() {
-        startActivity(new Intent(this, AdminActivityView.class));
+        if(isInternetAvailable()){
+            startActivity(new Intent(this, AdminActivityView.class));
+        }
     }
 
     @OnClick(R.id.logoutButtonFAB)
     public void logoutUser() {
-        getPresenter().logOutUser();
+        if(isInternetAvailable()){
+            getPresenter().logOutUser();
+        }
     }
 
     @OnClick(R.id.myLikedJokesButtonFAB)
     public void startMyLikedJokesActivity() {
-        startActivity(new Intent(this, MyLikedJokesActivityView.class));
+        if(isInternetAvailable()){
+            startActivity(new Intent(this, MyLikedJokesActivityView.class));
+        }
     }
 
     @Override
@@ -359,8 +372,8 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     }
 
     @Override
-    public void updateRemainingAdds(int remaininigAdds) {
-        saveRemainingDataToSharedPreferences(remaininigAdds);
+    public void updateRemainingAdds(int remainingAdds) {
+        saveRemainingDataToSharedPreferences(remainingAdds);
     }
 
 
@@ -379,7 +392,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         this.sharedText = text;
 
         if (!requestWriteStoragePermissions()) {
-            Bitmap bitmap = drawMultilineTextToBitmap(this, R.drawable.share_background, text);
+            Bitmap bitmap = UtilHelperClass.drawMultilineTextToBitmap(this, R.drawable.share_background, text);
             String bitmapPath = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, "title", "description");
             Uri bitmapUri = Uri.parse(bitmapPath);
             Intent sendIntent = new Intent();
@@ -392,7 +405,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     private boolean requestWriteStoragePermissions() {
         if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_STORAGE_REQUEST_CODE);
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.MY_STORAGE_REQUEST_CODE);
             return true;
         }
         return false;
@@ -401,62 +414,13 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_STORAGE_REQUEST_CODE) {
+        if (requestCode == Constants.MY_STORAGE_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 shareJoke(sharedText);
             } else {
                 Toast.makeText(this, "Permission denied. Please accept permission request", Toast.LENGTH_SHORT).show();
             }
         }
-    }
-
-    public Bitmap drawMultilineTextToBitmap(Context gContext, int gResId, String gText) {
-        // prepare canvas
-        Resources resources = gContext.getResources();
-        float scale = resources.getDisplayMetrics().density;
-        Bitmap background = BitmapFactory.decodeResource(resources, gResId);
-
-        Bitmap.Config bitmapConfig = background.getConfig();
-        // set default share_background config if none
-        if (bitmapConfig == null) {
-            bitmapConfig = Bitmap.Config.ARGB_8888;
-        }
-        // resource bitmaps are imutable,
-        // so we need to convert it to mutable one
-        background = background.copy(bitmapConfig, true);
-
-        Canvas canvas = new Canvas(background);
-
-        // new antialiased Paint
-        TextPaint paint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        // text color - #3D3D3D
-        paint.setColor(Color.rgb(0, 0, 0));
-        // text size in pixels
-        paint.setTextSize((int) (18 * scale));
-        // text shadow
-        paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
-
-        // set text width to canvas width minus 16dp padding
-        int textWidth = canvas.getWidth() - (int) (16 * scale);
-
-        // init StaticLayout for text
-        StaticLayout textLayout = new StaticLayout(
-                gText, paint, textWidth, Layout.Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
-
-        // get height of multiline text
-        int textHeight = textLayout.getHeight();
-
-        // get position of text's top left corner
-        float x = (background.getWidth() - textWidth) / 2;
-        float y = (background.getHeight() - textHeight) / 2;
-
-        // draw text to the Canvas center
-        canvas.save();
-        canvas.translate(x, y);
-        textLayout.draw(canvas);
-        canvas.restore();
-
-        return background;
     }
 
     @Override

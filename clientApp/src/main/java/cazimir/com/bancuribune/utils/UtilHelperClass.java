@@ -1,6 +1,15 @@
 package cazimir.com.bancuribune.utils;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.text.TextUtils;
 
 import java.text.Normalizer;
@@ -77,5 +86,54 @@ public class UtilHelperClass {
         }
 
         listener.onValidateSuccess(email, password);
+    }
+
+    public static Bitmap drawMultilineTextToBitmap(Context gContext, int gResId, String gText) {
+        // prepare canvas
+        Resources resources = gContext.getResources();
+        float scale = resources.getDisplayMetrics().density;
+        Bitmap background = BitmapFactory.decodeResource(resources, gResId);
+
+        Bitmap.Config bitmapConfig = background.getConfig();
+        // set default share_background config if none
+        if (bitmapConfig == null) {
+            bitmapConfig = Bitmap.Config.ARGB_8888;
+        }
+        // resource bitmaps are imutable,
+        // so we need to convert it to mutable one
+        background = background.copy(bitmapConfig, true);
+
+        Canvas canvas = new Canvas(background);
+
+        // new antialiased Paint
+        TextPaint paint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+        // text color - #3D3D3D
+        paint.setColor(Color.rgb(0, 0, 0));
+        // text size in pixels
+        paint.setTextSize((int) (18 * scale));
+        // text shadow
+        paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
+
+        // set text width to canvas width minus 16dp padding
+        int textWidth = canvas.getWidth() - (int) (16 * scale);
+
+        // init StaticLayout for text
+        StaticLayout textLayout = new StaticLayout(
+                gText, paint, textWidth, Layout.Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
+
+        // get height of multiline text
+        int textHeight = textLayout.getHeight();
+
+        // get position of text's top left corner
+        float x = (background.getWidth() - textWidth) / 2;
+        float y = (background.getHeight() - textHeight) / 2;
+
+        // draw text to the Canvas center
+        canvas.save();
+        canvas.translate(x, y);
+        textLayout.draw(canvas);
+        canvas.restore();
+
+        return background;
     }
 }

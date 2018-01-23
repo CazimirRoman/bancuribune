@@ -18,8 +18,6 @@ import cazimir.com.bancuribune.utils.UtilHelperClass;
 
 public class ForgotPasswordActivityView extends BaseBackActivity implements IForgotPasswordActivityView {
 
-    private CommonPresenter mPresenter;
-
     @BindView(R.id.etEmail)
     EditText etEmail;
     @BindView(R.id.btnForgotPassword)
@@ -31,16 +29,16 @@ public class ForgotPasswordActivityView extends BaseBackActivity implements IFor
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mPresenter = new CommonPresenter(this);
-
         btnForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                String email = etEmail.getText().toString().trim();
-
                 if(isFormDataValid()){
-                    mPresenter.sendResetInstructions(email);
+                    String email = etEmail.getText().toString().trim();
+
+                    if(isFormDataValid()){
+                        getPresenter().sendResetInstructions(email);
+                    }
                 }
             }
         });

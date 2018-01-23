@@ -35,4 +35,5 @@ public class Constants {
     public static int FILTER_MINIMUM_CHARACTERS = 3;
 
     public static final int TOTAL_ITEM_EACH_LOAD = 50;
+    public static final int MY_STORAGE_REQUEST_CODE = 523;
 }
