@@ -23,7 +23,7 @@ import cazimir.com.bancuribune.presenter.AuthPresenter;
 import cazimir.com.bancuribune.ui.forgotPassword.ForgotPasswordActivityView;
 import cazimir.com.bancuribune.ui.list.MainActivityView;
 import cazimir.com.bancuribune.ui.register.RegisterActivityView;
-import cazimir.com.bancuribune.utils.Utils;
+import cazimir.com.bancuribune.utils.UtilHelperClass;
 
 import static cazimir.com.bancuribune.R.id.login_button_dummy;
 
@@ -79,10 +79,10 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
             case R.id.btnLoginWithEmail:
                 String email = etEmail.getText().toString();
                 String password = etPassword.getText().toString();
-                Utils.validateFormData(this, email, password, Constants.EMPTY_STRING_PLACEHOLDER);
+                UtilHelperClass.validateFormData(this, email, password, Constants.EMPTY_STRING_PLACEHOLDER);
                 break;
             case R.id.login_button_dummy:
-                if (Utils.isInternetAvailable(this)) {
+                if (UtilHelperClass.isInternetAvailable(this)) {
                     facebookButton.performClick();
                     loginButtonDummy.setText(getString(R.string.loading_data));
                 } else {

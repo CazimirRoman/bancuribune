@@ -50,7 +50,7 @@ import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
-import cazimir.com.bancuribune.ui.MyRecylerScroll;
+import cazimir.com.bancuribune.base.ScrollListenerRecycleView;
 import cazimir.com.bancuribune.ui.add.AddJokeActivityView;
 import cazimir.com.bancuribune.ui.admin.AdminActivityView;
 import cazimir.com.bancuribune.ui.login.LoginActivityView;
@@ -174,7 +174,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     }
 
     private void setOnScrollListener(final LinearLayoutManager layoutManager) {
-        jokesListRecyclerView.setOnScrollListener(new MyRecylerScroll(layoutManager) {
+        jokesListRecyclerView.setOnScrollListener(new ScrollListenerRecycleView(layoutManager) {
 
             @Override
             public void show() {
@@ -303,7 +303,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     }
 
     @Override
-    public void showTestToast(String message) {
+    public void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 

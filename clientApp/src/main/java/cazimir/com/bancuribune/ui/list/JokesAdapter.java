@@ -15,9 +15,7 @@ import java.util.List;
 import butterknife.BindView;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.model.Joke;
-import cazimir.com.bancuribune.utils.Utils;
-
-import static android.R.id.list;
+import cazimir.com.bancuribune.utils.UtilHelperClass;
 
 public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder> {
 
@@ -87,7 +85,7 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
         });
 
         holder.points.setText(String.valueOf(joke.getPoints()));
-        holder.date.setText(Utils.convertEpochToDate(joke.getCreatedAt()));
+        holder.date.setText(UtilHelperClass.convertEpochToDate(joke.getCreatedAt()));
     }
 
     @Override

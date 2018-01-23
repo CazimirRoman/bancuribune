@@ -144,15 +144,16 @@
                 android:layout_marginBottom="20dp"
                 android:visibility="gone" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center_horizontal"
-                android:layout_margin="10dp"
-                android:text="@string/copyright"
-                android:textColor="@color/colorAccent" />
-
         </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_margin="10dp"
+            android:visibility="gone"
+            android:text="@string/copyright"
+            android:textColor="@color/colorAccent" />
 
     </LinearLayout>
 

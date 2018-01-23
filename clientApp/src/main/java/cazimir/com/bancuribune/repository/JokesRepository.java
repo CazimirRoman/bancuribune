@@ -36,7 +36,7 @@ import cazimir.com.bancuribune.ui.list.OnGetJokesListener;
 import cazimir.com.bancuribune.ui.list.OnUpdatePointsFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnUpdateVotedByFinishedListener;
 import cazimir.com.bancuribune.ui.myjokes.OnFirebaseGetMyJokesListener;
-import cazimir.com.bancuribune.utils.Utils;
+import cazimir.com.bancuribune.utils.UtilHelperClass;
 
 public class JokesRepository implements IJokesRepository {
 
@@ -165,7 +165,7 @@ public class JokesRepository implements IJokesRepository {
     public void getAllFilteredJokes(final OnGetJokesListener listener, final String text) {
         final ArrayList<Joke> filteredJokes = new ArrayList<>();
 
-        final String cleanedText = Utils.removeAccents(text);
+        final String cleanedText = UtilHelperClass.removeAccents(text);
 
         jokesRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -174,7 +174,7 @@ public class JokesRepository implements IJokesRepository {
                 for (DataSnapshot jokeSnapshot : dataSnapshot.getChildren()) {
                     Joke joke = jokeSnapshot.getValue(Joke.class);
                     assert joke != null;
-                    if (Utils.removeAccents(joke.getJokeText().trim().toLowerCase()).contains(cleanedText.toLowerCase())) {
+                    if (UtilHelperClass.removeAccents(joke.getJokeText().trim().toLowerCase()).contains(cleanedText.toLowerCase())) {
                         filteredJokes.add(joke);
                     }
                 }
@@ -306,7 +306,7 @@ public class JokesRepository implements IJokesRepository {
                     long now = new Date().getTime();
                     Date nowDate = new Date(now);
 
-                    if (Utils.isSameDay(createdAt, nowDate)) {
+                    if (UtilHelperClass.isSameDay(createdAt, nowDate)) {
                         addedJokesToday.add(joke);
                     }
                 }
