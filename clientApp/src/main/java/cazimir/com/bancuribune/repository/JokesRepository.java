@@ -30,6 +30,7 @@ import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
 import cazimir.com.bancuribune.ui.add.OnAddJokeVoteFinishedListener;
 import cazimir.com.bancuribune.ui.admin.OnGetAllPendingJokesListener;
 import cazimir.com.bancuribune.ui.admin.OnUpdateApproveStatusListener;
+import cazimir.com.bancuribune.ui.likedJokes.OnGetLikedJokesListener;
 import cazimir.com.bancuribune.ui.list.OnAllowedToAddFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnCheckIfVotedFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnGetJokesListener;
@@ -250,6 +251,57 @@ public class JokesRepository implements IJokesRepository {
                 listener.onGetMyJokesError(databaseError.getMessage());
             }
         });
+    }
+
+    @Override
+    public void getVotesForUser(final OnGetLikedJokesListener listener, String userId) {
+        final ArrayList<Vote> votes = new ArrayList<>();
+
+        Query query = votesRef.orderByChild("votedBy").equalTo(userId);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot voteSnapshot : dataSnapshot.getChildren()) {
+                    Vote vote = voteSnapshot.getValue(Vote.class);
+                    assert vote != null;
+                    votes.add(vote);
+                }
+
+                getVotedJokes(listener, votes);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listener.onGetLikedJokesFailed(databaseError.getMessage());
+            }
+        });
+    }
+
+    private void getVotedJokes(final OnGetLikedJokesListener listener, ArrayList<Vote> votes) {
+
+        for (final Vote vote : votes) {
+            Query query = jokesRef.orderByChild("uid").equalTo(vote.getJokeId());
+
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    for (DataSnapshot jokeSnapshot : dataSnapshot.getChildren()) {
+                        Joke joke = jokeSnapshot.getValue(Joke.class);
+                        if(joke != null){
+                            listener.onGetLikedJokesSuccess(joke);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    listener.onGetLikedJokesFailed(databaseError.getMessage());
+                }
+            });
+        }
     }
 
     @Override

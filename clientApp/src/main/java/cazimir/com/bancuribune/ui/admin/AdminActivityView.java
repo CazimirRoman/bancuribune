@@ -18,20 +18,14 @@ import cazimir.com.bancuribune.repository.JokesRepository;
 
 public class AdminActivityView extends BaseBackActivity implements IAdminActivityView, OnAdminJokeItemClickListener {
 
-    private CommonPresenter presenter;
     private AdminJokesAdapter adapter;
     @BindView(R.id.jokesList)
     RecyclerView adminJokesListRecyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         initRecycleView();
-
-        presenter = new CommonPresenter(this);
-
         getAllPendingJokes();
-
     }
 
     private void initRecycleView() {
@@ -53,7 +47,7 @@ public class AdminActivityView extends BaseBackActivity implements IAdminActivit
 
     @Override
     public void getAllPendingJokes() {
-        presenter.getAllPendingJokesData();
+        getPresenter().getAllPendingJokesData();
     }
 
     @Override
@@ -74,7 +68,7 @@ public class AdminActivityView extends BaseBackActivity implements IAdminActivit
 
     @Override
     public void OnItemApproved(String uid) {
-        presenter.updateJokeApproval(uid);
+        getPresenter().updateJokeApproval(uid);
     }
 
     @Override

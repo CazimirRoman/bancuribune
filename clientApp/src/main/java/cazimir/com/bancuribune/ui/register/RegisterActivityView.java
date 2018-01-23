@@ -20,8 +20,6 @@ import cazimir.com.bancuribune.utils.UtilHelperClass;
 
 public class RegisterActivityView extends BaseBackActivity implements IRegisterActivityView, OnFormValidatedListener {
 
-    private CommonPresenter mPresenter;
-
     @BindView(R.id.etEmail)
     EditText etEmail;
     @BindView(R.id.etPassword)
@@ -36,15 +34,16 @@ public class RegisterActivityView extends BaseBackActivity implements IRegisterA
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = new CommonPresenter(this);
     }
 
     @OnClick(R.id.btnRegister)
     public void register(View view) {
-        String email = etEmail.getText().toString();
-        String password = etPassword.getText().toString();
-        String passwordConfirm = etPasswordConfirm.getText().toString();
-        UtilHelperClass.validateFormData(this, email, password, passwordConfirm);
+        if(isInternetAvailable()){
+            String email = etEmail.getText().toString();
+            String password = etPassword.getText().toString();
+            String passwordConfirm = etPasswordConfirm.getText().toString();
+            UtilHelperClass.validateFormData(this, email, password, passwordConfirm);
+        }
     }
 
     @Override
@@ -104,7 +103,7 @@ public class RegisterActivityView extends BaseBackActivity implements IRegisterA
 
     @Override
     public void onValidateSuccess(String email, String password) {
-        mPresenter.registerUser(email, password);
+        getPresenter().registerUser(email, password);
     }
 
     @Override

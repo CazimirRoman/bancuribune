@@ -10,6 +10,7 @@ import butterknife.ButterKnife;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.utils.MyAlertDialog;
+import cazimir.com.bancuribune.utils.UtilHelperClass;
 
 public abstract class BaseActivity extends AppCompatActivity implements IGeneralView {
 
@@ -38,5 +39,14 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
 
     protected CommonPresenter getPresenter() {
         return mPresenter;
+    }
+
+    protected boolean isInternetAvailable(){
+        if (!UtilHelperClass.isInternetAvailable(this)) {
+            getAlertDialog().show(getString(R.string.no_internet));
+            return false;
+        }
+
+        return true;
     }
 }

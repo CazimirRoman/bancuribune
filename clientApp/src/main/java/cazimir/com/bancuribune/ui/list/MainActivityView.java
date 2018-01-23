@@ -46,16 +46,17 @@ import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
+import cazimir.com.bancuribune.base.ScrollListenerRecycleView;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
-import cazimir.com.bancuribune.presenter.CommonPresenter;
-import cazimir.com.bancuribune.base.ScrollListenerRecycleView;
 import cazimir.com.bancuribune.ui.add.AddJokeActivityView;
 import cazimir.com.bancuribune.ui.admin.AdminActivityView;
+import cazimir.com.bancuribune.ui.likedJokes.MyLikedJokesActivityView;
 import cazimir.com.bancuribune.ui.login.LoginActivityView;
 import cazimir.com.bancuribune.ui.myjokes.MyJokesActivityView;
 import cazimir.com.bancuribune.utils.MyAlertDialog;
+import cazimir.com.bancuribune.utils.UtilHelperClass;
 
 import static cazimir.com.bancuribune.R.id.addJokeButtonFAB;
 import static cazimir.com.bancuribune.R.id.adminFAB;
@@ -63,15 +64,17 @@ import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_REQUEST;
 
 public class MainActivityView extends BaseActivity implements IMainActivityView, OnJokeItemClickListener {
 
-    private static final String TAG = MainActivityView.class.getName();
-    private static final int MY_STORAGE_REQUEST_CODE = 523;
-    private MyAlertDialog alertDialog;
-    private CommonPresenter presenter;
     private JokesAdapter adapter;
+    private String currentRank;
+    private Boolean isAdmin = false;
+    private String sharedText;
+
     @BindView(R.id.jokesList)
     RecyclerView jokesListRecyclerView;
     @BindView(R.id.swipeRefreshLayout)
     SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.myLikedJokesButtonFAB)
+    FloatingActionButton myLikedJokesButtonFAB;
     @BindView(addJokeButtonFAB)
     FloatingActionButton addJokeFAB;
     @BindView(R.id.myJokesButtonFAB)
@@ -86,38 +89,37 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     EditText search;
     @BindView(R.id.fab)
     LinearLayout fab;
-    private String currentRank;
-    private Boolean isAdmin = false;
-    private String sharedText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("  " + getString(R.string.app_name));
-            getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-            getSupportActionBar().setIcon(R.mipmap.ic_launcher);
-        }
+        setUpActionbar();
+        setSwipeRefreshListener();
+        initSearch();
+        checkIfAdmin();
+        getMyRank();
+        getAllJokesData(true, false);
+    }
 
-        alertDialog = new MyAlertDialog(this);
-
+    private void setSwipeRefreshListener() {
         swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
                 getAllJokesData(true, true);
             }
         });
+    }
 
-        initSearch();
-        presenter = new CommonPresenter(this);
-        checkIfAdmin();
-        getMyRank();
-        getAllJokesData(true, false);
+    private void setUpActionbar() {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle("  " + getString(R.string.app_name));
+            getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
+            getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+        }
     }
 
     public void refreshJokesListAdapter() {
-
         setOnScrollListener((LinearLayoutManager) initRecycleView());
         adapter = new JokesAdapter(this);
         jokesListRecyclerView.setAdapter(adapter);
@@ -126,15 +128,15 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     @Override
     public void showAlertDialog(String message) {
-        alertDialog.show(message);
+        getAlertDialog().show(message);
     }
 
     private void getMyRank() {
-        presenter.checkAndGetMyRank();
+        getPresenter().checkAndGetMyRank();
     }
 
     private void getAllJokesData(boolean reset, boolean swipe) {
-        presenter.getAllJokesData(reset, swipe);
+        getPresenter().getAllJokesData(reset, swipe);
     }
 
     private void initSearch() {
@@ -153,11 +155,11 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.toString().isEmpty()) {
-                    presenter.getAllJokesData(true, true);
+                    getPresenter().getAllJokesData(true, true);
                 } else {
                     if (editable.toString().length() >= Constants.FILTER_MINIMUM_CHARACTERS) {
                         showProgressBar();
-                        presenter.getFilteredJokesData(editable.toString().trim());
+                        getPresenter().getFilteredJokesData(editable.toString().trim());
                     }
                 }
             }
@@ -222,48 +224,64 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         //TODO : refactor
         hideProgressBar();
         if (Profile.getCurrentProfile() != null) {
-            alertDialog.show(error);
+            getAlertDialog().show(error);
         }
     }
 
     @OnClick(addJokeButtonFAB)
     public void checkIfAllowedToAdd() {
 
-        checkIfAdmin();
+        if(isInternetAvailable()){
 
-        if (!isAdmin) {
+            checkIfAdmin();
 
-            if (currentRank.equals(Constants.HAMSIE)) {
-                presenter.checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_HAMSIE);
-            } else if (currentRank.equals(Constants.HERING)) {
-                presenter.checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_HERING);
-            } else if (currentRank.equals(Constants.SOMON)) {
-                presenter.checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_SOMON);
-            } else if (currentRank.equals(Constants.STIUCA)) {
-                presenter.checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_STIUCA);
-            } else if (currentRank.equals(Constants.RECHIN)) {
-                presenter.checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_RECHIN);
+            if (!isAdmin) {
+
+                if (currentRank.equals(Constants.HAMSIE)) {
+                    getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_HAMSIE);
+                } else if (currentRank.equals(Constants.HERING)) {
+                    getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_HERING);
+                } else if (currentRank.equals(Constants.SOMON)) {
+                    getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_SOMON);
+                } else if (currentRank.equals(Constants.STIUCA)) {
+                    getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_STIUCA);
+                } else if (currentRank.equals(Constants.RECHIN)) {
+                    getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_RECHIN);
+                }
+
+            } else {
+                navigateToAddJokeActivity();
             }
-
-        } else {
-            navigateToAddJokeActivity();
         }
     }
 
     @OnClick(R.id.myJokesButtonFAB)
     public void startMyJokesActivity() {
-        Intent i = new Intent(this, MyJokesActivityView.class);
-        startActivity(i);
+
+        if(isInternetAvailable()){
+            startActivity(new Intent(new Intent(this, MyJokesActivityView.class)));
+        }
     }
 
     @OnClick(adminFAB)
     public void startAdminJokesActivity() {
-        startActivity(new Intent(this, AdminActivityView.class));
+        if(isInternetAvailable()){
+            startActivity(new Intent(this, AdminActivityView.class));
+        }
     }
 
     @OnClick(R.id.logoutButtonFAB)
     public void logoutUser() {
-        presenter.logOutUser();
+        if(isInternetAvailable()){
+            getPresenter().logOutUser();
+        }
+    }
+
+    @OnClick(R.id.myLikedJokesButtonFAB)
+    public void startMyLikedJokesActivity() {
+        if(isInternetAvailable()){
+            startActivity(new Intent(this, MyLikedJokesActivityView.class));
+        }
     }
 
     @Override
@@ -354,8 +372,8 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     }
 
     @Override
-    public void updateRemainingAdds(int remaininigAdds) {
-        saveRemainingDataToSharedPreferences(remaininigAdds);
+    public void updateRemainingAdds(int remainingAdds) {
+        saveRemainingDataToSharedPreferences(remainingAdds);
     }
 
 
@@ -366,7 +384,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     @Override
     public void onItemVoted(Joke joke) {
-        presenter.checkIfAlreadyVoted(joke);
+        getPresenter().checkIfAlreadyVoted(joke);
     }
 
     private void shareJoke(String text) {
@@ -374,7 +392,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         this.sharedText = text;
 
         if (!requestWriteStoragePermissions()) {
-            Bitmap bitmap = drawMultilineTextToBitmap(this, R.drawable.share_background, text);
+            Bitmap bitmap = UtilHelperClass.drawMultilineTextToBitmap(this, R.drawable.share_background, text);
             String bitmapPath = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, "title", "description");
             Uri bitmapUri = Uri.parse(bitmapPath);
             Intent sendIntent = new Intent();
@@ -387,7 +405,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     private boolean requestWriteStoragePermissions() {
         if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_STORAGE_REQUEST_CODE);
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.MY_STORAGE_REQUEST_CODE);
             return true;
         }
         return false;
@@ -396,7 +414,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_STORAGE_REQUEST_CODE) {
+        if (requestCode == Constants.MY_STORAGE_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 shareJoke(sharedText);
             } else {
@@ -405,58 +423,9 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         }
     }
 
-    public Bitmap drawMultilineTextToBitmap(Context gContext, int gResId, String gText) {
-        // prepare canvas
-        Resources resources = gContext.getResources();
-        float scale = resources.getDisplayMetrics().density;
-        Bitmap background = BitmapFactory.decodeResource(resources, gResId);
-
-        android.graphics.Bitmap.Config bitmapConfig = background.getConfig();
-        // set default share_background config if none
-        if (bitmapConfig == null) {
-            bitmapConfig = android.graphics.Bitmap.Config.ARGB_8888;
-        }
-        // resource bitmaps are imutable,
-        // so we need to convert it to mutable one
-        background = background.copy(bitmapConfig, true);
-
-        Canvas canvas = new Canvas(background);
-
-        // new antialiased Paint
-        TextPaint paint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        // text color - #3D3D3D
-        paint.setColor(Color.rgb(0, 0, 0));
-        // text size in pixels
-        paint.setTextSize((int) (18 * scale));
-        // text shadow
-        paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
-
-        // set text width to canvas width minus 16dp padding
-        int textWidth = canvas.getWidth() - (int) (16 * scale);
-
-        // init StaticLayout for text
-        StaticLayout textLayout = new StaticLayout(
-                gText, paint, textWidth, Layout.Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
-
-        // get height of multiline text
-        int textHeight = textLayout.getHeight();
-
-        // get position of text's top left corner
-        float x = (background.getWidth() - textWidth) / 2;
-        float y = (background.getHeight() - textHeight) / 2;
-
-        // draw text to the Canvas center
-        canvas.save();
-        canvas.translate(x, y);
-        textLayout.draw(canvas);
-        canvas.restore();
-
-        return background;
-    }
-
     @Override
     public void checkIfAdmin() {
-        presenter.checkIfAdmin();
+        getPresenter().checkIfAdmin();
     }
 
     @Override

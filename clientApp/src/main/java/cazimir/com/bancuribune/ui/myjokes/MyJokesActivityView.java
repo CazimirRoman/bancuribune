@@ -29,7 +29,8 @@ import cazimir.com.bancuribune.ui.list.OnJokeItemClickListener;
 
 public class MyJokesActivityView extends BaseBackActivity implements IMyJokesActivityView, OnJokeItemClickListener, OnGetProfilePictureListener, OnCalculatePointsListener, OnGetFacebookNameListener {
 
-    private CommonPresenter presenter;
+    private MyJokesAdapter adapter;
+
     @BindView(R.id.profileName)
     TextView profileName;
     @BindView(R.id.profileImage)
@@ -42,34 +43,34 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
     TextView profileRank;
     @BindView(R.id.nextRank)
     TextView profileNextRank;
-    private MyJokesAdapter adapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         initRecycleView();
-        presenter = new CommonPresenter(this);
+        getProfilePictureAndName();
+        getMyJokes();
+    }
+
+    private void getProfilePictureAndName() {
         try {
             getProfilePictureFromFacebook();
             getProfileNameFromFacebook();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        getMyJokes();
     }
 
     private void getProfileNameFromFacebook() {
-        presenter.getProfileName(this);
+        getPresenter().getProfileName(this);
     }
 
     private void getProfilePictureFromFacebook() throws IOException {
-        presenter.getFacebookProfilePicture(this);
+        getPresenter().getFacebookProfilePicture(this);
     }
 
     private void getMyJokes() {
-        presenter.getMyJokes();
+        getPresenter().getMyJokes();
     }
 
     private void initRecycleView() {
@@ -78,8 +79,6 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
         adapter = new MyJokesAdapter();
         myJokesListRecyclerView.setAdapter(adapter);
         myJokesListRecyclerView.setEmptyView(findViewById(R.id.empty_view));
-
-
     }
 
     @Override
@@ -101,7 +100,7 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
             adapter.add(joke);
         }
 
-        presenter.calculateTotalPoints(this, jokes);
+        getPresenter().calculateTotalPoints(this, jokes);
 
         adapter.notifyDataSetChanged();
     }
@@ -151,7 +150,7 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
         String rankId = getRankDataFromSharedPreferences();
         String rankName = computeRankName(points);
         Integer likesForNextRank = computeLikeForNextRank(points);
-        presenter.updateRankPointsAndName(points, rankName, rankId);
+        getPresenter().updateRankPointsAndName(points, rankName, rankId);
 
         profilePoints.setText(String.format(getString(R.string.total_points), String.valueOf(points)));
         profileRank.setText(String.format(getString(R.string.rankLabel), rankName));
