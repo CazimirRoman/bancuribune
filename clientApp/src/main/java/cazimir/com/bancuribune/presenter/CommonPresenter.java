@@ -7,6 +7,7 @@ import com.google.firebase.crash.FirebaseCrash;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import cazimir.com.bancuribune.base.IGeneralView;
@@ -23,6 +24,8 @@ import cazimir.com.bancuribune.ui.admin.IAdminActivityView;
 import cazimir.com.bancuribune.ui.admin.OnGetAllPendingJokesListener;
 import cazimir.com.bancuribune.ui.admin.OnUpdateApproveStatusListener;
 import cazimir.com.bancuribune.ui.forgotPassword.IForgotPasswordActivityView;
+import cazimir.com.bancuribune.ui.likedJokes.ILikedJokesActivityView;
+import cazimir.com.bancuribune.ui.likedJokes.OnGetLikedJokesListener;
 import cazimir.com.bancuribune.ui.list.IMainActivityView;
 import cazimir.com.bancuribune.ui.list.OnAllowedToAddFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnCheckIfVotedFinishedListener;
@@ -36,7 +39,7 @@ import cazimir.com.bancuribune.ui.myjokes.OnFirebaseGetMyJokesListener;
 import cazimir.com.bancuribune.ui.myjokes.OnGetFacebookNameListener;
 import cazimir.com.bancuribune.ui.register.IRegisterActivityView;
 
-public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinishedListener, OnResetPasswordListener, OnRegistrationFinishedListener, OnAdminCheckFinishedListener, OnGetJokesListener, OnAddUserListener, OnGetAllPendingJokesListener, OnAddRankFinishedListener, OnUpdateRankPointsSuccess, OnCheckIfRankDataInDBListener, OnUpdateApproveStatusListener, OnFirebaseGetMyJokesListener, OnAddFinishedListener, OnUpdatePointsFinishedListener, OnUpdateVotedByFinishedListener, OnCheckIfVotedFinishedListener, OnAddJokeVoteFinishedListener, OnAllowedToAddFinishedListener {
+public class CommonPresenter implements ICommonPresenter, OnGetLikedJokesListener, OnLoginWithEmailFinishedListener, OnResetPasswordListener, OnRegistrationFinishedListener, OnAdminCheckFinishedListener, OnGetJokesListener, OnAddUserListener, OnGetAllPendingJokesListener, OnAddRankFinishedListener, OnUpdateRankPointsSuccess, OnCheckIfRankDataInDBListener, OnUpdateApproveStatusListener, OnFirebaseGetMyJokesListener, OnAddFinishedListener, OnUpdatePointsFinishedListener, OnUpdateVotedByFinishedListener, OnCheckIfVotedFinishedListener, OnAddJokeVoteFinishedListener, OnAllowedToAddFinishedListener {
 
     private static final String TAG = "CommonPresenter";
     private IGeneralView view;
@@ -87,6 +90,11 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
     @Override
     public void getMyJokes() {
         repository.getMyJokes(this, currentUserID);
+    }
+
+    @Override
+    public void getLikedJokes() {
+        repository.getVotesForUser(this, currentUserID);
     }
 
     @Override
@@ -418,6 +426,16 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
         getForgotPasswordActivityView().showToast(error);
     }
 
+    @Override
+    public void onGetLikedJokesSuccess(Joke joke) {
+        getLikedJokesActivityView().addToLikedJokeList(joke);
+    }
+
+    @Override
+    public void onGetLikedJokesFailed(String error) {
+
+    }
+
     //get view
 
     private ILoginActivityView getLoginActivityView() {
@@ -442,6 +460,10 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
 
     private IMyJokesActivityView getMyJokesActivityView() {
         return (IMyJokesActivityView) this.view.getInstance();
+    }
+
+    private ILikedJokesActivityView getLikedJokesActivityView() {
+        return (ILikedJokesActivityView) this.view.getInstance();
     }
 
     private IAdminActivityView getAdminActivityView() {

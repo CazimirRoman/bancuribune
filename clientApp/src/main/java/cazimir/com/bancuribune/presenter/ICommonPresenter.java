@@ -15,6 +15,7 @@ public interface ICommonPresenter {
     void getFilteredJokesData(String text);
     void getAllPendingJokesData();
     void getMyJokes();
+    void getLikedJokes();
     void addJoke(Joke joke, Boolean isAdmin);
     void addRankToDatabase();
     void checkIfAdmin();

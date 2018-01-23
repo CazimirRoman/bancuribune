@@ -13,6 +13,7 @@ import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
 import cazimir.com.bancuribune.ui.add.OnAddJokeVoteFinishedListener;
 import cazimir.com.bancuribune.ui.admin.OnGetAllPendingJokesListener;
 import cazimir.com.bancuribune.ui.admin.OnUpdateApproveStatusListener;
+import cazimir.com.bancuribune.ui.likedJokes.OnGetLikedJokesListener;
 import cazimir.com.bancuribune.ui.list.OnAllowedToAddFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnCheckIfVotedFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnGetJokesListener;
@@ -25,6 +26,7 @@ public interface IJokesRepository {
     void getAllFilteredJokes(OnGetJokesListener listener, String text);
     void getAllPendingJokes(OnGetAllPendingJokesListener listener);
     void getMyJokes(OnFirebaseGetMyJokesListener listener, String userId);
+    void getVotesForUser(OnGetLikedJokesListener listener, String userId);
     void addRankToDB(OnAddRankFinishedListener listener, Rank rank);
     void addJoke(OnAddFinishedListener listener, Joke joke);
     void getAllJokesAddedToday(OnAllowedToAddFinishedListener listener, String userId, int addLimit);

@@ -30,6 +30,8 @@ import cazimir.com.bancuribune.ui.list.OnJokeItemClickListener;
 public class MyJokesActivityView extends BaseBackActivity implements IMyJokesActivityView, OnJokeItemClickListener, OnGetProfilePictureListener, OnCalculatePointsListener, OnGetFacebookNameListener {
 
     private CommonPresenter presenter;
+    private MyJokesAdapter adapter;
+
     @BindView(R.id.profileName)
     TextView profileName;
     @BindView(R.id.profileImage)
@@ -42,8 +44,6 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
     TextView profileRank;
     @BindView(R.id.nextRank)
     TextView profileNextRank;
-    private MyJokesAdapter adapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +69,7 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
     }
 
     private void getMyJokes() {
-        presenter.getMyJokes();
+        getPresenter().getMyJokes();
     }
 
     private void initRecycleView() {
@@ -78,8 +78,6 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
         adapter = new MyJokesAdapter();
         myJokesListRecyclerView.setAdapter(adapter);
         myJokesListRecyclerView.setEmptyView(findViewById(R.id.empty_view));
-
-
     }
 
     @Override

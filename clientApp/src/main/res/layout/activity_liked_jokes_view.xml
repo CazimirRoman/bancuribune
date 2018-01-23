@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/include_app_bar"
+        layout="@layout/app_bar_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_weight="0.8"
+        android:layout_height="0dp">
+
+        <RelativeLayout
+            android:id="@+id/empty_view"
+            android:visibility="visible"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true">
+
+            <com.beardedhen.androidbootstrap.BootstrapWell
+                android:layout_width="match_parent"
+                android:layout_margin="15dp"
+                app:bootstrapSize="md"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:layout_gravity="center_vertical"
+                    android:layout_centerInParent="true"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:id="@+id/no_jokes"
+                        android:src="@drawable/no_jokes"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+            </com.beardedhen.androidbootstrap.BootstrapWell>
+
+        </RelativeLayout>
+
+        <cazimir.com.bancuribune.base.EmptyRecyclerView
+            android:id="@+id/myLikedJokeList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+    </RelativeLayout>
+
+</LinearLayout>

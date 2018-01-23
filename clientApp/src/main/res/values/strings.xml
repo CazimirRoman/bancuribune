@@ -48,5 +48,6 @@
     <string name="forgot_password_msg">Te rog sa introduci mailul tau ca sa iti trimitem instructiunile de resetare</string>
     <string name="btn_reset_password">Reseteaza</string>
     <string name="btn_back">Inapoi</string>
+    <string name="liked_jokes_title">Mi-au placut</string>
 
 </resources>

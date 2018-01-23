@@ -46,13 +46,13 @@ import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
+import cazimir.com.bancuribune.base.ScrollListenerRecycleView;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
-import cazimir.com.bancuribune.presenter.CommonPresenter;
-import cazimir.com.bancuribune.base.ScrollListenerRecycleView;
 import cazimir.com.bancuribune.ui.add.AddJokeActivityView;
 import cazimir.com.bancuribune.ui.admin.AdminActivityView;
+import cazimir.com.bancuribune.ui.likedJokes.MyLikedJokesActivityView;
 import cazimir.com.bancuribune.ui.login.LoginActivityView;
 import cazimir.com.bancuribune.ui.myjokes.MyJokesActivityView;
 import cazimir.com.bancuribune.utils.MyAlertDialog;
@@ -63,15 +63,20 @@ import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_REQUEST;
 
 public class MainActivityView extends BaseActivity implements IMainActivityView, OnJokeItemClickListener {
 
-    private static final String TAG = MainActivityView.class.getName();
     private static final int MY_STORAGE_REQUEST_CODE = 523;
+
     private MyAlertDialog alertDialog;
-    private CommonPresenter presenter;
     private JokesAdapter adapter;
+    private String currentRank;
+    private Boolean isAdmin = false;
+    private String sharedText;
+
     @BindView(R.id.jokesList)
     RecyclerView jokesListRecyclerView;
     @BindView(R.id.swipeRefreshLayout)
     SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.myLikedJokesButtonFAB)
+    FloatingActionButton myLikedJokesButtonFAB;
     @BindView(addJokeButtonFAB)
     FloatingActionButton addJokeFAB;
     @BindView(R.id.myJokesButtonFAB)
@@ -86,9 +91,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     EditText search;
     @BindView(R.id.fab)
     LinearLayout fab;
-    private String currentRank;
-    private Boolean isAdmin = false;
-    private String sharedText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +112,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         });
 
         initSearch();
-        presenter = new CommonPresenter(this);
         checkIfAdmin();
         getMyRank();
         getAllJokesData(true, false);
@@ -130,11 +131,11 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     }
 
     private void getMyRank() {
-        presenter.checkAndGetMyRank();
+        getPresenter().checkAndGetMyRank();
     }
 
     private void getAllJokesData(boolean reset, boolean swipe) {
-        presenter.getAllJokesData(reset, swipe);
+        getPresenter().getAllJokesData(reset, swipe);
     }
 
     private void initSearch() {
@@ -153,11 +154,11 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.toString().isEmpty()) {
-                    presenter.getAllJokesData(true, true);
+                    getPresenter().getAllJokesData(true, true);
                 } else {
                     if (editable.toString().length() >= Constants.FILTER_MINIMUM_CHARACTERS) {
                         showProgressBar();
-                        presenter.getFilteredJokesData(editable.toString().trim());
+                        getPresenter().getFilteredJokesData(editable.toString().trim());
                     }
                 }
             }
@@ -234,15 +235,15 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         if (!isAdmin) {
 
             if (currentRank.equals(Constants.HAMSIE)) {
-                presenter.checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_HAMSIE);
+                getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_HAMSIE);
             } else if (currentRank.equals(Constants.HERING)) {
-                presenter.checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_HERING);
+                getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_HERING);
             } else if (currentRank.equals(Constants.SOMON)) {
-                presenter.checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_SOMON);
+                getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_SOMON);
             } else if (currentRank.equals(Constants.STIUCA)) {
-                presenter.checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_STIUCA);
+                getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_STIUCA);
             } else if (currentRank.equals(Constants.RECHIN)) {
-                presenter.checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_RECHIN);
+                getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_RECHIN);
             }
 
         } else {
@@ -252,8 +253,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     @OnClick(R.id.myJokesButtonFAB)
     public void startMyJokesActivity() {
-        Intent i = new Intent(this, MyJokesActivityView.class);
-        startActivity(i);
+        startActivity(new Intent(new Intent(this, MyJokesActivityView.class)));
     }
 
     @OnClick(adminFAB)
@@ -263,7 +263,12 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     @OnClick(R.id.logoutButtonFAB)
     public void logoutUser() {
-        presenter.logOutUser();
+        getPresenter().logOutUser();
+    }
+
+    @OnClick(R.id.myLikedJokesButtonFAB)
+    public void startMyLikedJokesActivity() {
+        startActivity(new Intent(this, MyLikedJokesActivityView.class));
     }
 
     @Override
@@ -366,7 +371,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     @Override
     public void onItemVoted(Joke joke) {
-        presenter.checkIfAlreadyVoted(joke);
+        getPresenter().checkIfAlreadyVoted(joke);
     }
 
     private void shareJoke(String text) {
@@ -411,10 +416,10 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         float scale = resources.getDisplayMetrics().density;
         Bitmap background = BitmapFactory.decodeResource(resources, gResId);
 
-        android.graphics.Bitmap.Config bitmapConfig = background.getConfig();
+        Bitmap.Config bitmapConfig = background.getConfig();
         // set default share_background config if none
         if (bitmapConfig == null) {
-            bitmapConfig = android.graphics.Bitmap.Config.ARGB_8888;
+            bitmapConfig = Bitmap.Config.ARGB_8888;
         }
         // resource bitmaps are imutable,
         // so we need to convert it to mutable one
@@ -456,7 +461,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     @Override
     public void checkIfAdmin() {
-        presenter.checkIfAdmin();
+        getPresenter().checkIfAdmin();
     }
 
     @Override
