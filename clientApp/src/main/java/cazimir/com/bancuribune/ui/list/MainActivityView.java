@@ -152,18 +152,15 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
             @Override
             public void afterTextChanged(Editable editable) {
-
                 if (editable.toString().isEmpty()) {
-                    presenter.getAllJokesData(true, false);
+                    presenter.getAllJokesData(true, true);
                 } else {
                     if (editable.toString().length() >= Constants.FILTER_MINIMUM_CHARACTERS) {
                         showProgressBar();
-                        presenter.getFilteredJokesData(editable.toString());
+                        presenter.getFilteredJokesData(editable.toString().trim());
                     }
                 }
-
             }
-
         });
     }
 
