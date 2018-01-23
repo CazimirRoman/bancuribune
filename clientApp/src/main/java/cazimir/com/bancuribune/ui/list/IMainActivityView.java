@@ -15,7 +15,7 @@ public interface IMainActivityView extends IGeneralView {
     void checkIfAdmin();
     void showAddSuccessDialog();
     void showAddFailedDialog();
-    void showTestToast(String message);
+    void showToast(String message);
     void redirectToLoginPage();
     void showProgressBar();
     void hideProgressBar();

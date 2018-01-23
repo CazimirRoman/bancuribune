@@ -12,7 +12,7 @@ import java.util.Date;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.ui.login.OnFormValidatedListener;
 
-public class Utils {
+public class UtilHelperClass {
 
     public static boolean isSameDay(Date day1, Date day2) {
 

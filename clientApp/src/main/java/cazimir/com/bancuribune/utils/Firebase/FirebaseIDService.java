@@ -1,4 +1,4 @@
-package cazimir.com.bancuribune.utils.FirebasePush;
+package cazimir.com.bancuribune.utils.Firebase;
 
 import android.util.Log;
 

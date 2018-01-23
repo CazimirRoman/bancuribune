@@ -16,7 +16,7 @@ import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.ui.login.OnFormValidatedListener;
-import cazimir.com.bancuribune.utils.Utils;
+import cazimir.com.bancuribune.utils.UtilHelperClass;
 
 public class RegisterActivityView extends BaseBackActivity implements IRegisterActivityView, OnFormValidatedListener {
 
@@ -44,7 +44,7 @@ public class RegisterActivityView extends BaseBackActivity implements IRegisterA
         String email = etEmail.getText().toString();
         String password = etPassword.getText().toString();
         String passwordConfirm = etPasswordConfirm.getText().toString();
-        Utils.validateFormData(this, email, password, passwordConfirm);
+        UtilHelperClass.validateFormData(this, email, password, passwordConfirm);
     }
 
     @Override

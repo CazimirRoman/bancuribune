@@ -1,5 +1,7 @@
 package cazimir.com.bancuribune.presenter;
 
+import android.util.Log;
+
 import com.facebook.Profile;
 import com.google.firebase.crash.FirebaseCrash;
 
@@ -36,6 +38,7 @@ import cazimir.com.bancuribune.ui.register.IRegisterActivityView;
 
 public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinishedListener, OnResetPasswordListener, OnRegistrationFinishedListener, OnAdminCheckFinishedListener, OnGetJokesListener, OnAddUserListener, OnGetAllPendingJokesListener, OnAddRankFinishedListener, OnUpdateRankPointsSuccess, OnCheckIfRankDataInDBListener, OnUpdateApproveStatusListener, OnFirebaseGetMyJokesListener, OnAddFinishedListener, OnUpdatePointsFinishedListener, OnUpdateVotedByFinishedListener, OnCheckIfVotedFinishedListener, OnAddJokeVoteFinishedListener, OnAllowedToAddFinishedListener {
 
+    private static final String TAG = "CommonPresenter";
     private IGeneralView view;
     private IJokesRepository repository;
     private IAuthPresenter authPresenter;
@@ -54,25 +57,18 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
 
     @Override
     public void registerUser(String email, String password) {
-        IRegisterActivityView register = getRegisterActivityView();
-        register.showProgress();
+        getRegisterActivityView().showProgress();
         authPresenter.registerUser(this, email, password);
     }
 
-    private IRegisterActivityView getRegisterActivityView() {
-        return (IRegisterActivityView) this.view.getInstance();
-    }
+    public void getAllJokesData(boolean reset, boolean shouldShowProgress) {
 
-    public void getAllJokesData(boolean reset, boolean shouldShowProgress){
-
-        IMainActivityView main = getMainActivityView();
-
-        if(reset){
-            main.refreshJokesListAdapter();
+        if (reset) {
+            getMainActivityView().refreshJokesListAdapter();
         }
 
-        if(!shouldShowProgress){
-            main.showProgressBar();
+        if (!shouldShowProgress) {
+            getMainActivityView().showProgressBar();
         }
 
         repository.getAllJokes(this, reset);
@@ -97,7 +93,6 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
     public void addJoke(Joke joke, Boolean isAdmin) {
         joke.setCreatedBy(currentUserID);
         joke.setUserName(authPresenter.getCurrentUserName());
-
 
         if (isAdmin) {
             joke.setApproved(true);
@@ -132,11 +127,8 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
 
     @Override
     public void isAllowedToAdd(int remainingAdds) {
-
-        IMainActivityView main = getMainActivityView();
-
-        main.updateRemainingAdds(remainingAdds);
-        main.navigateToAddJokeActivity();
+        getMainActivityView().updateRemainingAdds(remainingAdds);
+        getMainActivityView().navigateToAddJokeActivity();
     }
 
     @Override
@@ -157,7 +149,6 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
     @Override
     public void increaseJokePointByOne(Joke joke) {
         repository.updateJokePoints(this, joke);
-        //repository.updateVotedBy(this, uid, currentUserID);
         writeVoteLogToDB(joke.getUid());
     }
 
@@ -176,34 +167,32 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
 
     @Override
     public void getFacebookProfilePicture(final OnGetProfilePictureListener listener) throws IOException {
-        if(loggedInViaFacebook()){
+        if (isLoggedInFacebook()) {
             String id = Profile.getCurrentProfile().getId();
             final URL imageURL = new URL("https://graph.facebook.com/" + id + "/picture?type=large");
             listener.OnGetProfilePictureSuccess(imageURL);
-        }else{
+        } else {
             listener.OnGetProfilePictureFailed();
         }
-
-
     }
 
     @Override
     public void getProfileName(OnGetFacebookNameListener listener) {
 
-        if(loggedInViaFacebook()){
+        if (isLoggedInFacebook()) {
             String name = Profile.getCurrentProfile().getName();
-            if(name != null){
+            if (name != null) {
                 listener.OnGetFacebookNameSuccess(name);
-            }else{
+            } else {
                 listener.OnGetFacebookNameFailed();
             }
-        }else{
+        } else {
             listener.OnGetFacebookNameSuccess(authPresenter.getCurrentUserName());
         }
     }
 
-    private boolean loggedInViaFacebook() {
-        if(Profile.getCurrentProfile() != null){
+    private boolean isLoggedInFacebook() {
+        if (Profile.getCurrentProfile() != null) {
             return true;
         }
 
@@ -213,7 +202,7 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
     @Override
     public void calculateTotalPoints(OnCalculatePointsListener listener, List<Joke> jokes) {
         int points = 0;
-        for (Joke joke : jokes){
+        for (Joke joke : jokes) {
             points = points + joke.getPoints();
         }
 
@@ -224,7 +213,6 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
     public void updateRankPointsAndName(int points, String rankName, String rankId) {
         repository.updateRankPointsAndName(this, rankName, points, rankId);
     }
-
 
     @Override
     public void OnGetJokesSuccess(List<Joke> jokes) {
@@ -248,8 +236,7 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
 
     @Override
     public void OnAddSuccess() {
-        IAddJokeActivityView addJoke = getAddJokeActivityView();
-        addJoke.closeAdd();
+        getAddJokeActivityView().closeAdd();
     }
 
     @Override
@@ -264,17 +251,17 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
 
     @Override
     public void onGetMyJokesError(String error) {
-
+        getMyJokesActivityView().showToast(error);
     }
 
     @Override
     public void onAddJokeVoteSuccess() {
-        getMainActivityView().showTestToast("Multumim pentru vot!");
+        getMainActivityView().showToast("Multumim pentru vot!");
     }
 
     @Override
     public void onAddJokeVoteFailed() {
-        getMainActivityView().showTestToast("Data could not be saved!");
+        getMainActivityView().showToast("Data could not be saved!");
     }
 
     @Override
@@ -289,9 +276,7 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
 
     @Override
     public void OnHasVotedTrue() {
-//        mainView.changeColour();
-//        mainView.decreasePoints();
-        getMainActivityView().showTestToast("Ai votat deja!");
+        getMainActivityView().showToast("Ai votat deja!");
     }
 
     @Override
@@ -301,7 +286,7 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
 
     @Override
     public void OnUpdateVotedByFailed(String error) {
-        getMainActivityView().showTestToast(error);
+        getMainActivityView().showToast(error);
     }
 
     @Override
@@ -316,8 +301,7 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
 
     @Override
     public void OnGetAllPendingJokesFailed(String message) {
-
-
+        getAdminActivityView().showToast(message);
     }
 
     @Override
@@ -342,7 +326,6 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
     public void RankDataNotInDB() {
         addRankToDatabase();
         addUserToDatabase(currentUserID, authPresenter.getCurrentUserName());
-
     }
 
     private void addUserToDatabase(String currentUserID, String userName) {
@@ -351,7 +334,7 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
 
     @Override
     public void OnUpdateRankPointsSuccess() {
-        //ok:)
+        Log.d(TAG, "Rank points updated");
     }
 
     @Override
@@ -384,7 +367,6 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
     @Override
     public void OnAdminCheckFalse() {
         getMainActivityView().setAdmin(false);
-
     }
 
     @Override
@@ -413,7 +395,6 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
 
     @Override
     public void onLoginWithEmailSuccess() {
-
         ILoginActivityView login = (ILoginActivityView) this.view.getInstance();
         login.launchMainActivity();
         login.hideProgress();
@@ -437,6 +418,20 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
         getForgotPasswordActivityView().showToast(error);
     }
 
+    //get view
+
+    private ILoginActivityView getLoginActivityView() {
+        return (ILoginActivityView) this.view.getInstance();
+    }
+
+    private IRegisterActivityView getRegisterActivityView() {
+        return (IRegisterActivityView) this.view.getInstance();
+    }
+
+    private IForgotPasswordActivityView getForgotPasswordActivityView() {
+        return (IForgotPasswordActivityView) this.view.getInstance();
+    }
+
     private IMainActivityView getMainActivityView() {
         return (IMainActivityView) this.view.getInstance();
     }
@@ -451,13 +446,5 @@ public class CommonPresenter implements ICommonPresenter, OnLoginWithEmailFinish
 
     private IAdminActivityView getAdminActivityView() {
         return (IAdminActivityView) this.view.getInstance();
-    }
-
-    private IForgotPasswordActivityView getForgotPasswordActivityView() {
-        return (IForgotPasswordActivityView) this.view.getInstance();
-    }
-
-    private ILoginActivityView getLoginActivityView() {
-        return (ILoginActivityView) this.view.getInstance();
     }
 }

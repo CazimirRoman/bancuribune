@@ -4,21 +4,17 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 import butterknife.BindView;
 import cazimir.com.bancuribune.R;
-import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
-import cazimir.com.bancuribune.utils.Utils;
+import cazimir.com.bancuribune.utils.UtilHelperClass;
 
 public class ForgotPasswordActivityView extends BaseBackActivity implements IForgotPasswordActivityView {
 
@@ -94,7 +90,7 @@ public class ForgotPasswordActivityView extends BaseBackActivity implements IFor
             etEmail.setError(getString(R.string.email_missing));
             return false;
         } else {
-            if (!Utils.isValidEmail(email)) {
+            if (!UtilHelperClass.isValidEmail(email)) {
                 etEmail.setError(getString(R.string.email_invalid));
                 return false;
             }
