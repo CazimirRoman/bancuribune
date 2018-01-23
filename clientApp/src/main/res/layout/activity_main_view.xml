@@ -1,35 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:focusableInTouchMode="true"
         android:layout_height="match_parent"
+        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <include
             android:id="@+id/include_app_bar"
             layout="@layout/app_bar_main"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <com.beardedhen.androidbootstrap.BootstrapEditText
+            android:id="@+id/search"
+            style="@style/text.regular"
+            android:visibility="gone"
             android:layout_width="match_parent"
-            app:bootstrapSize="lg"
-            app:roundedCorners="true"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:drawableLeft="@drawable/search"
             android:drawablePadding="5dp"
             android:drawableStart="@drawable/search"
-            android:drawableLeft="@drawable/search"
-            app:bootstrapBrand="info"
-            android:id="@+id/search"
-            android:layout_margin="15dp"
-            style="@style/text.regular"
             android:hint="@string/search_hint"
-            android:layout_height="wrap_content"/>
+            app:bootstrapBrand="info"
+            app:bootstrapSize="lg"
+            app:roundedCorners="true" />
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshLayout"
@@ -39,75 +40,75 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/jokesList"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
         </android.support.v4.widget.SwipeRefreshLayout>
 
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
         android:id="@+id/fab"
-        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
-            <FrameLayout
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/addJokeButtonFAB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|start">
+                android:layout_margin="10dp" />
 
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/addJokeButtonFAB"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"/>
-
-                <cazimir.com.bancuribune.ui.FontAwesomeTextView
-                    android:id="@+id/tvSellRecordCount"
-                    style="@style/fontAwesome.iconSizeButtons"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:elevation="20dp"
-                    android:text="@string/fa_icon_plus"
-                    android:textColor="#FFFFFF"
-                    app:elevation="20dp"/>
-
-            </FrameLayout>
-
-            <FrameLayout
+            <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                android:id="@+id/tvSellRecordCount"
+                style="@style/fontAwesome.iconSizeButtons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|start">
+                android:layout_gravity="center"
+                android:elevation="20dp"
+                android:text="@string/fa_icon_plus"
+                android:textColor="#FFFFFF"
+                app:elevation="20dp" />
 
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/myJokesButtonFAB"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:clickable="true"
-                    app:backgroundTint="@color/colorAccent"
-                    app:rippleColor="@color/com_facebook_blue"/>
-
-                <cazimir.com.bancuribune.ui.FontAwesomeTextView
-                    style="@style/fontAwesome.iconSizeButtons"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:elevation="20dp"
-                    android:text="@string/fa_icon_user"
-                    android:textColor="#FFFFFF"
-                    app:elevation="20dp"/>
-            </FrameLayout>
+        </FrameLayout>
 
         <FrameLayout
             android:layout_width="wrap_content"
-            android:id="@+id/admin"
-            android:visibility="gone"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/myJokesButtonFAB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:clickable="true"
+                app:backgroundTint="@color/colorAccent"
+                app:rippleColor="@color/com_facebook_blue" />
+
+            <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                style="@style/fontAwesome.iconSizeButtons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:elevation="20dp"
+                android:text="@string/fa_icon_user"
+                android:textColor="#FFFFFF"
+                app:elevation="20dp" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/admin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:visibility="gone">
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/adminFAB"
@@ -116,7 +117,7 @@
                 android:layout_margin="10dp"
                 android:clickable="true"
                 app:backgroundTint="@color/colorAccent"
-                app:rippleColor="@color/com_facebook_blue"/>
+                app:rippleColor="@color/com_facebook_blue" />
 
             <cazimir.com.bancuribune.ui.FontAwesomeTextView
                 style="@style/fontAwesome.iconSizeButtons"
@@ -126,33 +127,33 @@
                 android:elevation="20dp"
                 android:text="@string/fa_icon_cogs"
                 android:textColor="#FFFFFF"
-                app:elevation="20dp"/>
+                app:elevation="20dp" />
         </FrameLayout>
 
-            <FrameLayout
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/logoutButtonFAB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|start">
+                android:layout_margin="10dp"
+                android:clickable="true"
+                app:backgroundTint="@color/colorAccent"
+                app:rippleColor="@color/com_facebook_blue" />
 
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/logoutButtonFAB"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:clickable="true"
-                    app:backgroundTint="@color/colorAccent"
-                    app:rippleColor="@color/com_facebook_blue"/>
-
-                <cazimir.com.bancuribune.ui.FontAwesomeTextView
-                    style="@style/fontAwesome.iconSizeButtons"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:elevation="20dp"
-                    android:text="@string/fa_icon_sign_out"
-                    android:textColor="#FFFFFF"
-                    app:elevation="20dp"/>
-            </FrameLayout>
+            <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                style="@style/fontAwesome.iconSizeButtons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:elevation="20dp"
+                android:text="@string/fa_icon_sign_out"
+                android:textColor="#FFFFFF"
+                app:elevation="20dp" />
+        </FrameLayout>
 
     </LinearLayout>
 
@@ -163,8 +164,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_gravity="center"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
 
 </RelativeLayout>

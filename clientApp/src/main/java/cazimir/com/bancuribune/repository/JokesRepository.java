@@ -618,7 +618,7 @@ public class JokesRepository implements IJokesRepository {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                //check permission in Firebase (these type of errors are thrown here)
             }
         });
 
