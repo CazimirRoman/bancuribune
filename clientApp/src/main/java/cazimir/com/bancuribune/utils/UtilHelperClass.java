@@ -110,7 +110,9 @@ public class UtilHelperClass {
         // text color - #3D3D3D
         paint.setColor(Color.rgb(0, 0, 0));
         // text size in pixels
-        paint.setTextSize((int) (18 * scale));
+
+        paint.setTextSize((int) (50 * scale));
+
         // text shadow
         paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
 
