@@ -78,13 +78,16 @@ public class UtilHelperClass {
             }
         }
 
-        if(!password2.equals("")){
-            if(!password2.equals(password)){
-                listener.onValidateFail(Constants.PASSWORD_MATCH_ERROR);
-                return;
-            }
+        if (TextUtils.isEmpty(password2)) {
+            listener.onValidateFail(Constants.PASSWORD_MATCH_ERROR);
+            return;
         }
 
+        if (!password2.equals(password)) {
+            listener.onValidateFail(Constants.PASSWORD_MATCH_ERROR);
+            return;
+        }
+        
         listener.onValidateSuccess(email, password);
     }
 
