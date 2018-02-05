@@ -81,7 +81,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
                 if (isInternetAvailable()) {
                     String email = etEmail.getText().toString();
                     String password = etPassword.getText().toString();
-                    UtilHelperClass.validateFormData(this, email, password, Constants.EMPTY_STRING_PLACEHOLDER);
+                    UtilHelperClass.validateFormData(this, email, password, Constants.PASSWORD_MATCH_NA);
                 }
 
                 break;

@@ -31,7 +31,7 @@ public class Constants {
     public static final String PASSWORD_EMPTY = "password_empty";
     public static final String PASSWORD_INVALID = "password_invalid";
     public static final String PASSWORD_MATCH_ERROR = "password_match_error";
-    public static final String EMPTY_STRING_PLACEHOLDER = "";
+    public static final String PASSWORD_MATCH_NA = "no password repeat";
     public static int FILTER_MINIMUM_CHARACTERS = 3;
 
     public static final int TOTAL_ITEM_EACH_LOAD = 50;

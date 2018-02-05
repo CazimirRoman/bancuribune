@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import cazimir.com.bancuribune.constants.Constants;
+import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.ui.login.OnFormValidatedListener;
 
 public class UtilHelperClass {
@@ -78,14 +79,16 @@ public class UtilHelperClass {
             }
         }
 
-        if (TextUtils.isEmpty(password2)) {
-            listener.onValidateFail(Constants.PASSWORD_MATCH_ERROR);
-            return;
-        }
+        if(!password2.equals(Constants.PASSWORD_MATCH_NA)){
+            if (TextUtils.isEmpty(password2)) {
+                listener.onValidateFail(Constants.PASSWORD_MATCH_ERROR);
+                return;
+            }
 
-        if (!password2.equals(password)) {
-            listener.onValidateFail(Constants.PASSWORD_MATCH_ERROR);
-            return;
+            if (!password2.equals(password)) {
+                listener.onValidateFail(Constants.PASSWORD_MATCH_ERROR);
+                return;
+            }
         }
         
         listener.onValidateSuccess(email, password);
