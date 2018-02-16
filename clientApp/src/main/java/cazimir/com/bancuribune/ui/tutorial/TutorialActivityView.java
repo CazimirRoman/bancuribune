@@ -40,15 +40,15 @@ public class TutorialActivityView extends AppCompatActivity {
     private ArrayList<PaperOnboardingPage> getDataForOnboarding() {
         // prepare data
         PaperOnboardingPage scr1 = new PaperOnboardingPage(getString(R.string.tutorial1_title), getString(R.string.tutorial1_text),
-                Color.parseColor("#678FB4"), R.drawable.hotels, R.drawable.key);
+                Color.parseColor("#678FB4"), R.drawable.onboarding_like, R.drawable.key);
         PaperOnboardingPage scr2 = new PaperOnboardingPage(getString(R.string.tutorial2_title), getString(R.string.tutorial2_text),
-                Color.parseColor("#65B0B4"), R.drawable.banks, R.drawable.wallet);
+                Color.parseColor("#65B0B4"), R.drawable.onboarding_add, R.drawable.wallet);
         PaperOnboardingPage scr3 = new PaperOnboardingPage(getString(R.string.tutorial3_title), getString(R.string.tutorial3_text),
-                Color.parseColor("#9B90BC"), R.drawable.stores, R.drawable.shopping_cart);
+                Color.parseColor("#9B90BC"), R.drawable.onboarding_like, R.drawable.shopping_cart);
         PaperOnboardingPage scr4 = new PaperOnboardingPage(getString(R.string.tutorial4_title), getString(R.string.tutorial4_text),
-                Color.parseColor("#9B90BC"), R.drawable.stores, R.drawable.shopping_cart);
+                Color.parseColor("#9B90BC"), R.drawable.onboarding_profile, R.drawable.shopping_cart);
         PaperOnboardingPage scr5 = new PaperOnboardingPage(getString(R.string.tutorial5_title), getString(R.string.tutorial5_text),
-                Color.parseColor("#9B90BC"), R.drawable.stores, R.drawable.shopping_cart);
+                Color.parseColor("#9B90BC"), R.drawable.onboarding_ranks, R.drawable.shopping_cart);
         PaperOnboardingPage scr6 = new PaperOnboardingPage(getString(R.string.tutorial6_title), getString(R.string.tutorial6_text),
                 Color.parseColor("#9B90BC"), R.drawable.stores, R.drawable.shopping_cart);
 
