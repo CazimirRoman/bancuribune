@@ -45,6 +45,11 @@ public class CommonPresenter implements ICommonPresenter, OnGetLikedJokesListene
     private IGeneralView view;
     private IJokesRepository repository;
     private IAuthPresenter authPresenter;
+
+    public String getCurrentUserID() {
+        return currentUserID;
+    }
+
     private String currentUserID;
 
     public CommonPresenter(IGeneralView view) {
