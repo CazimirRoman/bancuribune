@@ -55,6 +55,7 @@ import cazimir.com.bancuribune.ui.admin.AdminActivityView;
 import cazimir.com.bancuribune.ui.likedJokes.MyLikedJokesActivityView;
 import cazimir.com.bancuribune.ui.login.LoginActivityView;
 import cazimir.com.bancuribune.ui.myjokes.MyJokesActivityView;
+import cazimir.com.bancuribune.ui.tutorial.TutorialActivityView;
 import cazimir.com.bancuribune.utils.MyAlertDialog;
 import cazimir.com.bancuribune.utils.UtilHelperClass;
 
@@ -94,12 +95,17 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        startTutorialActivity();
         setUpActionbar();
         setSwipeRefreshListener();
         initSearch();
         checkIfAdmin();
         getMyRank();
         getAllJokesData(true, false);
+    }
+
+    private void startTutorialActivity() {
+        startActivity(new Intent(this, TutorialActivityView.class));
     }
 
     private void setSwipeRefreshListener() {

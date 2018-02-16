@@ -49,5 +49,17 @@
     <string name="btn_reset_password">Reseteaza</string>
     <string name="btn_back">Inapoi</string>
     <string name="liked_jokes_title">Mi-au placut</string>
+    <string name="tutorial1_title">Bine ai venit</string>
+    <string name="tutorial1_text">Hai sa invatam cum se foloseste aplicatia si feature-urile principale ale ei</string>
+    <string name="tutorial2_title">Adauga un banc nou</string>
+    <string name="tutorial2_text">Da click pe iconita \'plus\' pentru a adauga un banc nou. Dupa ce va fi verificat de un moderator, el va fi vizibil in aplicatie</string>
+    <string name="tutorial3_text">Acest ecran iti va arata toate bancurile la care ai dat \'Like\' in ordine cronologica</string>
+    <string name="tutorial3_title">Bancurile favorite</string>
+    <string name="tutorial4_title">Pagina de profil</string>
+    <string name="tutorial4_text">Pe pagina de profil vei putea vedea toate bancurile adaugate de tine, numarul de puncte adunate precum si numarul de puncte necesare pentru a trece la urmatorul rang</string>
+    <string name="tutorial5_text">Adunang like-uri de la ceilalti utilizatori cresti in rang si poti adauga mai multe bancuri zilnic. \n Hamsie (la 0 de like-uri) - 2/zi \n Hering (de la 25 de like-uri) - 4/zi \n Somon (de la 100 de like-uri) - 8/zi \n Stiuca (de la 250 de like-uri) - 12/zi \n Rechin (de la 500 de like-uri) - nelimitat</string>
+    <string name="tutorial5_title">Ranguri</string>
+    <string name="tutorial6_title">Like si share</string>
+    <string name="tutorial6_text">La fiecare banc ai optiunea sa dai Like si Share. Userul care a adaugat bancul la primi un punct. \n Apasand pe butonul de share aplicatia iti va cere permisiuni sa scrie pe cardul SD pentru a putea generat imaginea de fundal pentru bancul la care tocami urmeaza sa dai share.</string>
 
 </resources>
