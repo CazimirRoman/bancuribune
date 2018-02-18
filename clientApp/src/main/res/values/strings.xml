@@ -49,5 +49,16 @@
     <string name="btn_reset_password">Reseteaza</string>
     <string name="btn_back">Inapoi</string>
     <string name="liked_jokes_title">Mi-au placut</string>
-
+    <string name="tutorial1_title">Bine ai venit</string>
+    <string name="tutorial1_text">Afla in 5 pasi cum functioneaza Bancuri bune.</string>
+    <string name="tutorial2_title">Adauga un banc nou</string>
+    <string name="tutorial2_text">Da click pe iconita \“plus\” ca sa adaugi un banc nou. Dupa ce e aprobat de un moderator, il vei vedea in aplicatie.</string>
+    <string name="tutorial3_text">Aici gasesti bancurile care ti-au placut. Trimite-le prietenilor tai!</string>
+    <string name="tutorial3_title">Bancurile favorite</string>
+    <string name="tutorial4_title">Pagina de profil</string>
+    <string name="tutorial4_text">Aici gasesti bancurile adaugate, punctele adunate, precum si rangul curent.</string>
+    <string name="tutorial5_text">Vezi cat de apreciate sunt bancurile tale, aduna like-uri si cresti in rangul pestilor. \n Hamsie (la 0 de like-uri)\n Hering (de la 25 de like-uri)\n Somon (de la 100 de like-uri)\n Stiuca (de la 250 de like-uri)\n Rechin (de la 500 de like-uri)</string>
+    <string name="tutorial5_title">Ranguri</string>
+    <string name="tutorial6_title">Like si share</string>
+    <string name="tutorial6_text">Arata ca iti place bancul dand like si trimite-l prietenilor tai cu optiunea share.</string>
 </resources>

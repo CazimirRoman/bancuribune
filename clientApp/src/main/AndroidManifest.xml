@@ -64,6 +64,7 @@
         <activity android:name=".ui.register.RegisterActivityView" />
         <activity android:name=".ui.forgotPassword.ForgotPasswordActivityView" />
         <activity android:name=".ui.likedJokes.MyLikedJokesActivityView" />
+        <activity android:name=".ui.tutorial.TutorialActivityView" />
     </application>
 
 </manifest>

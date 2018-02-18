@@ -55,6 +55,7 @@ import cazimir.com.bancuribune.ui.admin.AdminActivityView;
 import cazimir.com.bancuribune.ui.likedJokes.MyLikedJokesActivityView;
 import cazimir.com.bancuribune.ui.login.LoginActivityView;
 import cazimir.com.bancuribune.ui.myjokes.MyJokesActivityView;
+import cazimir.com.bancuribune.ui.tutorial.TutorialActivityView;
 import cazimir.com.bancuribune.utils.MyAlertDialog;
 import cazimir.com.bancuribune.utils.UtilHelperClass;
 
@@ -93,13 +94,23 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setUpActionbar();
         setSwipeRefreshListener();
+        onboardingNeeded();
         initSearch();
         checkIfAdmin();
         getMyRank();
         getAllJokesData(true, false);
+    }
+
+    private void onboardingNeeded() {
+        if (isFirstRun()) {
+            startTutorialActivity();
+        }
+    }
+
+    private void startTutorialActivity() {
+        startActivity(new Intent(this, TutorialActivityView.class));
     }
 
     private void setSwipeRefreshListener() {
@@ -109,6 +120,22 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
                 getAllJokesData(true, true);
             }
         });
+    }
+
+    private boolean isFirstRun() {
+
+        Boolean mFirstRun;
+
+        SharedPreferences mPreferences = this.getSharedPreferences("first_time", Context.MODE_PRIVATE);
+        mFirstRun = mPreferences.getBoolean(getPresenter().getCurrentUserID(), true);
+        if (mFirstRun) {
+            SharedPreferences.Editor editor = mPreferences.edit();
+            editor.putBoolean(getPresenter().getCurrentUserID(), false);
+            editor.apply();
+            return true;
+        }
+
+        return false;
     }
 
     private void setUpActionbar() {
