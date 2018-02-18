@@ -10,4 +10,5 @@ public interface IMyJokesActivityView extends IGeneralView {
     void showMyJokesList(List<Joke> jokes);
     String getRankDataFromSharedPreferences();
     void showToast(String message);
+    void redirectToLoginPage();
 }

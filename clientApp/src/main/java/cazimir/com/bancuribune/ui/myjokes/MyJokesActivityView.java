@@ -1,8 +1,12 @@
 package cazimir.com.bancuribune.ui.myjokes;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,16 +19,14 @@ import java.util.List;
 
 import butterknife.BindView;
 import cazimir.com.bancuribune.R;
-import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.base.EmptyRecyclerView;
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
-import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.presenter.OnGetProfilePictureListener;
-import cazimir.com.bancuribune.repository.JokesRepository;
 import cazimir.com.bancuribune.ui.list.OnJokeItemClickListener;
+import cazimir.com.bancuribune.ui.login.LoginActivityView;
 
 
 public class MyJokesActivityView extends BaseBackActivity implements IMyJokesActivityView, OnJokeItemClickListener, OnGetProfilePictureListener, OnCalculatePointsListener, OnGetFacebookNameListener {
@@ -45,11 +47,36 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
     TextView profileNextRank;
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.logout_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.logout:
+                getPresenter().logOutUser();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initRecycleView();
         getProfilePictureAndName();
         getMyJokes();
+        addMenuToActionBar();
+    }
+
+    private void addMenuToActionBar() {
+
     }
 
     private void getProfilePictureAndName() {
@@ -119,6 +146,12 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
     @Override
     public void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void redirectToLoginPage() {
+        startActivity(new Intent(this, LoginActivityView.class));
+        finish();
     }
 
     @Override
