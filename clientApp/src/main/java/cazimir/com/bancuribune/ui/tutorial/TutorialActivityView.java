@@ -3,11 +3,8 @@ package cazimir.com.bancuribune.ui.tutorial;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
-import com.ramotion.paperonboarding.PaperOnboardingEngine;
 import com.ramotion.paperonboarding.PaperOnboardingPage;
-import com.ramotion.paperonboarding.listeners.PaperOnboardingOnChangeListener;
 import com.ramotion.paperonboarding.listeners.PaperOnboardingOnRightOutListener;
 
 import java.util.ArrayList;
@@ -16,7 +13,7 @@ import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.utils.CustomPaperOnboardingEngine;
 
 /**
- * TODO: Add a class header comment!
+ * Class that handles the tutorial activity launch
  */
 public class TutorialActivityView extends AppCompatActivity {
 
@@ -42,23 +39,23 @@ public class TutorialActivityView extends AppCompatActivity {
         PaperOnboardingPage scr1 = new PaperOnboardingPage(getString(R.string.tutorial1_title), getString(R.string.tutorial1_text),
                 Color.parseColor("#678FB4"), R.drawable.onboarding_welcome, R.drawable.onboarding_welcome_small);
         PaperOnboardingPage scr2 = new PaperOnboardingPage(getString(R.string.tutorial2_title), getString(R.string.tutorial2_text),
-                Color.parseColor("#678FB4"), R.drawable.onboarding_add, R.drawable.onboarding_add_small);
+                Color.parseColor("#678FB4"), R.drawable.onboarding_add, R.drawable.onboarding_welcome_small);
         PaperOnboardingPage scr3 = new PaperOnboardingPage(getString(R.string.tutorial3_title), getString(R.string.tutorial3_text),
-                Color.parseColor("#678FB4"), R.drawable.onboarding_favorites, R.drawable.onboarding_favorites_small);
+                Color.parseColor("#678FB4"), R.drawable.onboarding_favorites, R.drawable.onboarding_welcome_small);
         PaperOnboardingPage scr4 = new PaperOnboardingPage(getString(R.string.tutorial4_title), getString(R.string.tutorial4_text),
-                Color.parseColor("#678FB4"), R.drawable.onboarding_profile, R.drawable.onboarding_profile_small);
+                Color.parseColor("#678FB4"), R.drawable.onboarding_profile, R.drawable.onboarding_welcome_small);
         PaperOnboardingPage scr5 = new PaperOnboardingPage(getString(R.string.tutorial5_title), getString(R.string.tutorial5_text),
-                Color.parseColor("#678FB4"), R.drawable.onboarding_ranks, R.drawable.onboarding_ranks_small);
+                Color.parseColor("#678FB4"), R.drawable.onboarding_ranks, R.drawable.onboarding_welcome_small);
         PaperOnboardingPage scr6 = new PaperOnboardingPage(getString(R.string.tutorial6_title), getString(R.string.tutorial6_text),
-                Color.parseColor("#678FB4"), R.drawable.onboarding_like, R.drawable.onboarding_like_small);
+                Color.parseColor("#678FB4"), R.drawable.onboarding_like_share, R.drawable.onboarding_welcome_small);
 
         ArrayList<PaperOnboardingPage> elements = new ArrayList<>();
         elements.add(scr1);
         elements.add(scr2);
         elements.add(scr3);
+        elements.add(scr6);
         elements.add(scr4);
         elements.add(scr5);
-        elements.add(scr6);
         return elements;
     }
 }
