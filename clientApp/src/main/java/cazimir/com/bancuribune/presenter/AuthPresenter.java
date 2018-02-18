@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.ui.list.IMainActivityView;
 import cazimir.com.bancuribune.ui.login.ILoginActivityView;
+import cazimir.com.bancuribune.ui.myjokes.IMyJokesActivityView;
 
 public class AuthPresenter implements IAuthPresenter {
 
@@ -129,7 +130,7 @@ public class AuthPresenter implements IAuthPresenter {
     }
 
     @Override
-    public void logUserOut(IMainActivityView view) {
+    public void logUserOut(IMyJokesActivityView view) {
         auth.signOut();
         LoginManager.getInstance().logOut();
         view.redirectToLoginPage();

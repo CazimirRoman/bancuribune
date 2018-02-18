@@ -151,7 +151,7 @@ public class CommonPresenter implements ICommonPresenter, OnGetLikedJokesListene
 
     @Override
     public void logOutUser() {
-        authPresenter.logUserOut(getMainActivityView());
+        authPresenter.logUserOut(getMyJokesActivityView());
     }
 
     @Override

@@ -79,11 +79,9 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @BindView(addJokeButtonFAB)
     FloatingActionButton addJokeFAB;
     @BindView(R.id.myJokesButtonFAB)
-    FloatingActionButton logoutFAB;
+    FloatingActionButton myJokesFAB;
     @BindView(R.id.admin)
     FrameLayout admin;
-    @BindView(R.id.logoutButtonFAB)
-    FloatingActionButton myJokesFAB;
     @BindView(R.id.progress_bar)
     ProgressBar progressMain;
     @BindView(R.id.search)
@@ -297,13 +295,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         }
     }
 
-    @OnClick(R.id.logoutButtonFAB)
-    public void logoutUser() {
-        if(isInternetAvailable()){
-            getPresenter().logOutUser();
-        }
-    }
-
     @OnClick(R.id.myLikedJokesButtonFAB)
     public void startMyLikedJokesActivity() {
         if(isInternetAvailable()){
@@ -347,12 +338,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @Override
     public void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void redirectToLoginPage() {
-        this.finish();
-        startActivity(new Intent(this, LoginActivityView.class));
     }
 
     @Override

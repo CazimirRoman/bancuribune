@@ -5,6 +5,7 @@ import com.facebook.FacebookCallback;
 import com.facebook.login.LoginResult;
 
 import cazimir.com.bancuribune.ui.list.IMainActivityView;
+import cazimir.com.bancuribune.ui.myjokes.IMyJokesActivityView;
 import cazimir.com.bancuribune.ui.register.OnRegisterListener;
 
 public interface IAuthPresenter {
@@ -14,6 +15,6 @@ public interface IAuthPresenter {
     void checkIfUserLoggedIn();
     String getCurrentUserID();
     String getCurrentUserName();
-    void logUserOut(IMainActivityView view);
+    void logUserOut(IMyJokesActivityView view);
     void performPasswordReset(OnResetPasswordListener listener, String email);
 }
