@@ -28,6 +28,7 @@ import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -37,6 +38,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.codemybrainsout.ratingdialog.RatingDialog;
 import com.facebook.Profile;
 
 import java.util.List;
@@ -56,6 +58,7 @@ import cazimir.com.bancuribune.ui.likedJokes.MyLikedJokesActivityView;
 import cazimir.com.bancuribune.ui.login.LoginActivityView;
 import cazimir.com.bancuribune.ui.myjokes.MyJokesActivityView;
 import cazimir.com.bancuribune.ui.tutorial.TutorialActivityView;
+import cazimir.com.bancuribune.utils.GMailSender;
 import cazimir.com.bancuribune.utils.MyAlertDialog;
 import cazimir.com.bancuribune.utils.UtilHelperClass;
 
@@ -95,10 +98,47 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         setUpActionbar();
         setSwipeRefreshListener();
         onboardingNeeded();
+        //initializeRating();
+        sendFeedbackEmail("Cazimir");
         initSearch();
         checkIfAdmin();
         getMyRank();
         getAllJokesData(true, false);
+    }
+
+    private void initializeRating() {
+        final RatingDialog ratingDialog = new RatingDialog.Builder(this)
+                .threshold(3)
+                .title(getString(R.string.rating_text))
+                .session(3)
+                .positiveButtonText(getString(R.string.not_now))
+                .formTitle("Trimite-ne un mesaj")
+                .formHint("Spune-ne ce putem imbunatati")
+                .formSubmitText("Trimite")
+                .formCancelText("Anuleaza")
+                .negativeButtonText("Nu mai arata")
+                .onRatingBarFormSumbit(new RatingDialog.Builder.RatingDialogFormListener() {
+                    @Override
+                    public void onFormSubmitted(String feedback) {
+                        sendFeedbackEmail(feedback);
+                    }
+                }).build();
+
+        ratingDialog.show();
+    }
+
+    private void sendFeedbackEmail(String feedback) {
+
+        try {
+            GMailSender sender = new GMailSender("cazimir.developer@gmail.com", "Y1RyzfogvSDqs1wf8e73");
+            sender.sendMail("Feedback from "+ getPresenter().getAuthPresenter().getCurrrentUserEmail(),
+                    feedback,
+                    "cazimir.developer@gmail.com",
+                    "cazimir.developer@gmail.com");
+        } catch (Exception e) {
+            Log.e("SendMail", e.getMessage(), e);
+        }
+
     }
 
     private void onboardingNeeded() {

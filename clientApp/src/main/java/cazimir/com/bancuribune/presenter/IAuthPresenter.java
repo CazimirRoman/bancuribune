@@ -15,6 +15,7 @@ public interface IAuthPresenter {
     void checkIfUserLoggedIn();
     String getCurrentUserID();
     String getCurrentUserName();
+    String getCurrrentUserEmail();
     void logUserOut(IMyJokesActivityView view);
     void performPasswordReset(OnResetPasswordListener listener, String email);
 }

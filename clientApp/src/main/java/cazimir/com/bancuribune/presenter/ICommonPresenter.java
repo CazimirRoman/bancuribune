@@ -32,6 +32,5 @@ public interface ICommonPresenter {
     void getProfileName(OnGetFacebookNameListener listener);
     void calculateTotalPoints(OnCalculatePointsListener listener, List<Joke> jokes);
     void updateRankPointsAndName(int points, String rankName, String rankId);
-
-
+    IAuthPresenter getAuthPresenter();
 }

@@ -228,6 +228,11 @@ public class CommonPresenter implements ICommonPresenter, OnGetLikedJokesListene
     }
 
     @Override
+    public IAuthPresenter getAuthPresenter() {
+        return authPresenter;
+    }
+
+    @Override
     public void OnGetJokesSuccess(List<Joke> jokes) {
         getMainActivityView().displayJokes(jokes);
         getMainActivityView().hideProgressBar();
