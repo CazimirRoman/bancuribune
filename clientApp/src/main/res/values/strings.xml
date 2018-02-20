@@ -66,4 +66,5 @@
     <string name="no_joke_liked">Nu ai dat like la nici un banc</string>
     <string name="rating_text">Cum imi place aplicatia?</string>
     <string name="not_now">Mai tarziu</string>
+    <string name="feedback_sent">Am primit feedbackul tau!</string>
 </resources>

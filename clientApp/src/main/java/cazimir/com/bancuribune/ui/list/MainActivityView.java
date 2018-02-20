@@ -5,13 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -24,11 +20,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.Layout;
-import android.text.StaticLayout;
-import android.text.TextPaint;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -40,6 +32,9 @@ import android.widget.Toast;
 
 import com.codemybrainsout.ratingdialog.RatingDialog;
 import com.facebook.Profile;
+import com.julienvey.trello.Trello;
+import com.julienvey.trello.domain.Card;
+import com.julienvey.trello.impl.TrelloImpl;
 
 import java.util.List;
 
@@ -55,11 +50,8 @@ import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.ui.add.AddJokeActivityView;
 import cazimir.com.bancuribune.ui.admin.AdminActivityView;
 import cazimir.com.bancuribune.ui.likedJokes.MyLikedJokesActivityView;
-import cazimir.com.bancuribune.ui.login.LoginActivityView;
 import cazimir.com.bancuribune.ui.myjokes.MyJokesActivityView;
 import cazimir.com.bancuribune.ui.tutorial.TutorialActivityView;
-import cazimir.com.bancuribune.utils.GMailSender;
-import cazimir.com.bancuribune.utils.MyAlertDialog;
 import cazimir.com.bancuribune.utils.UtilHelperClass;
 
 import static cazimir.com.bancuribune.R.id.addJokeButtonFAB;
@@ -98,8 +90,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         setUpActionbar();
         setSwipeRefreshListener();
         onboardingNeeded();
-        //initializeRating();
-        sendFeedbackEmail("Cazimir");
+        initializeRating();
         initSearch();
         checkIfAdmin();
         getMyRank();
@@ -120,25 +111,34 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
                 .onRatingBarFormSumbit(new RatingDialog.Builder.RatingDialogFormListener() {
                     @Override
                     public void onFormSubmitted(String feedback) {
-                        sendFeedbackEmail(feedback);
+                        sendFeedbackToTrello(feedback);
                     }
                 }).build();
 
         ratingDialog.show();
     }
 
-    private void sendFeedbackEmail(String feedback) {
+    private void sendFeedbackToTrello(final String feedback) {
+        new sendFeedbackToTrello().execute(feedback);
+    }
 
-        try {
-            GMailSender sender = new GMailSender("cazimir.developer@gmail.com", "Y1RyzfogvSDqs1wf8e73");
-            sender.sendMail("Feedback from "+ getPresenter().getAuthPresenter().getCurrrentUserEmail(),
-                    feedback,
-                    "cazimir.developer@gmail.com",
-                    "cazimir.developer@gmail.com");
-        } catch (Exception e) {
-            Log.e("SendMail", e.getMessage(), e);
+    private class sendFeedbackToTrello extends AsyncTask<String, Integer, Card> {
+
+        Trello trelloApi = new TrelloImpl(Constants.TRELLO_APP_KEY, Constants.TRELLO_ACCESS_TOKEN);
+
+        @Override
+        protected Card doInBackground(String... params) {
+            Card feedBack = new Card();
+            feedBack.setName(params[0]);
+            feedBack.setDesc(getPresenter().getAuthPresenter().getCurrrentUserEmail());
+            return trelloApi.createCard(Constants.TRELLO_FEEDBACK_LIST, feedBack);
         }
 
+        @Override
+        protected void onPostExecute(Card result) {
+            super.onPostExecute(result);
+            Toast.makeText(MainActivityView.this, getString(R.string.feedback_sent), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void onboardingNeeded() {
