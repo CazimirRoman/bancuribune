@@ -52,6 +52,7 @@ import cazimir.com.bancuribune.ui.admin.AdminActivityView;
 import cazimir.com.bancuribune.ui.likedJokes.MyLikedJokesActivityView;
 import cazimir.com.bancuribune.ui.myjokes.MyJokesActivityView;
 import cazimir.com.bancuribune.ui.tutorial.TutorialActivityView;
+import cazimir.com.bancuribune.utils.RatingDialogCustom;
 import cazimir.com.bancuribune.utils.UtilHelperClass;
 
 import static cazimir.com.bancuribune.R.id.addJokeButtonFAB;
@@ -98,17 +99,17 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     }
 
     private void initializeRating() {
-        final RatingDialog ratingDialog = new RatingDialog.Builder(this)
-                .threshold(3)
+        final RatingDialogCustom ratingDialog = (RatingDialogCustom) new RatingDialogCustom.BuilderCustom(this)
+                .threshold(Constants.STAR_RATING_THRESHOLD)
                 .title(getString(R.string.rating_text))
-                .session(3)
+                .session(Constants.SESSION_SHOW)
                 .positiveButtonText(getString(R.string.not_now))
-                .formTitle("Trimite-ne un mesaj")
-                .formHint("Spune-ne ce putem imbunatati")
-                .formSubmitText("Trimite")
-                .formCancelText("Anuleaza")
-                .negativeButtonText("Nu mai arata")
-                .onRatingBarFormSumbit(new RatingDialog.Builder.RatingDialogFormListener() {
+                .formTitle(getString(R.string.rating_send_message))
+                .formHint(getString(R.string.rating_improve_question))
+                .formSubmitText(getString(R.string.rating_send))
+                .formCancelText(getString(R.string.rating_cancel))
+                .negativeButtonText("")
+                .onRatingBarFormSumbit(new RatingDialogCustom.BuilderCustom.RatingDialogFormListener() {
                     @Override
                     public void onFormSubmitted(String feedback) {
                         sendFeedbackToTrello(feedback);
@@ -296,7 +297,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @OnClick(addJokeButtonFAB)
     public void checkIfAllowedToAdd() {
 
-        if(isInternetAvailable()){
+        if (isInternetAvailable()) {
 
             checkIfAdmin();
 
@@ -323,21 +324,21 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @OnClick(R.id.myJokesButtonFAB)
     public void startMyJokesActivity() {
 
-        if(isInternetAvailable()){
+        if (isInternetAvailable()) {
             startActivity(new Intent(new Intent(this, MyJokesActivityView.class)));
         }
     }
 
     @OnClick(adminFAB)
     public void startAdminJokesActivity() {
-        if(isInternetAvailable()){
+        if (isInternetAvailable()) {
             startActivity(new Intent(this, AdminActivityView.class));
         }
     }
 
     @OnClick(R.id.myLikedJokesButtonFAB)
     public void startMyLikedJokesActivity() {
-        if(isInternetAvailable()){
+        if (isInternetAvailable()) {
             startActivity(new Intent(this, MyLikedJokesActivityView.class));
         }
     }
