@@ -130,6 +130,11 @@ public class AuthPresenter implements IAuthPresenter {
     }
 
     @Override
+    public String getCurrrentUserEmail() {
+        return auth.getCurrentUser().getEmail();
+    }
+
+    @Override
     public void logUserOut(IMyJokesActivityView view) {
         auth.signOut();
         LoginManager.getInstance().logOut();

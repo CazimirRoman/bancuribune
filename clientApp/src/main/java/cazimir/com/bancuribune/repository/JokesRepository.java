@@ -269,6 +269,8 @@ public class JokesRepository implements IJokesRepository {
                     votes.add(vote);
                 }
 
+                Collections.reverse(votes);
+
                 getVotedJokes(listener, votes);
             }
 
@@ -294,6 +296,8 @@ public class JokesRepository implements IJokesRepository {
                             listener.onGetLikedJokesSuccess(joke);
                         }
                     }
+
+
                 }
 
                 @Override
