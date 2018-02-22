@@ -92,10 +92,17 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         setSwipeRefreshListener();
         onboardingNeeded();
         initializeRating();
+        initializeReminder();
         initSearch();
         checkIfAdmin();
         getMyRank();
         getAllJokesData(true, false);
+    }
+
+    private void initializeReminder() {
+        if(UtilHelperClass.isFriday()){
+            getPresenter().checkNumberOfAddsThisWeek();
+        }
     }
 
     private void initializeRating() {

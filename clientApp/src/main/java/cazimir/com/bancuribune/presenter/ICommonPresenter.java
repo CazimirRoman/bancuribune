@@ -33,4 +33,5 @@ public interface ICommonPresenter {
     void calculateTotalPoints(OnCalculatePointsListener listener, List<Joke> jokes);
     void updateRankPointsAndName(int points, String rankName, String rankId);
     IAuthPresenter getAuthPresenter();
+    void checkNumberOfAddsThisWeek();
 }
