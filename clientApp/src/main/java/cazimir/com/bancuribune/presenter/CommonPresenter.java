@@ -7,7 +7,7 @@ import com.google.firebase.crash.FirebaseCrash;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import cazimir.com.bancuribune.base.IGeneralView;
@@ -239,8 +239,8 @@ public class CommonPresenter implements ICommonPresenter, OnShowReminderToAddLis
     }
 
     @Override
-    public void checkNumberOfAddsThisWeek() {
-        repository.getAllJokesAddedThisWeek(this, currentUserID);
+    public void checkNumberOfAddsThisWeek(Date lastCheckDate) {
+        repository.getAllJokesAddedOverThePastWeek(this, currentUserID, lastCheckDate);
     }
 
     @Override

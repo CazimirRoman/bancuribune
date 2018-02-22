@@ -1,6 +1,8 @@
 package cazimir.com.bancuribune.repository;
 
 
+import java.util.Date;
+
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.model.Vote;
@@ -30,7 +32,7 @@ public interface IJokesRepository {
     void addRankToDB(OnAddRankFinishedListener listener, Rank rank);
     void addJoke(OnAddFinishedListener listener, Joke joke);
     void getAllJokesAddedToday(OnAllowedToAddFinishedListener listener, String userId, int addLimit);
-    void getAllJokesAddedThisWeek(OnShowReminderToAddListener listener, String userId);
+    void getAllJokesAddedOverThePastWeek(OnShowReminderToAddListener listener, String userId, Date lastCheckDate);
     void updateJokePoints(OnUpdatePointsFinishedListener listener, Joke joke);
     void updateApproveStatus(OnUpdateApproveStatusListener listener, String uid);
     void updateVotedBy(OnUpdateVotedByFinishedListener listener, String uid, String userId);

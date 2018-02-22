@@ -30,12 +30,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.codemybrainsout.ratingdialog.RatingDialog;
 import com.facebook.Profile;
 import com.julienvey.trello.Trello;
 import com.julienvey.trello.domain.Card;
 import com.julienvey.trello.impl.TrelloImpl;
 
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -57,7 +57,9 @@ import cazimir.com.bancuribune.utils.UtilHelperClass;
 
 import static cazimir.com.bancuribune.R.id.addJokeButtonFAB;
 import static cazimir.com.bancuribune.R.id.adminFAB;
+import static cazimir.com.bancuribune.constants.Constants.*;
 import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_REQUEST;
+import static java.lang.Math.abs;
 
 public class MainActivityView extends BaseActivity implements IMainActivityView, OnJokeItemClickListener {
 
@@ -92,24 +94,40 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         setSwipeRefreshListener();
         onboardingNeeded();
         initializeRating();
-        initializeReminder();
+        initializeReminderScheduler();
         initSearch();
         checkIfAdmin();
         getMyRank();
         getAllJokesData(true, false);
     }
 
-    private void initializeReminder() {
-        if(UtilHelperClass.isFriday()){
-            getPresenter().checkNumberOfAddsThisWeek();
+    private void initializeReminderScheduler() {
+
+        Date lastCheckDate = getLastCheckDateFromSharedPreferences();
+        int daysApart = (int)((lastCheckDate.getTime() - new Date().getTime()) / (1000*60*60*24l));
+        if (abs(daysApart) >= REMINDER_INTERVAL_CHECK){
+            getPresenter().checkNumberOfAddsThisWeek(lastCheckDate);
         }
+    }
+
+    private Date getLastCheckDateFromSharedPreferences() {
+        SharedPreferences preferences = this.getSharedPreferences("reminder", Context.MODE_PRIVATE);
+        long lastCheck = preferences.getLong("last_check", 0);
+        if(lastCheck == 0){
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putLong("last_check", new Date().getTime());
+            editor.apply();
+            return new Date();
+        }
+
+        return new Date(lastCheck);
     }
 
     private void initializeRating() {
         final RatingDialogCustom ratingDialog = (RatingDialogCustom) new RatingDialogCustom.BuilderCustom(this)
-                .threshold(Constants.STAR_RATING_THRESHOLD)
+                .threshold(STAR_RATING_THRESHOLD)
                 .title(getString(R.string.rating_text))
-                .session(Constants.SESSION_SHOW)
+                .session(SESSION_SHOW)
                 .positiveButtonText(getString(R.string.not_now))
                 .formTitle(getString(R.string.rating_send_message))
                 .formHint(getString(R.string.rating_improve_question))
@@ -132,14 +150,14 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     private class sendFeedbackToTrello extends AsyncTask<String, Integer, Card> {
 
-        Trello trelloApi = new TrelloImpl(Constants.TRELLO_APP_KEY, Constants.TRELLO_ACCESS_TOKEN);
+        Trello trelloApi = new TrelloImpl(TRELLO_APP_KEY, TRELLO_ACCESS_TOKEN);
 
         @Override
         protected Card doInBackground(String... params) {
             Card feedBack = new Card();
             feedBack.setName(params[0]);
             feedBack.setDesc(getPresenter().getAuthPresenter().getCurrrentUserEmail());
-            return trelloApi.createCard(Constants.TRELLO_FEEDBACK_LIST, feedBack);
+            return trelloApi.createCard(TRELLO_FEEDBACK_LIST, feedBack);
         }
 
         @Override
@@ -230,7 +248,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
                 if (editable.toString().isEmpty()) {
                     getPresenter().getAllJokesData(true, true);
                 } else {
-                    if (editable.toString().length() >= Constants.FILTER_MINIMUM_CHARACTERS) {
+                    if (editable.toString().length() >= FILTER_MINIMUM_CHARACTERS) {
                         showProgressBar();
                         getPresenter().getFilteredJokesData(editable.toString().trim());
                     }
@@ -310,16 +328,16 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
             if (!isAdmin) {
 
-                if (currentRank.equals(Constants.HAMSIE)) {
-                    getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_HAMSIE);
-                } else if (currentRank.equals(Constants.HERING)) {
-                    getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_HERING);
-                } else if (currentRank.equals(Constants.SOMON)) {
-                    getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_SOMON);
-                } else if (currentRank.equals(Constants.STIUCA)) {
-                    getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_STIUCA);
-                } else if (currentRank.equals(Constants.RECHIN)) {
-                    getPresenter().checkNumberOfAdds(Constants.ADD_JOKE_LIMIT_RECHIN);
+                if (currentRank.equals(HAMSIE)) {
+                    getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_HAMSIE);
+                } else if (currentRank.equals(HERING)) {
+                    getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_HERING);
+                } else if (currentRank.equals(SOMON)) {
+                    getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_SOMON);
+                } else if (currentRank.equals(STIUCA)) {
+                    getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_STIUCA);
+                } else if (currentRank.equals(RECHIN)) {
+                    getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_RECHIN);
                 }
 
             } else {
@@ -353,7 +371,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @Override
     public void navigateToAddJokeActivity() {
         Intent addJokeIntent = new Intent(this, AddJokeActivityView.class);
-        addJokeIntent.putExtra(Constants.ADMIN, isAdmin);
+        addJokeIntent.putExtra(ADMIN, isAdmin);
         startActivityForResult(addJokeIntent, ADD_JOKE_REQUEST);
     }
 
@@ -405,14 +423,14 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     @Override
     public void saveRankDataToSharedPreferences(Rank rank) {
-        SharedPreferences.Editor editor = getSharedPreferences(Constants.RANK, MODE_PRIVATE).edit();
-        editor.putString(Constants.RANK, rank.getUid());
+        SharedPreferences.Editor editor = getSharedPreferences(RANK, MODE_PRIVATE).edit();
+        editor.putString(RANK, rank.getUid());
         editor.apply();
     }
 
     public void saveRemainingDataToSharedPreferences(int remainingAdds) {
-        SharedPreferences.Editor editor = getSharedPreferences(Constants.REMAINING_ADDS, MODE_PRIVATE).edit();
-        editor.putInt(Constants.REMAINING, remainingAdds);
+        SharedPreferences.Editor editor = getSharedPreferences(REMAINING_ADDS, MODE_PRIVATE).edit();
+        editor.putInt(REMAINING, remainingAdds);
         editor.apply();
     }
 
@@ -465,7 +483,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     private boolean requestWriteStoragePermissions() {
         if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, Constants.MY_STORAGE_REQUEST_CODE);
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_STORAGE_REQUEST_CODE);
             return true;
         }
         return false;
@@ -474,7 +492,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == Constants.MY_STORAGE_REQUEST_CODE) {
+        if (requestCode == MY_STORAGE_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 shareJoke(sharedText);
             } else {

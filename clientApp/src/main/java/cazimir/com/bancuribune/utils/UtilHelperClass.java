@@ -162,4 +162,8 @@ public class UtilHelperClass {
 
         return background;
     }
+
+    public static boolean isInCurrentDateInterval(Date lastCheckDate, Date createdAt) {
+        return !(createdAt.before(lastCheckDate) || createdAt.after(new Date()));
+    }
 }

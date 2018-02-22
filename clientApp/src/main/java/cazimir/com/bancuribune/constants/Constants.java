@@ -37,6 +37,7 @@ public class Constants {
     public static final String TRELLO_FEEDBACK_LIST = "5a8c3d4b5342355dc06de1a7";
     public static final int STAR_RATING_THRESHOLD = 3;
     public static final int SESSION_SHOW = 2;
+    public static final int REMINDER_INTERVAL_CHECK = 7;
     public static int FILTER_MINIMUM_CHARACTERS = 3;
 
     public static final int TOTAL_ITEM_EACH_LOAD = 50;

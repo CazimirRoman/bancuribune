@@ -1,6 +1,7 @@
 package cazimir.com.bancuribune.presenter;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import cazimir.com.bancuribune.model.Joke;
@@ -33,5 +34,5 @@ public interface ICommonPresenter {
     void calculateTotalPoints(OnCalculatePointsListener listener, List<Joke> jokes);
     void updateRankPointsAndName(int points, String rankName, String rankId);
     IAuthPresenter getAuthPresenter();
-    void checkNumberOfAddsThisWeek();
+    void checkNumberOfAddsThisWeek(Date lastCheckDate);
 }
