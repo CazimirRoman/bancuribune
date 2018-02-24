@@ -386,7 +386,7 @@ public class JokesRepository implements IJokesRepository {
 
     @Override
     public void getAllJokesAddedOverThePastWeek(final OnShowReminderToAddListener listener, String userId, final Date lastCheckDate) {
-        final ArrayList<Joke> addedJokesThisWeek = new ArrayList<>();
+        final ArrayList<Joke> addedJokeOverPastWeek = new ArrayList<>();
 
         Query query = jokesRef.orderByChild("createdBy").equalTo(userId);
 
@@ -402,12 +402,12 @@ public class JokesRepository implements IJokesRepository {
                     Date nowDate = new Date(now);
 
                     if (UtilHelperClass.isInCurrentDateInterval(lastCheckDate, createdAt)) {
-                        addedJokesThisWeek.add(joke);
+                        addedJokeOverPastWeek.add(joke);
                         break;
                     }
                 }
 
-                if(addedJokesThisWeek.size() == 0){
+                if(addedJokeOverPastWeek.size() == 0){
                     listener.showAddReminderToUser();
                 }
             }

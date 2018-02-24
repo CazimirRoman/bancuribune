@@ -153,6 +153,8 @@ public class CommonPresenter implements ICommonPresenter, OnShowReminderToAddLis
     @Override
     public void showAddReminderToUser() {
         getMainActivityView().showAlertDialog("Se pare ca nu ai adaugat nici un banc saptamana asta. ");
+        getMainActivityView().addLastCheckDateToSharedPreferences();
+
     }
 
     @Override
@@ -239,7 +241,7 @@ public class CommonPresenter implements ICommonPresenter, OnShowReminderToAddLis
     }
 
     @Override
-    public void checkNumberOfAddsThisWeek(Date lastCheckDate) {
+    public void checkNumberOfAddsLastWeek(Date lastCheckDate) {
         repository.getAllJokesAddedOverThePastWeek(this, currentUserID, lastCheckDate);
     }
 

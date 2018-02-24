@@ -44,7 +44,6 @@ import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.base.ScrollListenerRecycleView;
-import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.ui.add.AddJokeActivityView;
@@ -67,6 +66,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     private String currentRank;
     private Boolean isAdmin = false;
     private String sharedText;
+    private SharedPreferences preferences;
 
     @BindView(R.id.jokesList)
     RecyclerView jokesListRecyclerView;
@@ -93,37 +93,41 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         setUpActionbar();
         setSwipeRefreshListener();
         onboardingNeeded();
-        initializeRating();
-        initializeReminderScheduler();
-        initSearch();
+        initializeRatingReminder();
+        checkIfReminderToAddShouldBeShown();
         checkIfAdmin();
         getMyRank();
         getAllJokesData(true, false);
     }
 
-    private void initializeReminderScheduler() {
-
+    private void checkIfReminderToAddShouldBeShown() {
         Date lastCheckDate = getLastCheckDateFromSharedPreferences();
         int daysApart = (int)((lastCheckDate.getTime() - new Date().getTime()) / (1000*60*60*24l));
         if (abs(daysApart) >= REMINDER_INTERVAL_CHECK){
-            getPresenter().checkNumberOfAddsThisWeek(lastCheckDate);
+            getPresenter().checkNumberOfAddsLastWeek(lastCheckDate);
         }
     }
 
     private Date getLastCheckDateFromSharedPreferences() {
-        SharedPreferences preferences = this.getSharedPreferences("reminder", Context.MODE_PRIVATE);
+        preferences = this.getSharedPreferences("reminder", Context.MODE_PRIVATE);
         long lastCheck = preferences.getLong("last_check", 0);
+        //first run
         if(lastCheck == 0){
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putLong("last_check", new Date().getTime());
-            editor.apply();
-            return new Date();
+            return addLastCheckDateToSharedPreferences();
         }
 
         return new Date(lastCheck);
     }
 
-    private void initializeRating() {
+    public Date addLastCheckDateToSharedPreferences() {
+        Date now = new Date();
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putLong("last_check", now.getTime());
+        editor.apply();
+        return now;
+    }
+
+    private void initializeRatingReminder() {
         final RatingDialogCustom ratingDialog = (RatingDialogCustom) new RatingDialogCustom.BuilderCustom(this)
                 .threshold(STAR_RATING_THRESHOLD)
                 .title(getString(R.string.rating_text))
@@ -228,33 +232,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     private void getAllJokesData(boolean reset, boolean swipe) {
         getPresenter().getAllJokesData(reset, swipe);
-    }
-
-    private void initSearch() {
-
-        search.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (editable.toString().isEmpty()) {
-                    getPresenter().getAllJokesData(true, true);
-                } else {
-                    if (editable.toString().length() >= FILTER_MINIMUM_CHARACTERS) {
-                        showProgressBar();
-                        getPresenter().getFilteredJokesData(editable.toString().trim());
-                    }
-                }
-            }
-        });
     }
 
     private RecyclerView.LayoutManager initRecycleView() {

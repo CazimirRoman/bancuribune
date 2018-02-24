@@ -36,7 +36,7 @@ public class Constants {
     public static final java.lang.String TRELLO_ACCESS_TOKEN = "ba92d8c063b0669a93759bc5835e74f3a2be25e57cf2008c38d28b0fde99771c";
     public static final String TRELLO_FEEDBACK_LIST = "5a8c3d4b5342355dc06de1a7";
     public static final int STAR_RATING_THRESHOLD = 3;
-    public static final int SESSION_SHOW = 2;
+    public static final int SESSION_SHOW = 7;
     public static final int REMINDER_INTERVAL_CHECK = 7;
     public static int FILTER_MINIMUM_CHARACTERS = 3;
 
