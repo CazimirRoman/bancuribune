@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -433,8 +434,15 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
 
     @Override
-    public void onItemShared(Joke joke) {
-        shareJoke(joke.getJokeText());
+    public void onItemShared(final Joke joke) {
+        Toast.makeText(this, R.string.share_open, Toast.LENGTH_LONG).show();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                shareJoke(joke.getJokeText());
+            }
+        }, 500);
     }
 
     @Override
@@ -473,7 +481,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 shareJoke(sharedText);
             } else {
-                Toast.makeText(this, "Permission denied. Please accept permission request", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT).show();
             }
         }
     }
