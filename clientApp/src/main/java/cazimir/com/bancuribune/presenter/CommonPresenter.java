@@ -7,7 +7,7 @@ import com.google.firebase.crash.FirebaseCrash;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import cazimir.com.bancuribune.base.IGeneralView;
@@ -17,6 +17,7 @@ import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.model.Vote;
 import cazimir.com.bancuribune.repository.IJokesRepository;
 import cazimir.com.bancuribune.repository.JokesRepository;
+import cazimir.com.bancuribune.repository.OnShowReminderToAddListener;
 import cazimir.com.bancuribune.ui.add.IAddJokeActivityView;
 import cazimir.com.bancuribune.ui.add.OnAddFinishedListener;
 import cazimir.com.bancuribune.ui.add.OnAddJokeVoteFinishedListener;
@@ -39,7 +40,7 @@ import cazimir.com.bancuribune.ui.myjokes.OnFirebaseGetMyJokesListener;
 import cazimir.com.bancuribune.ui.myjokes.OnGetFacebookNameListener;
 import cazimir.com.bancuribune.ui.register.IRegisterActivityView;
 
-public class CommonPresenter implements ICommonPresenter, OnGetLikedJokesListener, OnLoginWithEmailFinishedListener, OnResetPasswordListener, OnRegistrationFinishedListener, OnAdminCheckFinishedListener, OnGetJokesListener, OnAddUserListener, OnGetAllPendingJokesListener, OnAddRankFinishedListener, OnUpdateRankPointsSuccess, OnCheckIfRankDataInDBListener, OnUpdateApproveStatusListener, OnFirebaseGetMyJokesListener, OnAddFinishedListener, OnUpdatePointsFinishedListener, OnUpdateVotedByFinishedListener, OnCheckIfVotedFinishedListener, OnAddJokeVoteFinishedListener, OnAllowedToAddFinishedListener {
+public class CommonPresenter implements ICommonPresenter, OnShowReminderToAddListener, OnGetLikedJokesListener, OnLoginWithEmailFinishedListener, OnResetPasswordListener, OnRegistrationFinishedListener, OnAdminCheckFinishedListener, OnGetJokesListener, OnAddUserListener, OnGetAllPendingJokesListener, OnAddRankFinishedListener, OnUpdateRankPointsSuccess, OnCheckIfRankDataInDBListener, OnUpdateApproveStatusListener, OnFirebaseGetMyJokesListener, OnAddFinishedListener, OnUpdatePointsFinishedListener, OnUpdateVotedByFinishedListener, OnCheckIfVotedFinishedListener, OnAddJokeVoteFinishedListener, OnAllowedToAddFinishedListener {
 
     private static final String TAG = "CommonPresenter";
     private IGeneralView view;
@@ -150,6 +151,13 @@ public class CommonPresenter implements ICommonPresenter, OnGetLikedJokesListene
     }
 
     @Override
+    public void showAddReminderToUser() {
+        getMainActivityView().showAlertDialog("Se pare ca nu ai adaugat nici un banc saptamana asta. ");
+        getMainActivityView().addLastCheckDateToSharedPreferences();
+
+    }
+
+    @Override
     public void logOutUser() {
         authPresenter.logUserOut(getMyJokesActivityView());
     }
@@ -230,6 +238,11 @@ public class CommonPresenter implements ICommonPresenter, OnGetLikedJokesListene
     @Override
     public IAuthPresenter getAuthPresenter() {
         return authPresenter;
+    }
+
+    @Override
+    public void checkNumberOfAddsLastWeek(Date lastCheckDate) {
+        repository.getAllJokesAddedOverThePastWeek(this, currentUserID, lastCheckDate);
     }
 
     @Override

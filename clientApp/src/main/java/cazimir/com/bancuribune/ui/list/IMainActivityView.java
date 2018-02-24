@@ -1,5 +1,6 @@
 package cazimir.com.bancuribune.ui.list;
 
+import java.util.Date;
 import java.util.List;
 
 import cazimir.com.bancuribune.base.IGeneralView;
@@ -26,4 +27,5 @@ public interface IMainActivityView extends IGeneralView {
     void refreshAdapter(Joke joke);
     void refreshJokesListAdapter();
     void showAlertDialog(String message);
+    Date addLastCheckDateToSharedPreferences();
 }

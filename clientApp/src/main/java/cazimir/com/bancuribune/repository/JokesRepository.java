@@ -385,6 +385,41 @@ public class JokesRepository implements IJokesRepository {
     }
 
     @Override
+    public void getAllJokesAddedOverThePastWeek(final OnShowReminderToAddListener listener, String userId, final Date lastCheckDate) {
+        final ArrayList<Joke> addedJokeOverPastWeek = new ArrayList<>();
+
+        Query query = jokesRef.orderByChild("createdBy").equalTo(userId);
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot jokesSnapshot : dataSnapshot.getChildren()) {
+                    Joke joke = jokesSnapshot.getValue(Joke.class);
+                    assert joke != null;
+                    Date createdAt = new Date(joke.getCreatedAt());
+                    long now = new Date().getTime();
+                    Date nowDate = new Date(now);
+
+                    if (UtilHelperClass.isInCurrentDateInterval(lastCheckDate, createdAt)) {
+                        addedJokeOverPastWeek.add(joke);
+                        break;
+                    }
+                }
+
+                if(addedJokeOverPastWeek.size() == 0){
+                    listener.showAddReminderToUser();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    @Override
     public void updateJokePoints(final OnUpdatePointsFinishedListener listener, final Joke joke) {
 
         jokesRef.child(joke.getUid()).child("points").setValue(joke.getPoints() + 1, new DatabaseReference.CompletionListener() {
