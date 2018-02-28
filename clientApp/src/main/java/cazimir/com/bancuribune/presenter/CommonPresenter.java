@@ -348,8 +348,8 @@ public class CommonPresenter implements ICommonPresenter, OnShowReminderToAddLis
 
     @Override
     public void RankDataIsInDB(Rank rank) {
+        getMainActivityView().checkIfNewRank(rank.getRank());
         getMainActivityView().saveRankDataToSharedPreferences(rank);
-        getMainActivityView().updateCurrentRank(rank.getRank());
         getMainActivityView().checkIfAdmin();
     }
 
@@ -371,7 +371,7 @@ public class CommonPresenter implements ICommonPresenter, OnShowReminderToAddLis
     @Override
     public void OnAddRankSuccess(Rank rank) {
         getMainActivityView().saveRankDataToSharedPreferences(rank);
-        getMainActivityView().updateCurrentRank(rank.getRank());
+        getMainActivityView().showAlertDialog("In momentul de fata ai rangul de hamsie. Poti adauga 2 bancuri pe zi");
     }
 
     @Override

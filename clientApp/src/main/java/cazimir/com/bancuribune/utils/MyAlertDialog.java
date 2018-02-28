@@ -1,37 +1,64 @@
 package cazimir.com.bancuribune.utils;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
+import android.graphics.Color;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.shashank.sony.fancydialoglib.Animation;
+import com.shashank.sony.fancydialoglib.FancyAlertDialog;
+import com.shashank.sony.fancydialoglib.FancyAlertDialogListener;
+import com.shashank.sony.fancydialoglib.Icon;
 
 import cazimir.com.bancuribune.R;
 
-public class MyAlertDialog extends AlertDialog {
+public class MyAlertDialog {
 
-    private Context context;
-    private AlertDialog dialog;
+    private Context mContext;
 
     public MyAlertDialog(Context context) {
-        super(context);
-        this.context = context;
-    }
-
-    public AlertDialog buildAlertDialog() {
-
-        if (dialog == null) {
-            dialog = new AlertDialog.Builder(context).create();
-            dialog.setButton(AlertDialog.BUTTON_POSITIVE, context.getString(R.string.close), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-        }
-        return dialog;
+        this.mContext = context;
     }
 
     public void show(String message) {
-        buildAlertDialog().setMessage(message);
-        if (!buildAlertDialog().isShowing()) buildAlertDialog().show();
+
+            new FancyAlertDialog.Builder((Activity) mContext)
+                    .setBackgroundColor(Color.parseColor("#00bcd4"))  //Don't pass R.color.colorvalue
+                    .setMessage(message)
+                    .setNegativeBtnText("")
+                    .setPositiveBtnBackground(Color.parseColor("#00bcd4"))  //Don't pass R.color.colorvalue
+                    .setPositiveBtnText("Am inteles")
+                    .setNegativeBtnBackground(Color.parseColor("#00FFFFFF"))  //Don't pass R.color.colorvalue
+                    .setAnimation(Animation.POP)
+                    .isCancellable(false)
+                    .setIcon(R.mipmap.ic_launcher, Icon.Visible)
+                    .OnPositiveClicked(new FancyAlertDialogListener() {
+                        @Override
+                        public void OnClick() {
+                            Toast.makeText(mContext,"Rate",Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .OnNegativeClicked(new FancyAlertDialogListener() {
+                        @Override
+                        public void OnClick() {
+                            Toast.makeText(mContext,"Cancel",Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .build();
+
+    }
+
+    public static class CustomBuilder extends FancyAlertDialog.Builder{
+
+        public CustomBuilder(Activity activity) {
+            super(activity);
+        }
+
+        @Override
+        public FancyAlertDialog build() {
+            return super.build();
+        }
     }
 }

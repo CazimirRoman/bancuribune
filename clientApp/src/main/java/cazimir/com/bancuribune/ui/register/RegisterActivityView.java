@@ -14,7 +14,6 @@ import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.constants.Constants;
-import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.ui.login.OnFormValidatedListener;
 import cazimir.com.bancuribune.utils.UtilHelperClass;
 

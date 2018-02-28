@@ -3,6 +3,7 @@ package cazimir.com.bancuribune.ui.list;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -20,8 +21,6 @@ import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -45,6 +44,7 @@ import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.base.ScrollListenerRecycleView;
+import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.ui.add.AddJokeActivityView;
@@ -52,6 +52,7 @@ import cazimir.com.bancuribune.ui.admin.AdminActivityView;
 import cazimir.com.bancuribune.ui.likedJokes.MyLikedJokesActivityView;
 import cazimir.com.bancuribune.ui.myjokes.MyJokesActivityView;
 import cazimir.com.bancuribune.ui.tutorial.TutorialActivityView;
+import cazimir.com.bancuribune.utils.RankChangeReceiver;
 import cazimir.com.bancuribune.utils.RatingDialogCustom;
 import cazimir.com.bancuribune.utils.UtilHelperClass;
 
@@ -68,6 +69,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     private Boolean isAdmin = false;
     private String sharedText;
     private SharedPreferences preferences;
+    private RankChangeReceiver rankChangeReceiver;
 
     @BindView(R.id.jokesList)
     RecyclerView jokesListRecyclerView;
@@ -99,6 +101,27 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         checkIfAdmin();
         getMyRank();
         getAllJokesData(true, false);
+        registerRankChangeReceiver();
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        try {
+            unregisterReceiver(rankChangeReceiver);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        super.onDestroy();
+    }
+
+    private void registerRankChangeReceiver() {
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Constants.RANK_CHANGED);
+        rankChangeReceiver = new RankChangeReceiver();
+        registerReceiver(rankChangeReceiver, filter);
     }
 
     private void checkIfReminderToAddShouldBeShown() {
@@ -126,6 +149,21 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         editor.putLong("last_check", now.getTime());
         editor.apply();
         return now;
+    }
+
+    @Override
+    public void checkIfNewRank(String rank) {
+        String currentRank = getCurrentRankNameFromSharedPreferences();
+        if(currentRank != null && !currentRank.equals(rank)){
+            showAlertDialog("Leveled up!");
+        }
+
+        updateCurrentRank(rank);
+    }
+
+    private String getCurrentRankNameFromSharedPreferences() {
+        preferences = getSharedPreferences(Constants.RANK, MODE_PRIVATE);
+        return preferences.getString(Constants.RANK_NAME, null);
     }
 
     private void initializeRatingReminder() {
@@ -300,6 +338,8 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @OnClick(addJokeButtonFAB)
     public void checkIfAllowedToAdd() {
 
+        String currentRank = getCurrentRankNameFromSharedPreferences();
+
         if (isInternetAvailable()) {
 
             checkIfAdmin();
@@ -403,6 +443,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     public void saveRankDataToSharedPreferences(Rank rank) {
         SharedPreferences.Editor editor = getSharedPreferences(RANK, MODE_PRIVATE).edit();
         editor.putString(RANK, rank.getUid());
+        editor.putString(RANK_NAME, rank.getRank());
         editor.apply();
     }
 

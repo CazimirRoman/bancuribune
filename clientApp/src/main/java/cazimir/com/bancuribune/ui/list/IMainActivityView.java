@@ -28,4 +28,5 @@ public interface IMainActivityView extends IGeneralView {
     void refreshJokesListAdapter();
     void showAlertDialog(String message);
     Date addLastCheckDateToSharedPreferences();
+    void checkIfNewRank(String rank);
 }

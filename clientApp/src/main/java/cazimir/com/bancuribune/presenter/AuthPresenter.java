@@ -139,6 +139,7 @@ public class AuthPresenter implements IAuthPresenter {
         auth.signOut();
         LoginManager.getInstance().logOut();
         view.redirectToLoginPage();
+        view.clearSharedPreferences();
     }
 
     private void handleFacebookAccessToken(AccessToken accessToken) {
