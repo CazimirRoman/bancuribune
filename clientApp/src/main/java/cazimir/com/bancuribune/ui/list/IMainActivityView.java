@@ -26,7 +26,7 @@ public interface IMainActivityView extends IGeneralView {
     void hideSwipeRefresh();
     void refreshAdapter(Joke joke);
     void refreshJokesListAdapter();
-    void showAlertDialog(String message);
+    void showAlertDialog(String message, int type);
     Date addLastCheckDateToSharedPreferences();
     void checkIfNewRank(String rank);
 }

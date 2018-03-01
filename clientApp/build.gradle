@@ -48,7 +48,7 @@ dependencies {
     compile 'com.codemybrainsout.rating:ratingdialog:1.0.8'
     compile 'com.julienvey.trello:trello-java-wrapper:0.3.2'
     compile 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
-    compile 'com.github.Shashank02051997:FancyAlertDialog-Android:0.1'
+    compile 'com.github.thomper:sweet-alert-dialog:v1.4.0'
 
 }
 

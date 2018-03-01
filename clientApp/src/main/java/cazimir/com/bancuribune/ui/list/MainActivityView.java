@@ -34,6 +34,7 @@ import com.facebook.Profile;
 import com.julienvey.trello.Trello;
 import com.julienvey.trello.domain.Card;
 import com.julienvey.trello.impl.TrelloImpl;
+import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
 import java.util.Date;
 import java.util.List;
@@ -155,7 +156,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     public void checkIfNewRank(String rank) {
         String currentRank = getCurrentRankNameFromSharedPreferences();
         if(currentRank != null && !currentRank.equals(rank)){
-            showAlertDialog("Leveled up!");
+            showAlertDialog("Leveled up!", SweetAlertDialog.SUCCESS_TYPE);
         }
 
         updateCurrentRank(rank);
@@ -224,7 +225,13 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getAllJokesData(true, true);
+                if(isInternetAvailable()){
+                    getAllJokesData(true, true);
+                }else{
+                    showAlertDialog(getString(R.string.no_internet), SweetAlertDialog.ERROR_TYPE);
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+
             }
         });
     }
@@ -261,8 +268,8 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     }
 
     @Override
-    public void showAlertDialog(String message) {
-        getAlertDialog().show(message);
+    public void showAlertDialog(String message, int type) {
+        getAlertDialog().show(message, type);
     }
 
     private void getMyRank() {
@@ -331,7 +338,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         //TODO : refactor
         hideProgressBar();
         if (Profile.getCurrentProfile() != null) {
-            getAlertDialog().show(error);
+            getAlertDialog().show(error, SweetAlertDialog.ERROR_TYPE);
         }
     }
 
@@ -395,7 +402,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     @Override
     public void isNotAllowedToAdd(int addLimit) {
-        showAlertDialog(String.format(getString(R.string.add_limit_reached), String.valueOf(addLimit)));
+        showAlertDialog(String.format(getString(R.string.add_limit_reached), String.valueOf(addLimit)), SweetAlertDialog.WARNING_TYPE);
     }
 
     @Override
@@ -411,12 +418,12 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     public void showAddSuccessDialog() {
 
-        showAlertDialog(getString(R.string.add_success));
+        showAlertDialog(getString(R.string.add_success), SweetAlertDialog.SUCCESS_TYPE);
     }
 
     @Override
     public void showAddFailedDialog() {
-        showAlertDialog(getString(R.string.add_failed));
+        showAlertDialog(getString(R.string.add_failed), SweetAlertDialog.ERROR_TYPE);
     }
 
     @Override

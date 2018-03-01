@@ -8,7 +8,7 @@ import cazimir.com.bancuribune.base.IGeneralView;
 public interface IRegisterActivityView extends IGeneralView {
     void showProgress();
     void hideProgress();
-    void showAlertDialog(String message);
+    void showAlertDialog(String message, int type);
     void showToast(String message);
     void redirectToLogin();
     void setEmailError(String error);

@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
@@ -15,12 +17,10 @@ import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
-import cazimir.com.bancuribune.utils.MyAlertDialog;
 import cazimir.com.bancuribune.utils.UtilHelperClass;
 
 public class AddJokeActivityView extends BaseBackActivity implements IAddJokeActivityView {
 
-    private MyAlertDialog alertDialog;
     private CommonPresenter presenter;
 
     @BindView(R.id.editNewJoke)
@@ -32,8 +32,6 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        alertDialog = new MyAlertDialog(this);
         presenter = new CommonPresenter(this);
     }
 
@@ -69,7 +67,7 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
 
     @Override
     public void onError() {
-        alertDialog.show(getString(R.string.add_joke_empty));
+        getAlertDialog().show(getString(R.string.add_joke_empty), SweetAlertDialog.ERROR_TYPE);
     }
 
     @Override
@@ -87,7 +85,7 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
                 hideSoftInput(addJokeEdit);
                 closeAdd();
             }else{
-                alertDialog.show(getString(R.string.no_internet));
+                getAlertDialog().show(getString(R.string.no_internet), SweetAlertDialog.ERROR_TYPE);
             }
         }
     }

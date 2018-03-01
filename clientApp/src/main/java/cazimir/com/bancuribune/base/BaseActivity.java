@@ -6,22 +6,24 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
+
 import butterknife.ButterKnife;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.presenter.CommonPresenter;
-import cazimir.com.bancuribune.utils.MyAlertDialog;
+import cazimir.com.bancuribune.utils.MySweetAlertDialog;
 import cazimir.com.bancuribune.utils.UtilHelperClass;
 
 public abstract class BaseActivity extends AppCompatActivity implements IGeneralView {
 
-    private MyAlertDialog mAlertDialog;
+    private MySweetAlertDialog mAlertDialog;
     private CommonPresenter mPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
-        mAlertDialog = new MyAlertDialog(this);
+        mAlertDialog = new MySweetAlertDialog(this);
         mPresenter = new CommonPresenter(this);
         ButterKnife.bind(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -33,7 +35,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
     protected abstract int getLayoutId();
     protected abstract int setActionBarTitle();
 
-    protected MyAlertDialog getAlertDialog(){
+    protected MySweetAlertDialog getAlertDialog(){
         return this.mAlertDialog;
     }
 
@@ -43,7 +45,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
 
     protected boolean isInternetAvailable(){
         if (!UtilHelperClass.isInternetAvailable(this)) {
-            getAlertDialog().show(getString(R.string.no_internet));
+            getAlertDialog().show(getString(R.string.no_internet), SweetAlertDialog.ERROR_TYPE);
             return false;
         }
 

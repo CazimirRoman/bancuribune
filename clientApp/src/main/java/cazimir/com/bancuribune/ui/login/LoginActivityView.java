@@ -154,8 +154,8 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     }
 
     @Override
-    public void showAlertDialog(String message) {
-        getAlertDialog().show(message);
+    public void showAlertDialog(String message, int type) {
+        getAlertDialog().show(message, type);
     }
 
     @Override
