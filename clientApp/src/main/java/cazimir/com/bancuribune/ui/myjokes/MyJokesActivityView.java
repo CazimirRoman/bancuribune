@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,6 +46,7 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
     TextView profileRank;
     @BindView(R.id.nextRank)
     TextView profileNextRank;
+    private boolean maxRangReached = false;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -155,6 +157,14 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
     }
 
     @Override
+    public void clearSharedPreferences() {
+        SharedPreferences prefs = getSharedPreferences(Constants.RANK, MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.apply();
+    }
+
+    @Override
     public void onItemShared(Joke data) {
 
     }
@@ -176,13 +186,17 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
 
     @Override
     public void OnCalculateSuccess(int points) {
-        updateRank(points);
+        updateRankAndPoints(points);
     }
 
-    private void updateRank(int points) {
+    private void updateRankAndPoints(int points) {
         String rankId = getRankDataFromSharedPreferences();
         String rankName = computeRankName(points);
-        Integer likesForNextRank = computeLikeForNextRank(points);
+        Integer likesForNextRank = 0;
+        if(!maxRangReached){
+            likesForNextRank = computeLikeForNextRank(points);
+        }
+
         getPresenter().updateRankPointsAndName(points, rankName, rankId);
 
         profilePoints.setText(String.format(getString(R.string.total_points), String.valueOf(points)));
@@ -201,9 +215,16 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
         } else if (Constants.UPPER_LIMIT_SOMON <= points && points < Constants.UPPER_LIMIT_STIUCA) {
             return Constants.UPPER_LIMIT_STIUCA - points;
         } else if (Constants.UPPER_LIMIT_STIUCA <= points && points < Constants.UPPER_LIMIT_RECHIN) {
+            hideProfileNextRankText();
+            maxRangReached = true;
             return Constants.UPPER_LIMIT_RECHIN - points;
         }
+
         return 0;
+    }
+
+    private void hideProfileNextRankText() {
+        profileNextRank.setVisibility(View.GONE);
     }
 
     private String computeRankName(int points) {

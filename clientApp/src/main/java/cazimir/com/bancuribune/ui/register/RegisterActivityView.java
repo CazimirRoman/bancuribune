@@ -14,7 +14,6 @@ import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.constants.Constants;
-import cazimir.com.bancuribune.presenter.CommonPresenter;
 import cazimir.com.bancuribune.ui.login.OnFormValidatedListener;
 import cazimir.com.bancuribune.utils.UtilHelperClass;
 
@@ -67,8 +66,8 @@ public class RegisterActivityView extends BaseBackActivity implements IRegisterA
     }
 
     @Override
-    public void showAlertDialog(String message) {
-        getAlertDialog().show(message);
+    public void showAlertDialog(String message, int type) {
+        getAlertDialog().show(message, type);
     }
 
     @Override

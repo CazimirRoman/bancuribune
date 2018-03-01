@@ -19,8 +19,11 @@ public class Constants {
     public static final int UPPER_LIMIT_SOMON = 250;
     public static final int UPPER_LIMIT_STIUCA = 500;
     public static final int UPPER_LIMIT_RECHIN = 1000;
+    public static final int UPPER_LIMIT_ORCA = 1750;
+    public static final int UPPER_LIMIT_BALENA = 2500;
 
     public static final String RANK = "rank";
+    public static final String RANK_NAME = "rank_name";
     public static final String ADMIN = "admin";
     public static final String REMAINING_ADDS = "remaining";
     public static final String REMAINING = "remainingAdds";
@@ -38,6 +41,7 @@ public class Constants {
     public static final int STAR_RATING_THRESHOLD = 3;
     public static final int SESSION_SHOW = 7;
     public static final int REMINDER_INTERVAL_CHECK = 7;
+    public static final String RANK_CHANGED = "rank_changed";
     public static int FILTER_MINIMUM_CHARACTERS = 3;
 
     public static final int TOTAL_ITEM_EACH_LOAD = 50;

@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.facebook.Profile;
 import com.google.firebase.crash.FirebaseCrash;
+import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
 import java.io.IOException;
 import java.net.URL;
@@ -152,7 +153,7 @@ public class CommonPresenter implements ICommonPresenter, OnShowReminderToAddLis
 
     @Override
     public void showAddReminderToUser() {
-        getMainActivityView().showAlertDialog("Se pare ca nu ai adaugat nici un banc saptamana asta. ");
+        getMainActivityView().showAlertDialog("Se pare ca nu ai adaugat nici un banc saptamana asta.", SweetAlertDialog.WARNING_TYPE);
         getMainActivityView().addLastCheckDateToSharedPreferences();
 
     }
@@ -297,7 +298,7 @@ public class CommonPresenter implements ICommonPresenter, OnShowReminderToAddLis
 
     @Override
     public void OnUpdatePointsFailed(String error) {
-        getMainActivityView().showAlertDialog(error);
+        getMainActivityView().showAlertDialog(error, SweetAlertDialog.ERROR_TYPE);
     }
 
     @Override
@@ -348,8 +349,8 @@ public class CommonPresenter implements ICommonPresenter, OnShowReminderToAddLis
 
     @Override
     public void RankDataIsInDB(Rank rank) {
+        getMainActivityView().checkIfNewRank(rank.getRank());
         getMainActivityView().saveRankDataToSharedPreferences(rank);
-        getMainActivityView().updateCurrentRank(rank.getRank());
         getMainActivityView().checkIfAdmin();
     }
 
@@ -371,12 +372,12 @@ public class CommonPresenter implements ICommonPresenter, OnShowReminderToAddLis
     @Override
     public void OnAddRankSuccess(Rank rank) {
         getMainActivityView().saveRankDataToSharedPreferences(rank);
-        getMainActivityView().updateCurrentRank(rank.getRank());
+        getMainActivityView().showAlertDialog("In momentul de fata ai rangul de hamsie. Poti adauga 2 bancuri pe zi", SweetAlertDialog.WARNING_TYPE);
     }
 
     @Override
     public void OnAddRankFailure(String error) {
-        getMainActivityView().showAlertDialog(error);
+        getMainActivityView().showAlertDialog(error, SweetAlertDialog.ERROR_TYPE);
     }
 
     @Override
@@ -409,7 +410,7 @@ public class CommonPresenter implements ICommonPresenter, OnShowReminderToAddLis
 
     @Override
     public void onRegistrationFailed(String error) {
-        getRegisterActivityView().showAlertDialog(error);
+        getRegisterActivityView().showAlertDialog(error, SweetAlertDialog.ERROR_TYPE);
         getRegisterActivityView().hideProgress();
     }
 
@@ -433,7 +434,7 @@ public class CommonPresenter implements ICommonPresenter, OnShowReminderToAddLis
 
     @Override
     public void onLoginWithEmailFailed(String error) {
-        getLoginActivityView().showAlertDialog(error);
+        getLoginActivityView().showAlertDialog(error, SweetAlertDialog.ERROR_TYPE);
         getLoginActivityView().hideProgress();
     }
 

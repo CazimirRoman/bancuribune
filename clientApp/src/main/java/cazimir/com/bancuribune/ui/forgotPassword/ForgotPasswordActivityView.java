@@ -9,6 +9,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
+
 import butterknife.BindView;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
@@ -37,7 +39,11 @@ public class ForgotPasswordActivityView extends BaseBackActivity implements IFor
                     String email = etEmail.getText().toString().trim();
 
                     if(isFormDataValid()){
-                        getPresenter().sendResetInstructions(email);
+                        if(isInternetAvailable()){
+                            getPresenter().sendResetInstructions(email);
+                        }else{
+                            getAlertDialog().show(getString(R.string.no_internet), SweetAlertDialog.ERROR_TYPE);
+                        }
                     }
                 }
             }

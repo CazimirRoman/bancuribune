@@ -19,11 +19,11 @@
     <string name="facebook_login">Login cu Facebook</string>
     <string name="copyright">Copyright© 2017 Cazimir Roman Dev</string>
     <string name="loading_data">Incarc bancul cu pesti…</string>
-    <string name="add_joke_empty">Te rog sa completezi bancul tau care va face ravagii</string>
+    <string name="add_joke_empty">Nu ai adaugat nimic</string>
     <string name="close">Inchide</string>
     <string name="admin_title">Bancuri de aprobat</string>
     <string name="total_points">"Total puncte: %s"</string>
-    <string name="no_internet">Oops. Se pare ca nu esti conectat la net. Stii ce ai de facut</string>
+    <string name="no_internet">Nu am putut detecta o conexiune la internet. Te rog sa incerci mai tarziu.</string>
     <string name="rank">"Rang: "</string>
     <string name="nextRank">Urmatorul rang in %s like-uri</string>
     <string name="rankLabel">Rang: %s</string>
@@ -74,4 +74,7 @@
     <string name="share_accept_permissions">Ca sa poti da share trebuie sa accepti permisiunile pentru a putea salva poza cu bancul la tine pe device</string>
     <string name="share_open">Deschid optiunile de share. Ai putina rabdare</string>
     <string name="permission_denied">Nu ai acceptat permisiunile. Pentru a putea da share trebuie sa le accepti</string>
+    <string name="no_internet_title">Nu esti conectat</string>
+    <string name="add_joke_empty_title">Nu ai adaugat nimic</string>
+    <string name="generic_error_title">Eroare</string>
 </resources>

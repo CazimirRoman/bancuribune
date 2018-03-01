@@ -8,7 +8,7 @@ import cazimir.com.bancuribune.base.IGeneralView;
 public interface ILoginActivityView extends IGeneralView {
     void showProgress();
     void hideProgress();
-    void showAlertDialog(String message);
+    void showAlertDialog(String message, int type);
     void launchMainActivity();
     void loginSuccess();
     void loginFailed(String message);
