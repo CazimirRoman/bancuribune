@@ -27,14 +27,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <com.beardedhen.androidbootstrap.AwesomeTextView
+                <TextView
                     android:id="@+id/jokeText"
-                    style="@style/text.regular"
+                    style="@style/text.joke"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:gravity="start"
-                    app:bootstrapBrand="primary"
                     tools:text="Joke Text"/>
 
             </LinearLayout>
@@ -114,16 +113,16 @@
                         android:orientation="horizontal"
                         android:padding="2dp">
 
-                        <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                        <TextView
                             android:id="@+id/points"
                             android:layout_gravity="center_vertical"
-                            style="@style/fontAwesome.secondaryText"
+                            style="@style/text.medium"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             tools:text="123"/>
 
                         <cazimir.com.bancuribune.ui.FontAwesomeTextView
-                            style="@style/fontAwesome.secondaryText"
+                            style="@style/text.medium"
                             android:layout_width="wrap_content"
                             android:textColor="@android:color/holo_red_light"
                             android:padding="5dp"

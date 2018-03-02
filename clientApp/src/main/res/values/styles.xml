@@ -3,6 +3,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="android:fontFamily">@font/open_sans</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
@@ -10,9 +11,14 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="text">
-        <item name="android:paddingTop">10dp</item>
+        <item name="android:fontFamily">@font/open_sans</item>
         <item name="android:textColor">@color/colorPrimaryText</item>
+    </style>
+
+    <style name="text.joke">
+        <item name="android:paddingTop">10dp</item>
         <item name="android:paddingBottom">10dp</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="text.regular">
@@ -51,7 +57,7 @@
     </style>
 
     <style name="fontAwesome.iconSizeJoke">
-        <item name="android:textSize">28sp</item>
+        <item name="android:textSize">24sp</item>
         <item name="android:textColor">@drawable/button_color</item>
         <item name="android:padding">10sp</item>
     </style>

@@ -239,8 +239,8 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
         } else if (Constants.UPPER_LIMIT_STIUCA <= points && points < Constants.UPPER_LIMIT_RECHIN) {
             return Constants.RECHIN;
         }
-
-        return Constants.DEFAULT;
+    // last rank is rechin. if user has more than 1000 points just stay on current rank
+        return Constants.RECHIN;
     }
 
     @Override

@@ -53,6 +53,7 @@ public class LikedJokesAdapter extends EmptyRecyclerView.Adapter<LikedJokesAdapt
         final Joke joke = myLikedJokes.get(position);
         holder.text.setText(joke.getJokeText());
         holder.points.setText(String.valueOf(joke.getPoints()));
+        holder.date.setVisibility(View.GONE);
     }
 
     @Override
