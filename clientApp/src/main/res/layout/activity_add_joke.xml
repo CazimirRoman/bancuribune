@@ -19,6 +19,7 @@
         android:layout_margin="10dp"
         android:gravity="top|start"
         android:hint="@string/add_joke_hint"
+        android:fontFamily="@font/open_sans"
         android:inputType="textMultiLine"
         android:lines="8"
         android:maxLines="100"

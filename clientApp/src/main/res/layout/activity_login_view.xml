@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-
     <ScrollView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
@@ -23,14 +22,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
             <ImageView
                 style="@style/logo"
                 android:src="@drawable/login_logo" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
                 <android.support.design.widget.TextInputLayout
@@ -39,6 +37,7 @@
 
                     <EditText
                         android:id="@+id/etEmail"
+                        style="@style/text.medium"
                         android:layout_width="300dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -57,6 +56,7 @@
 
                     <EditText
                         android:id="@+id/etPassword"
+                        style="@style/text.medium"
                         android:layout_width="300dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -72,15 +72,19 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="17dp"
+                    android:orientation="vertical"
+                    android:layout_height="match_parent">
 
                     <com.beardedhen.androidbootstrap.BootstrapButton
                         android:id="@+id/btnLoginWithEmail"
+                        style="@style/text.medium"
                         android:layout_width="300dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_margin="5dp"
+                        android:layout_weight="1"
                         android:text="@string/login"
                         app:bootstrapBrand="info"
                         app:bootstrapSize="lg"
@@ -88,81 +92,75 @@
                         app:roundedCorners="true"
                         app:showOutline="true" />
 
-
-                </LinearLayout>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <com.facebook.login.widget.LoginButton
-                        android:id="@+id/login_button"
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:visibility="gone" />
+                        android:layout_height="match_parent">
+
+                        <com.facebook.login.widget.LoginButton
+                            android:id="@+id/login_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:visibility="gone" />
+
+                        <com.beardedhen.androidbootstrap.BootstrapButton
+                            android:id="@+id/login_button_dummy"
+                            android:layout_width="300dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="5dp"
+                            android:text="@string/facebook_login"
+                            app:bootstrapBrand="primary"
+                            app:bootstrapSize="lg"
+                            app:buttonMode="regular"
+                            app:roundedCorners="true"
+                            app:showOutline="false" />
+
+                    </FrameLayout>
 
                     <com.beardedhen.androidbootstrap.BootstrapButton
-                        android:id="@+id/login_button_dummy"
+                        android:id="@+id/btnRegister"
                         android:layout_width="300dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_margin="5dp"
-                        android:text="@string/facebook_login"
-                        app:bootstrapBrand="primary"
+                        android:layout_weight="1"
+                        android:text="@string/register"
+                        app:bootstrapBrand="info"
                         app:bootstrapSize="lg"
                         app:buttonMode="regular"
                         app:roundedCorners="true"
-                        app:showOutline="false" />
+                        app:showOutline="true" />
 
-                </FrameLayout>
+                    <com.beardedhen.androidbootstrap.BootstrapButton
+                        android:id="@+id/btnForgotPassword"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:text="@string/password_forgot"
+                        android:textAllCaps="false"
+                        android:textColor="@color/colorAccent"
+                        app:bootstrapBrand="info"
+                        app:bootstrapSize="lg"
+                        app:buttonMode="regular"
+                        app:roundedCorners="true"
+                        app:showOutline="true" />
 
-                <com.beardedhen.androidbootstrap.BootstrapButton
-                    android:id="@+id/btnRegister"
-                    android:layout_width="300dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp"
-                    android:text="@string/register"
-                    app:bootstrapBrand="info"
-                    app:bootstrapSize="lg"
-                    app:buttonMode="regular"
-                    app:roundedCorners="true"
-                    app:showOutline="true" />
+                    <ProgressBar
+                        android:id="@+id/progress"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center|bottom"
+                        android:layout_marginBottom="20dp"
+                        android:layout_weight="1"
+                        android:visibility="gone" />
 
-                <com.beardedhen.androidbootstrap.BootstrapButton
-                    android:id="@+id/btnForgotPassword"
-                    android:layout_width="300dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="5dp"
-                    android:text="@string/password_forgot"
-                    android:textAllCaps="false"
-                    android:textColor="@color/colorAccent"
-                    app:bootstrapBrand="info"
-                    app:bootstrapSize="lg"
-                    app:buttonMode="regular"
-                    app:roundedCorners="true"
-                    app:showOutline="true" />
+                </LinearLayout>
 
-                <ProgressBar
-                    android:id="@+id/progress"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center|bottom"
-                    android:layout_marginBottom="20dp"
-                    android:visibility="gone" />
 
             </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center_horizontal"
-                android:layout_margin="10dp"
-                android:text="@string/copyright"
-                android:textColor="@color/colorAccent"
-                android:visibility="gone" />
 
         </LinearLayout>
 

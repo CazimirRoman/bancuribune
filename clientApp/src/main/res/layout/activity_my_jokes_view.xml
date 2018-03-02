@@ -16,7 +16,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.1"
         android:orientation="horizontal">
 
         <com.beardedhen.androidbootstrap.BootstrapCircleThumbnail
@@ -42,8 +41,9 @@
             android:gravity="center_vertical"
             android:orientation="vertical">
 
-            <cazimir.com.bancuribune.ui.FontAwesomeTextView
+            <TextView
                 android:id="@+id/profileName"
+                style="@style/text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="fill"
@@ -58,14 +58,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                <TextView
                     android:id="@+id/profilePoints"
-                    style="@style/fontAwesome.secondaryText"
+                    style="@style/text.medium"
                     android:layout_width="wrap_content"
+                    tools:text="Total puncte: 456"
                     android:layout_height="match_parent"
-                    android:layout_gravity="fill"
-                    android:paddingBottom="5dp"
-                    android:paddingTop="5dp"/>
+                    android:layout_gravity="fill" />
 
             </LinearLayout>
 
@@ -74,14 +73,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                <TextView
                     android:id="@+id/profileRank"
-                    style="@style/fontAwesome.secondaryText"
+                    style="@style/text.medium"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="fill"
-                    android:paddingBottom="5dp"
-                    android:paddingTop="5dp"
                     tools:text="Novice"/>
 
             </LinearLayout>
@@ -91,14 +88,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                <TextView
                     android:id="@+id/nextRank"
-                    style="@style/fontAwesome.secondaryText"
+                    style="@style/text.medium"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
-                    android:paddingBottom="5dp"
-                    android:paddingTop="5dp"
                     android:text="@string/nextRank"/>
 
             </LinearLayout>
@@ -109,8 +104,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_weight="0.8"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <RelativeLayout
                 android:id="@+id/empty_view"

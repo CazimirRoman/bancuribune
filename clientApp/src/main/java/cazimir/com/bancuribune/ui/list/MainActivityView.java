@@ -88,8 +88,12 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     ProgressBar progressMain;
     @BindView(R.id.search)
     EditText search;
-    @BindView(R.id.fab)
-    LinearLayout fab;
+    @BindView(R.id.fabActionButtons)
+    LinearLayout fabActionButtons;
+    @BindView(R.id.fabScrollToTop)
+    FrameLayout fabScrollToTop;
+    @BindView(R.id.scrollToTop)
+    FloatingActionButton scrollToTop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -291,12 +295,14 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
             @Override
             public void show() {
-                fab.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                fabActionButtons.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                fabScrollToTop.animate().translationX(0).setInterpolator(new DecelerateInterpolator(2)).start();
             }
 
             @Override
             public void hide() {
-                fab.animate().translationY(fab.getHeight()).setInterpolator(new AccelerateInterpolator(2)).start();
+                fabActionButtons.animate().translationY(fabActionButtons.getHeight()).setInterpolator(new AccelerateInterpolator(2)).start();
+                fabScrollToTop.animate().translationX(fabActionButtons.getWidth()).setInterpolator(new AccelerateInterpolator(2)).start();
             }
 
             @Override
@@ -392,6 +398,13 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
             startActivity(new Intent(this, MyLikedJokesActivityView.class));
         }
     }
+
+    @OnClick(R.id.scrollToTop)
+    public void scrollToTopOfList() {
+        jokesListRecyclerView.smoothScrollToPosition(0);
+    }
+
+
 
     @Override
     public void navigateToAddJokeActivity() {

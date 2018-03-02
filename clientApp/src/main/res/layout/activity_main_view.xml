@@ -5,17 +5,44 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include
+        android:id="@+id/include_app_bar"
+        layout="@layout/app_bar_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:id="@+id/fabScrollToTop"
+        android:layout_below="@+id/include_app_bar"
+        android:elevation="30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/scrollToTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp" />
+
+        <cazimir.com.bancuribune.ui.FontAwesomeTextView
+            style="@style/fontAwesome.iconSizeButtons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:elevation="20dp"
+            android:text="@string/fa_icon_arrow_up"
+            android:textColor="#FFFFFF"
+            app:elevation="20dp" />
+
+    </FrameLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_below="@+id/include_app_bar"
         android:layout_height="match_parent"
         android:focusableInTouchMode="true"
         android:orientation="vertical">
-
-        <include
-            android:id="@+id/include_app_bar"
-            layout="@layout/app_bar_main"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
         <com.beardedhen.androidbootstrap.BootstrapEditText
             android:id="@+id/search"
@@ -47,7 +74,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/fab"
+        android:id="@+id/fabActionButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

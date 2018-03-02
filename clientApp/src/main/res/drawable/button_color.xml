@@ -3,5 +3,5 @@
     <item android:state_selected="true" android:color="@android:color/white" />
     <item android:state_focused="true" android:color="@android:color/white" />
     <item android:state_pressed="true" android:color="@color/colorSecondaryText" />
-    <item android:color="#454444" /> <!-- default case -->
+    <item android:color="@color/colorPrimary" /> <!-- default case -->
 </selector>
