@@ -3,7 +3,6 @@ package cazimir.com.bancuribune.ui.list;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -53,14 +52,11 @@ import cazimir.com.bancuribune.ui.admin.AdminActivityView;
 import cazimir.com.bancuribune.ui.likedJokes.MyLikedJokesActivityView;
 import cazimir.com.bancuribune.ui.myjokes.MyJokesActivityView;
 import cazimir.com.bancuribune.ui.tutorial.TutorialActivityView;
-import cazimir.com.bancuribune.utils.RankChangeReceiver;
 import cazimir.com.bancuribune.utils.RatingDialogCustom;
 import cazimir.com.bancuribune.utils.UtilHelperClass;
 
-import static cazimir.com.bancuribune.R.id.addJokeButtonFAB;
-import static cazimir.com.bancuribune.R.id.adminFAB;
 import static cazimir.com.bancuribune.constants.Constants.*;
-import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_REQUEST;
+
 import static java.lang.Math.abs;
 
 public class MainActivityView extends BaseActivity implements IMainActivityView, OnJokeItemClickListener {
@@ -70,7 +66,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     private Boolean isAdmin = false;
     private String sharedText;
     private SharedPreferences preferences;
-    private RankChangeReceiver rankChangeReceiver;
 
     @BindView(R.id.jokesList)
     RecyclerView jokesListRecyclerView;
@@ -78,7 +73,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     SwipeRefreshLayout swipeRefreshLayout;
     @BindView(R.id.myLikedJokesButtonFAB)
     FloatingActionButton myLikedJokesButtonFAB;
-    @BindView(addJokeButtonFAB)
+    @BindView(R.id.addJokeButtonFAB)
     FloatingActionButton addJokeFAB;
     @BindView(R.id.myJokesButtonFAB)
     FloatingActionButton myJokesFAB;
@@ -106,27 +101,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         checkIfAdmin();
         getMyRank();
         getAllJokesData(true, false);
-        registerRankChangeReceiver();
-    }
-
-    @Override
-    protected void onDestroy() {
-
-        try {
-            unregisterReceiver(rankChangeReceiver);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        super.onDestroy();
-    }
-
-    private void registerRankChangeReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Constants.RANK_CHANGED);
-        rankChangeReceiver = new RankChangeReceiver();
-        registerReceiver(rankChangeReceiver, filter);
     }
 
     private void checkIfReminderToAddShouldBeShown() {
@@ -348,7 +322,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         }
     }
 
-    @OnClick(addJokeButtonFAB)
+    @OnClick(R.id.addJokeButtonFAB)
     public void checkIfAllowedToAdd() {
 
         String currentRank = getCurrentRankNameFromSharedPreferences();
@@ -385,7 +359,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         }
     }
 
-    @OnClick(adminFAB)
+    @OnClick(R.id.adminFAB)
     public void startAdminJokesActivity() {
         if (isInternetAvailable()) {
             startActivity(new Intent(this, AdminActivityView.class));
