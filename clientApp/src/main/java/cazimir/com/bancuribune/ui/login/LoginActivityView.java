@@ -19,15 +19,15 @@ import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.constants.Constants;
-import cazimir.com.bancuribune.presenter.AuthPresenter;
+import cazimir.com.bancuribune.presenter.authentication.AuthPresenter;
 import cazimir.com.bancuribune.ui.forgotPassword.ForgotPasswordActivityView;
 import cazimir.com.bancuribune.ui.list.MainActivityView;
 import cazimir.com.bancuribune.ui.register.RegisterActivityView;
-import cazimir.com.bancuribune.utils.UtilHelperClass;
+import cazimir.com.bancuribune.utils.UtilHelper;
 
 import static cazimir.com.bancuribune.R.id.login_button_dummy;
 
-public class LoginActivityView extends BaseActivity implements ILoginActivityView, OnFormValidatedListener {
+public class LoginActivityView extends BaseActivity implements ILoginActivityView {
 
     private AuthPresenter mAuthPresenter;
     private CallbackManager mCallbackManager;
@@ -81,7 +81,34 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
                 if (isInternetAvailable()) {
                     String email = etEmail.getText().toString();
                     String password = etPassword.getText().toString();
-                    UtilHelperClass.validateFormData(this, email, password, Constants.PASSWORD_MATCH_NA);
+                    UtilHelper.validateFormData(new OnFormValidatedListener() {
+                        @Override
+                        public void onValidateSuccess(String email, String password) {
+                            getPresenter().performLogin(email, password);
+                            showProgress();
+                        }
+
+                        @Override
+                        public void onValidateFail(String what) {
+                            switch (what) {
+                                case Constants.EMAIL_EMPTY:
+                                    setEmailError(getString(R.string.email_missing));
+                                    break;
+
+                                case Constants.EMAIL_INVALID:
+                                    setEmailError(getString(R.string.email_invalid));
+                                    break;
+
+                                case Constants.PASSWORD_EMPTY:
+                                    setPasswordError(getString(R.string.password_missing));
+                                    break;
+
+                                case Constants.PASSWORD_INVALID:
+                                    setPasswordError(getString(R.string.password_minimum));
+                                    break;
+                            }
+                        }
+                    }, email, password, Constants.PASSWORD_MATCH_NA);
                 }
 
                 break;
@@ -156,33 +183,6 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     @Override
     public void showAlertDialog(String message, int type) {
         getAlertDialog().show(message, type);
-    }
-
-    @Override
-    public void onValidateSuccess(String email, String password) {
-        getPresenter().performLogin(email, password);
-        showProgress();
-    }
-
-    @Override
-    public void onValidateFail(String what) {
-        switch (what) {
-            case Constants.EMAIL_EMPTY:
-                setEmailError(getString(R.string.email_missing));
-                break;
-
-            case Constants.EMAIL_INVALID:
-                setEmailError(getString(R.string.email_invalid));
-                break;
-
-            case Constants.PASSWORD_EMPTY:
-                setPasswordError(getString(R.string.password_missing));
-                break;
-
-            case Constants.PASSWORD_INVALID:
-                setPasswordError(getString(R.string.password_minimum));
-                break;
-        }
     }
 
     @Override

@@ -10,9 +10,9 @@ import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
 import butterknife.ButterKnife;
 import cazimir.com.bancuribune.R;
-import cazimir.com.bancuribune.presenter.CommonPresenter;
+import cazimir.com.bancuribune.presenter.common.CommonPresenter;
 import cazimir.com.bancuribune.utils.MySweetAlertDialog;
-import cazimir.com.bancuribune.utils.UtilHelperClass;
+import cazimir.com.bancuribune.utils.UtilHelper;
 
 public abstract class BaseActivity extends AppCompatActivity implements IGeneralView {
 
@@ -44,7 +44,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
     }
 
     protected boolean isInternetAvailable(){
-        if (!UtilHelperClass.isInternetAvailable(this)) {
+        if (!UtilHelper.isInternetAvailable(this)) {
             getAlertDialog().show(getString(R.string.no_internet), SweetAlertDialog.ERROR_TYPE);
             return false;
         }

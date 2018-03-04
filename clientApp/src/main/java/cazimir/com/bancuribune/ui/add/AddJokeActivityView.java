@@ -16,8 +16,8 @@ import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
-import cazimir.com.bancuribune.presenter.CommonPresenter;
-import cazimir.com.bancuribune.utils.UtilHelperClass;
+import cazimir.com.bancuribune.presenter.common.CommonPresenter;
+import cazimir.com.bancuribune.utils.UtilHelper;
 
 public class AddJokeActivityView extends BaseBackActivity implements IAddJokeActivityView {
 
@@ -56,11 +56,6 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
     }
 
     @Override
-    public void onDataValidated() {
-        presenter.getAllJokesData(true, false);
-    }
-
-    @Override
     public void sendDataToDatabase(Joke joke) {
         presenter.addJoke(joke, getIntent().getExtras().getBoolean(Constants.ADMIN));
     }
@@ -80,7 +75,7 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
     @OnClick(R.id.addNewJokeButtonFAB)
     public void addJoke(View view){
         if(dataValid()){
-            if(UtilHelperClass.isInternetAvailable(this)){
+            if(UtilHelper.isInternetAvailable(this)){
                 sendDataToDatabase(constructJokeObject());
                 hideSoftInput(addJokeEdit);
                 closeAdd();

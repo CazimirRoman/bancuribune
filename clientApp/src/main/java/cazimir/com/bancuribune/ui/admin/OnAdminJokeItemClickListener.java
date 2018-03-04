@@ -1,5 +1,5 @@
 package cazimir.com.bancuribune.ui.admin;
 
 interface OnAdminJokeItemClickListener {
-    void OnItemApproved(String uid);
+    void onItemApproved(String uid);
 }
