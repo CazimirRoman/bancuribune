@@ -15,9 +15,9 @@ import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.ui.login.OnFormValidatedListener;
-import cazimir.com.bancuribune.utils.UtilHelperClass;
+import cazimir.com.bancuribune.utils.UtilHelper;
 
-public class RegisterActivityView extends BaseBackActivity implements IRegisterActivityView, OnFormValidatedListener {
+public class RegisterActivityView extends BaseBackActivity implements IRegisterActivityView {
 
     @BindView(R.id.etEmail)
     EditText etEmail;
@@ -41,7 +41,38 @@ public class RegisterActivityView extends BaseBackActivity implements IRegisterA
             String email = etEmail.getText().toString();
             String password = etPassword.getText().toString();
             String passwordConfirm = etPasswordConfirm.getText().toString();
-            UtilHelperClass.validateFormData(this, email, password, passwordConfirm);
+            UtilHelper.validateFormData(new OnFormValidatedListener() {
+                @Override
+                public void onValidateSuccess(String email, String password) {
+                    getPresenter().registerUser(email, password);
+                }
+
+                @Override
+                public void onValidateFail(String what) {
+
+                    switch (what) {
+                        case Constants.EMAIL_EMPTY:
+                            setEmailError(getString(R.string.email_missing));
+                            break;
+
+                        case Constants.EMAIL_INVALID:
+                            setEmailError(getString(R.string.email_invalid));
+                            break;
+
+                        case Constants.PASSWORD_EMPTY:
+                            setPasswordError(getString(R.string.password_missing));
+                            break;
+
+                        case Constants.PASSWORD_INVALID:
+                            setPasswordError(getString(R.string.password_minimum));
+                            break;
+
+                        case Constants.PASSWORD_MATCH_ERROR:
+                            setPasswordConfirmError(getString(R.string.password_not_matching));
+                            break;
+                    }
+                }
+            }, email, password, passwordConfirm);
         }
     }
 
@@ -98,37 +129,6 @@ public class RegisterActivityView extends BaseBackActivity implements IRegisterA
     @Override
     public void setPasswordConfirmError(String error) {
         etPasswordConfirm.setError(error);
-    }
-
-    @Override
-    public void onValidateSuccess(String email, String password) {
-        getPresenter().registerUser(email, password);
-    }
-
-    @Override
-    public void onValidateFail(String what) {
-
-        switch (what) {
-            case Constants.EMAIL_EMPTY:
-                setEmailError(getString(R.string.email_missing));
-                break;
-
-            case Constants.EMAIL_INVALID:
-                setEmailError(getString(R.string.email_invalid));
-                break;
-
-            case Constants.PASSWORD_EMPTY:
-                setPasswordError(getString(R.string.password_missing));
-                break;
-
-            case Constants.PASSWORD_INVALID:
-                setPasswordError(getString(R.string.password_minimum));
-                break;
-
-            case Constants.PASSWORD_MATCH_ERROR:
-                setPasswordConfirmError(getString(R.string.password_not_matching));
-                break;
-        }
     }
 
     @Override

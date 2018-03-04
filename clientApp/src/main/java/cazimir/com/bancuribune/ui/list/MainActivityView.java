@@ -43,23 +43,23 @@ import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
-import cazimir.com.bancuribune.base.ScrollListenerRecycleView;
+import cazimir.com.bancuribune.utils.ScrollListenerRecycleView;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.ui.add.AddJokeActivityView;
 import cazimir.com.bancuribune.ui.admin.AdminActivityView;
-import cazimir.com.bancuribune.ui.likedJokes.MyLikedJokesActivityView;
-import cazimir.com.bancuribune.ui.myjokes.MyJokesActivityView;
+import cazimir.com.bancuribune.ui.likedJokes.LikedJokesActivityView;
+import cazimir.com.bancuribune.ui.myJokes.MyJokesActivityView;
 import cazimir.com.bancuribune.ui.tutorial.TutorialActivityView;
 import cazimir.com.bancuribune.utils.RatingDialogCustom;
-import cazimir.com.bancuribune.utils.UtilHelperClass;
+import cazimir.com.bancuribune.utils.UtilHelper;
 
 import static cazimir.com.bancuribune.constants.Constants.*;
 
 import static java.lang.Math.abs;
 
-public class MainActivityView extends BaseActivity implements IMainActivityView, OnJokeItemClickListener {
+public class MainActivityView extends BaseActivity implements IMainActivityView {
 
     private JokesAdapter adapter;
     private String currentRank;
@@ -240,7 +240,23 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
 
     public void refreshJokesListAdapter() {
         setOnScrollListener((LinearLayoutManager) initRecycleView());
-        adapter = new JokesAdapter(this);
+        adapter = new JokesAdapter(new OnJokeClickListener() {
+            @Override
+            public void onJokeShared(final Joke joke) {
+                Toast.makeText(MainActivityView.this, R.string.share_open, Toast.LENGTH_LONG).show();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        shareJoke(joke.getJokeText());
+                    }
+                }, 500);
+            }
+
+            @Override
+            public void onJokeVoted(Joke joke) {
+                getPresenter().checkIfAlreadyVoted(joke);
+            }
+        });
         jokesListRecyclerView.setAdapter(adapter);
 
     }
@@ -369,7 +385,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
     @OnClick(R.id.myLikedJokesButtonFAB)
     public void startMyLikedJokesActivity() {
         if (isInternetAvailable()) {
-            startActivity(new Intent(this, MyLikedJokesActivityView.class));
+            startActivity(new Intent(this, LikedJokesActivityView.class));
         }
     }
 
@@ -467,30 +483,12 @@ public class MainActivityView extends BaseActivity implements IMainActivityView,
         saveRemainingDataToSharedPreferences(remainingAdds);
     }
 
-
-    @Override
-    public void onItemShared(final Joke joke) {
-        Toast.makeText(this, R.string.share_open, Toast.LENGTH_LONG).show();
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                shareJoke(joke.getJokeText());
-            }
-        }, 500);
-    }
-
-    @Override
-    public void onItemVoted(Joke joke) {
-        getPresenter().checkIfAlreadyVoted(joke);
-    }
-
     private void shareJoke(String text) {
 
         this.sharedText = text;
 
         if (!requestWriteStoragePermissions()) {
-            Bitmap bitmap = UtilHelperClass.drawMultilineTextToBitmap(this, R.drawable.share_background, text);
+            Bitmap bitmap = UtilHelper.drawMultilineTextToBitmap(this, R.drawable.share_background, text);
             String bitmapPath = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, "title", "description");
             Uri bitmapUri = Uri.parse(bitmapPath);
             Intent sendIntent = new Intent();

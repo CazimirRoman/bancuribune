@@ -51,15 +51,15 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".ui.myjokes.MyJokesActivityView" />
+        <activity android:name=".ui.myJokes.MyJokesActivityView" />
         <activity android:name=".ui.admin.AdminActivityView" />
 
-        <service android:name=".utils.Firebase.MyFirebaseMessagingService">
+        <service android:name=".utils.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".utils.Firebase.FirebaseIDService">
+        <service android:name=".utils.FirebaseIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
@@ -67,7 +67,7 @@
 
         <activity android:name=".ui.register.RegisterActivityView" />
         <activity android:name=".ui.forgotPassword.ForgotPasswordActivityView" />
-        <activity android:name=".ui.likedJokes.MyLikedJokesActivityView" />
+        <activity android:name=".ui.likedJokes.LikedJokesActivityView" />
         <activity android:name=".ui.tutorial.TutorialActivityView" />
     </application>
 

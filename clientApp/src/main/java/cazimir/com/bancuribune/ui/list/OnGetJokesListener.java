@@ -5,7 +5,7 @@ import java.util.List;
 import cazimir.com.bancuribune.model.Joke;
 
 public interface OnGetJokesListener {
-    void OnGetJokesSuccess(List<Joke> jokes);
-    void OnGetJokesFailed(String error);
-    void OnEndOfListReached();
+    void onGetJokesSuccess(List<Joke> jokes);
+    void onGetJokesFailed(String error);
+    void onEndOfListReached();
 }

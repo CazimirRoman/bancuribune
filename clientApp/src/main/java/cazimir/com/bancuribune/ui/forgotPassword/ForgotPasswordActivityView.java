@@ -15,8 +15,7 @@ import butterknife.BindView;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
-import cazimir.com.bancuribune.presenter.CommonPresenter;
-import cazimir.com.bancuribune.utils.UtilHelperClass;
+import cazimir.com.bancuribune.utils.UtilHelper;
 
 public class ForgotPasswordActivityView extends BaseBackActivity implements IForgotPasswordActivityView {
 
@@ -94,7 +93,7 @@ public class ForgotPasswordActivityView extends BaseBackActivity implements IFor
             etEmail.setError(getString(R.string.email_missing));
             return false;
         } else {
-            if (!UtilHelperClass.isValidEmail(email)) {
+            if (!UtilHelper.isValidEmail(email)) {
                 etEmail.setError(getString(R.string.email_invalid));
                 return false;
             }

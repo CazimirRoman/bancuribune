@@ -61,7 +61,7 @@ public class AdminJokesAdapter extends RecyclerView.Adapter<AdminJokesAdapter.My
         holder.approve.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.OnItemApproved(joke.getUid());
+                listener.onItemApproved(joke.getUid());
             }
         });
     }

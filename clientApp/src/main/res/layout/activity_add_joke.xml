@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"/>
 
-        <cazimir.com.bancuribune.ui.FontAwesomeTextView
+        <cazimir.com.bancuribune.utils.FontAwesomeTextView
             android:id="@+id/tvSellRecordCount"
             style="@style/fontAwesome.iconSizeButtons"
             android:layout_width="wrap_content"

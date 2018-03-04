@@ -9,14 +9,11 @@ import java.util.List;
 
 import butterknife.BindView;
 import cazimir.com.bancuribune.R;
-import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.model.Joke;
-import cazimir.com.bancuribune.presenter.CommonPresenter;
-import cazimir.com.bancuribune.repository.JokesRepository;
 
-public class AdminActivityView extends BaseBackActivity implements IAdminActivityView, OnAdminJokeItemClickListener {
+public class AdminActivityView extends BaseBackActivity implements IAdminActivityView {
 
     private AdminJokesAdapter adapter;
     @BindView(R.id.jokesList)
@@ -31,7 +28,12 @@ public class AdminActivityView extends BaseBackActivity implements IAdminActivit
     private void initRecycleView() {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         adminJokesListRecyclerView.setLayoutManager(layoutManager);
-        adapter = new AdminJokesAdapter(this);
+        adapter = new AdminJokesAdapter(new OnAdminJokeItemClickListener() {
+            @Override
+            public void onItemApproved(String uid) {
+                getPresenter().approveJoke(uid);
+            }
+        });
         adminJokesListRecyclerView.setAdapter(adapter);
     }
 
@@ -52,7 +54,12 @@ public class AdminActivityView extends BaseBackActivity implements IAdminActivit
 
     @Override
     public void refreshJokes(List<Joke> jokes) {
-        adapter = new AdminJokesAdapter(this);
+        adapter = new AdminJokesAdapter(new OnAdminJokeItemClickListener() {
+            @Override
+            public void onItemApproved(String uid) {
+                getPresenter().approveJoke(uid);
+            }
+        });
         adminJokesListRecyclerView.setAdapter(adapter);
         for (Joke joke : jokes) {
             adapter.add(joke);
@@ -64,11 +71,6 @@ public class AdminActivityView extends BaseBackActivity implements IAdminActivit
     @Override
     public void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void OnItemApproved(String uid) {
-        getPresenter().updateJokeApproval(uid);
     }
 
     @Override

@@ -15,14 +15,14 @@ import java.util.List;
 import butterknife.BindView;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.model.Joke;
-import cazimir.com.bancuribune.utils.UtilHelperClass;
+import cazimir.com.bancuribune.utils.UtilHelper;
 
 public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder> {
 
     private List<Joke> jokes;
-    private final OnJokeItemClickListener listener;
+    private final OnJokeClickListener listener;
 
-    public JokesAdapter(@NonNull OnJokeItemClickListener listener) {
+    public JokesAdapter(@NonNull OnJokeClickListener listener) {
         this.listener = listener;
         jokes = new ArrayList<>();
     }
@@ -68,19 +68,19 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
         holder.share.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onItemShared(joke);
+                listener.onJokeShared(joke);
             }
         });
 
         holder.vote.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onItemVoted(jokes.get(position));
+                listener.onJokeVoted(jokes.get(position));
             }
         });
 
         holder.points.setText(String.valueOf(joke.getPoints()));
-        holder.date.setText(UtilHelperClass.convertEpochToDate(joke.getCreatedAt()));
+        holder.date.setText(UtilHelper.convertEpochToDate(joke.getCreatedAt()));
     }
 
     @Override

@@ -35,6 +35,17 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
+                <cazimir.com.bancuribune.utils.FontAwesomeTextView
+                    android:id="@+id/share"
+                    style="@style/fontAwesome.iconSizeJoke"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:elevation="20dp"
+                    android:text="@string/fa_icon_share"
+                    app:elevation="20dp">
+                </cazimir.com.bancuribune.utils.FontAwesomeTextView>
+
                 <TextView
                     android:id="@+id/approved"
                     style="@style/text.medium"
@@ -57,7 +68,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="end">
 
-                        <cazimir.com.bancuribune.ui.FontAwesomeTextView
+                        <cazimir.com.bancuribune.utils.FontAwesomeTextView
                             style="@style/fontAwesome.secondaryText"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
