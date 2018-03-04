@@ -372,7 +372,7 @@ public class CommonPresenter implements ICommonPresenter, OnShowReminderToAddLis
     @Override
     public void OnAddRankSuccess(Rank rank) {
         getMainActivityView().saveRankDataToSharedPreferences(rank);
-        getMainActivityView().showAlertDialog("In momentul de fata ai rangul de hamsie. Poti adauga 2 bancuri pe zi", SweetAlertDialog.WARNING_TYPE);
+        getMainActivityView().showAlertDialog("In momentul de fata ai rangul de Hamsie. Poti adauga 2 bancuri pe zi", SweetAlertDialog.SUCCESS_TYPE);
     }
 
     @Override

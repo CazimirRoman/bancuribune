@@ -16,7 +16,7 @@ public class FontAwesomeTextView extends android.support.v7.widget.AppCompatText
     }
 
     private void setTypeface(Context context) {
-            Typeface tf = Typeface.createFromAsset(context.getAssets(),"fontawesome-webfont.ttf");
+            Typeface tf = Typeface.createFromAsset(context.getAssets(),"fontawesome-webfont.otf");
             setTypeface(tf);
     }
 }
