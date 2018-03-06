@@ -22,11 +22,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.Profile;
@@ -105,8 +108,8 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
 
     private void checkIfReminderToAddShouldBeShown() {
         Date lastCheckDate = getLastCheckDateFromSharedPreferences();
-        int daysApart = (int)((lastCheckDate.getTime() - new Date().getTime()) / (1000*60*60*24l));
-        if (abs(daysApart) >= REMINDER_INTERVAL_CHECK){
+        int daysApart = (int) ((lastCheckDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24l));
+        if (abs(daysApart) >= REMINDER_INTERVAL_CHECK) {
             getPresenter().checkNumberOfAddsLastWeek(lastCheckDate);
         }
     }
@@ -115,7 +118,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         preferences = this.getSharedPreferences("reminder", Context.MODE_PRIVATE);
         long lastCheck = preferences.getLong("last_check", 0);
         //first run
-        if(lastCheck == 0){
+        if (lastCheck == 0) {
             return addLastCheckDateToSharedPreferences();
         }
 
@@ -133,7 +136,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
     @Override
     public void checkIfNewRank(String rank) {
         String currentRank = getCurrentRankNameFromSharedPreferences();
-        if(currentRank != null && !currentRank.equals(rank)){
+        if (currentRank != null && !currentRank.equals(rank)) {
             showAlertDialog("Leveled up!", SweetAlertDialog.SUCCESS_TYPE);
         }
 
@@ -203,9 +206,9 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(isInternetAvailable()){
+                if (isInternetAvailable()) {
                     getAllJokesData(true, true);
-                }else{
+                } else {
                     showAlertDialog(getString(R.string.no_internet), SweetAlertDialog.ERROR_TYPE);
                     swipeRefreshLayout.setRefreshing(false);
                 }
@@ -391,9 +394,8 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
 
     @OnClick(R.id.scrollToTop)
     public void scrollToTopOfList() {
-        jokesListRecyclerView.smoothScrollToPosition(0);
+        jokesListRecyclerView.scrollToPosition(0);
     }
-
 
 
     @Override
@@ -431,7 +433,12 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
 
     @Override
     public void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        Toast toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
+        View view = toast.getView();
+        view.setBackgroundResource(R.drawable.toast_background);
+        TextView text = (TextView) view.findViewById(android.R.id.message);
+        text.setTextColor(ContextCompat.getColor(this, R.color.white));
+        toast.show();
     }
 
     @Override
@@ -470,7 +477,42 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
 
     @Override
     public void refreshAdapter(Joke joke) {
-        adapter.updateList(joke);
+        adapter.updatePoints(new OnUpdateListFinished() {
+            @Override
+            public void onUpdateSuccess(int index) {
+                animateHeartIcon(index);
+            }
+        }, joke);
+    }
+
+    private void animateHeartIcon(int index) {
+
+        RecyclerView.ViewHolder holder = jokesListRecyclerView.findViewHolderForAdapterPosition(index);
+        final TextView heartIcon = holder.itemView.findViewById(R.id.heart_icon);
+
+        final Animation animationEnlarge, animationShrink;
+        animationEnlarge = AnimationUtils.loadAnimation(MainActivityView.this,
+                R.anim.enlarge);
+        animationShrink = AnimationUtils.loadAnimation(MainActivityView.this,
+                R.anim.shrink);
+
+        animationEnlarge.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                heartIcon.startAnimation(animationShrink);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        heartIcon.startAnimation(animationEnlarge);
     }
 
     @Override
