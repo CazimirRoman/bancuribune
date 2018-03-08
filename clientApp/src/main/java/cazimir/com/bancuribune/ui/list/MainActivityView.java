@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -20,6 +22,7 @@ import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
@@ -46,6 +49,7 @@ import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
+import cazimir.com.bancuribune.utils.MyToast;
 import cazimir.com.bancuribune.utils.ScrollListenerRecycleView;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
@@ -64,11 +68,13 @@ import static java.lang.Math.abs;
 
 public class MainActivityView extends BaseActivity implements IMainActivityView {
 
+    private static final String TAG = MainActivityView.class.getSimpleName();
     private JokesAdapter adapter;
     private String currentRank;
     private Boolean isAdmin = false;
     private String sharedText;
     private SharedPreferences preferences;
+    private MediaPlayer mediaPlayer;
 
     @BindView(R.id.jokesList)
     RecyclerView jokesListRecyclerView;
@@ -104,6 +110,12 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         checkIfAdmin();
         getMyRank();
         getAllJokesData(true, false);
+        initializeLikeSound();
+    }
+
+    private void initializeLikeSound() {
+        mediaPlayer = MediaPlayer.create(this, R.raw.drop);
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
     }
 
     private void checkIfReminderToAddShouldBeShown() {
@@ -141,6 +153,11 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         }
 
         updateCurrentRank(rank);
+    }
+
+    @Override
+    public void playOnVotedAudio() {
+        mediaPlayer.start();
     }
 
     private String getCurrentRankNameFromSharedPreferences() {
@@ -188,7 +205,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         @Override
         protected void onPostExecute(Card result) {
             super.onPostExecute(result);
-            Toast.makeText(MainActivityView.this, getString(R.string.feedback_sent), Toast.LENGTH_SHORT).show();
+            showToast(getString(R.string.feedback_sent));
         }
     }
 
@@ -246,7 +263,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         adapter = new JokesAdapter(new OnJokeClickListener() {
             @Override
             public void onJokeShared(final Joke joke) {
-                Toast.makeText(MainActivityView.this, R.string.share_open, Toast.LENGTH_LONG).show();
+                showToast(getString(R.string.share_open));
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -261,7 +278,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
             }
         });
         jokesListRecyclerView.setAdapter(adapter);
-
     }
 
     @Override
@@ -433,12 +449,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
 
     @Override
     public void showToast(String message) {
-        Toast toast = Toast.makeText(this, message, Toast.LENGTH_LONG);
-        View view = toast.getView();
-        view.setBackgroundResource(R.drawable.toast_background);
-        TextView text = (TextView) view.findViewById(android.R.id.message);
-        text.setTextColor(ContextCompat.getColor(this, R.color.white));
-        toast.show();
+        buildToast(message).show();
     }
 
     @Override
@@ -485,34 +496,41 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         }, joke);
     }
 
-    private void animateHeartIcon(int index) {
+    private void animateHeartIcon(final int index) {
 
-        RecyclerView.ViewHolder holder = jokesListRecyclerView.findViewHolderForAdapterPosition(index);
-        final TextView heartIcon = holder.itemView.findViewById(R.id.heart_icon);
-
-        final Animation animationEnlarge, animationShrink;
-        animationEnlarge = AnimationUtils.loadAnimation(MainActivityView.this,
-                R.anim.enlarge);
-        animationShrink = AnimationUtils.loadAnimation(MainActivityView.this,
-                R.anim.shrink);
-
-        animationEnlarge.setAnimationListener(new Animation.AnimationListener() {
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onAnimationStart(Animation animation) {
+            public void run() {
+                JokesAdapter.MyViewHolder holder = (JokesAdapter.MyViewHolder) jokesListRecyclerView.findViewHolderForAdapterPosition(index);
 
+                final TextView heart = holder.heart;
+
+                final Animation animationEnlarge, animationShrink;
+                animationEnlarge = AnimationUtils.loadAnimation(MainActivityView.this,
+                        R.anim.enlarge);
+                animationShrink = AnimationUtils.loadAnimation(MainActivityView.this,
+                        R.anim.shrink);
+
+                animationEnlarge.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        heart.startAnimation(animationShrink);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                heart.startAnimation(animationEnlarge);
             }
+        }, 5);
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                heartIcon.startAnimation(animationShrink);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        heartIcon.startAnimation(animationEnlarge);
     }
 
     @Override
@@ -556,7 +574,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 shareJoke(sharedText);
             } else {
-                Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT).show();
+                showToast(getString(R.string.permission_denied));
             }
         }
     }

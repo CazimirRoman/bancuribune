@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -12,11 +13,13 @@ import butterknife.ButterKnife;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.presenter.common.CommonPresenter;
 import cazimir.com.bancuribune.utils.MySweetAlertDialog;
+import cazimir.com.bancuribune.utils.MyToast;
 import cazimir.com.bancuribune.utils.UtilHelper;
 
 public abstract class BaseActivity extends AppCompatActivity implements IGeneralView {
 
     private MySweetAlertDialog mAlertDialog;
+    private MyToast mToast;
     private CommonPresenter mPresenter;
 
     @Override
@@ -24,6 +27,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         mAlertDialog = new MySweetAlertDialog(this);
+        mToast = new MyToast(this);
         mPresenter = new CommonPresenter(this);
         ButterKnife.bind(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -36,7 +40,11 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
     protected abstract int setActionBarTitle();
 
     protected MySweetAlertDialog getAlertDialog(){
-        return this.mAlertDialog;
+        return mAlertDialog;
+    }
+    protected MyToast buildToast(String message) {
+        mToast = (MyToast) MyToast.makeText(this, message, Toast.LENGTH_SHORT);
+        return mToast;
     }
 
     protected CommonPresenter getPresenter() {
@@ -51,4 +59,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
 
         return true;
     }
+
+
 }

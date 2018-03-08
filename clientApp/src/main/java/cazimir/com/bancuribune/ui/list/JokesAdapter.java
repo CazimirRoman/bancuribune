@@ -98,9 +98,8 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
     public void updatePoints(OnUpdateListFinished listener, Joke joke){
         int index = jokes.indexOf(joke);
         jokes.set(index, joke);
-        notifyDataSetChanged();
-        int newIndex = jokes.indexOf(joke);
-        listener.onUpdateSuccess(newIndex);
+        notifyItemChanged(index);
+        listener.onUpdateSuccess(index);
 
     }
 }
