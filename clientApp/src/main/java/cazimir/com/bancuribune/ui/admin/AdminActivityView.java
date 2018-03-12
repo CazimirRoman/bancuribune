@@ -70,7 +70,7 @@ public class AdminActivityView extends BaseBackActivity implements IAdminActivit
 
     @Override
     public void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        buildToast(message).show();
     }
 
     @Override

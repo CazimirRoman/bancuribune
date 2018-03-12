@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import cazimir.com.bancuribune.BuildConfig;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
@@ -33,14 +34,29 @@ import cazimir.com.bancuribune.utils.UtilHelper;
 
 public class JokesRepository implements IJokesRepository {
 
-    private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference jokesRef = database.getReference("jokes");
-    private DatabaseReference votesRef = database.getReference("votes");
-    private DatabaseReference ranksRef = database.getReference("ranks");
-    private DatabaseReference usersRef = database.getReference("users");
+    private DatabaseReference jokesRef;
+    private DatabaseReference votesRef;
+    private DatabaseReference ranksRef;
+    private DatabaseReference usersRef;
 
     private String keyNewest;
     private String keyStep;
+
+    public JokesRepository() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+//        if (!BuildConfig.DEBUG) {
+//            this.jokesRef = database.getReference("_dev/jokes_dev");
+//            this.votesRef = database.getReference("_dev/votes_dev");
+//            this.ranksRef = database.getReference("_dev/ranks_dev");
+//            this.usersRef = database.getReference("_dev/users_dev");
+//        }else{
+            this.jokesRef = database.getReference("jokes");
+            this.votesRef = database.getReference("votes");
+            this.ranksRef = database.getReference("ranks");
+            this.usersRef = database.getReference("users");
+//        }
+    }
 
     @Override
     public void getAllJokes(final OnGetJokesListener listener, boolean reset) {
@@ -48,7 +64,6 @@ public class JokesRepository implements IJokesRepository {
         if(reset){
             keyStep = null;
         }
-
         getNewestEntry(listener);
     }
 
@@ -62,10 +77,13 @@ public class JokesRepository implements IJokesRepository {
                     Joke joke = jokeSnapshot.getValue(Joke.class);
                     if (joke != null) {
                         keyNewest = jokeSnapshot.getKey();
+                        sendJokesBackToView(listener);
+                    }else{
+                        listener.onEndOfListReached();
                     }
                 }
 
-                sendJokesBackToView(listener);
+
             }
 
             @Override
@@ -138,12 +156,13 @@ public class JokesRepository implements IJokesRepository {
                                     jokes.add(joke);
                                 }
                             }
-
-                            keyStep = jokes.get(0).getUid();
-
-                            Collections.reverse(jokes);
-
-                            listener.onGetJokesSuccess(jokes);
+                            if(!jokes.isEmpty()){
+                                keyStep = jokes.get(0).getUid();
+                                Collections.reverse(jokes);
+                                listener.onGetJokesSuccess(jokes);
+                            }else{
+                                listener.onEndOfListReached();
+                            }
                         }
 
                         @Override

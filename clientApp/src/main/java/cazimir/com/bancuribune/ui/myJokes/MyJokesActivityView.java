@@ -177,7 +177,7 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
 
     @Override
     public void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        buildToast(message).show();
     }
 
     @Override

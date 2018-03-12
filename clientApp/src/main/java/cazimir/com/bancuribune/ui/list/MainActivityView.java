@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -22,12 +24,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.facebook.Profile;
 import com.julienvey.trello.Trello;
@@ -61,11 +65,13 @@ import static java.lang.Math.abs;
 
 public class MainActivityView extends BaseActivity implements IMainActivityView {
 
+    private static final String TAG = MainActivityView.class.getSimpleName();
     private JokesAdapter adapter;
     private String currentRank;
     private Boolean isAdmin = false;
     private String sharedText;
     private SharedPreferences preferences;
+    private MediaPlayer mediaPlayer;
 
     @BindView(R.id.jokesList)
     RecyclerView jokesListRecyclerView;
@@ -101,12 +107,18 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         checkIfAdmin();
         getMyRank();
         getAllJokesData(true, false);
+        initializeLikeSound();
+    }
+
+    private void initializeLikeSound() {
+        mediaPlayer = MediaPlayer.create(this, R.raw.drop);
+        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
     }
 
     private void checkIfReminderToAddShouldBeShown() {
         Date lastCheckDate = getLastCheckDateFromSharedPreferences();
-        int daysApart = (int)((lastCheckDate.getTime() - new Date().getTime()) / (1000*60*60*24l));
-        if (abs(daysApart) >= REMINDER_INTERVAL_CHECK){
+        int daysApart = (int) ((lastCheckDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24l));
+        if (abs(daysApart) >= REMINDER_INTERVAL_CHECK) {
             getPresenter().checkNumberOfAddsLastWeek(lastCheckDate);
         }
     }
@@ -115,7 +127,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         preferences = this.getSharedPreferences("reminder", Context.MODE_PRIVATE);
         long lastCheck = preferences.getLong("last_check", 0);
         //first run
-        if(lastCheck == 0){
+        if (lastCheck == 0) {
             return addLastCheckDateToSharedPreferences();
         }
 
@@ -133,11 +145,16 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
     @Override
     public void checkIfNewRank(String rank) {
         String currentRank = getCurrentRankNameFromSharedPreferences();
-        if(currentRank != null && !currentRank.equals(rank)){
+        if (currentRank != null && !currentRank.equals(rank)) {
             showAlertDialog("Leveled up!", SweetAlertDialog.SUCCESS_TYPE);
         }
 
         updateCurrentRank(rank);
+    }
+
+    @Override
+    public void playOnVotedAudio() {
+        mediaPlayer.start();
     }
 
     private String getCurrentRankNameFromSharedPreferences() {
@@ -185,7 +202,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         @Override
         protected void onPostExecute(Card result) {
             super.onPostExecute(result);
-            Toast.makeText(MainActivityView.this, getString(R.string.feedback_sent), Toast.LENGTH_SHORT).show();
+            showToast(getString(R.string.feedback_sent));
         }
     }
 
@@ -203,9 +220,9 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(isInternetAvailable()){
+                if (isInternetAvailable()) {
                     getAllJokesData(true, true);
-                }else{
+                } else {
                     showAlertDialog(getString(R.string.no_internet), SweetAlertDialog.ERROR_TYPE);
                     swipeRefreshLayout.setRefreshing(false);
                 }
@@ -243,7 +260,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         adapter = new JokesAdapter(new OnJokeClickListener() {
             @Override
             public void onJokeShared(final Joke joke) {
-                Toast.makeText(MainActivityView.this, R.string.share_open, Toast.LENGTH_LONG).show();
+                showToast(getString(R.string.share_open));
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -258,7 +275,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
             }
         });
         jokesListRecyclerView.setAdapter(adapter);
-
     }
 
     @Override
@@ -391,9 +407,8 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
 
     @OnClick(R.id.scrollToTop)
     public void scrollToTopOfList() {
-        jokesListRecyclerView.smoothScrollToPosition(0);
+        jokesListRecyclerView.scrollToPosition(0);
     }
-
 
 
     @Override
@@ -431,7 +446,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
 
     @Override
     public void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        buildToast(message).show();
     }
 
     @Override
@@ -470,7 +485,49 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
 
     @Override
     public void refreshAdapter(Joke joke) {
-        adapter.updateList(joke);
+        adapter.updatePoints(new OnUpdateListFinished() {
+            @Override
+            public void onUpdateSuccess(int index) {
+                animateHeartIcon(index);
+            }
+        }, joke);
+    }
+
+    private void animateHeartIcon(final int index) {
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                JokesAdapter.MyViewHolder holder = (JokesAdapter.MyViewHolder) jokesListRecyclerView.findViewHolderForAdapterPosition(index);
+
+                final TextView heart = holder.heart;
+
+                final Animation animationEnlarge, animationShrink;
+                animationEnlarge = AnimationUtils.loadAnimation(MainActivityView.this,
+                        R.anim.enlarge);
+                animationShrink = AnimationUtils.loadAnimation(MainActivityView.this,
+                        R.anim.shrink);
+
+                animationEnlarge.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        heart.startAnimation(animationShrink);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                heart.startAnimation(animationEnlarge);
+            }
+        }, 5);
+
     }
 
     @Override
@@ -514,7 +571,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 shareJoke(sharedText);
             } else {
-                Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT).show();
+                showToast(getString(R.string.permission_denied));
             }
         }
     }

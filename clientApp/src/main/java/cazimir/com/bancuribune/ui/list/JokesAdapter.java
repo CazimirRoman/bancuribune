@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -21,6 +23,7 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
 
     private List<Joke> jokes;
     private final OnJokeClickListener listener;
+    private MyViewHolder holder;
 
     public JokesAdapter(@NonNull OnJokeClickListener listener) {
         this.listener = listener;
@@ -30,7 +33,7 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
     @BindView(R.id.share)
     ImageButton share;
 
-    class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView text;
         TextView author;
@@ -38,6 +41,8 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
         TextView vote;
         TextView points;
         TextView date;
+        TextView heart;
+
 
         MyViewHolder(View view) {
             super(view);
@@ -47,6 +52,7 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
             vote = view.findViewById(R.id.vote);
             points = view.findViewById(R.id.points);
             date = view.findViewById(R.id.date);
+            heart = view.findViewById(R.id.heart_icon);
         }
     }
 
@@ -57,7 +63,8 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
     @Override
     public JokesAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.joke_list_row, parent, false);
-        return new MyViewHolder(itemView);
+        holder = new MyViewHolder(itemView);
+        return holder;
     }
 
     @Override
@@ -88,9 +95,11 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
         return jokes.size();
     }
 
-    public void updateList(Joke joke){
+    public void updatePoints(OnUpdateListFinished listener, Joke joke){
         int index = jokes.indexOf(joke);
         jokes.set(index, joke);
-        notifyDataSetChanged();
+        notifyItemChanged(index);
+        listener.onUpdateSuccess(index);
+
     }
 }

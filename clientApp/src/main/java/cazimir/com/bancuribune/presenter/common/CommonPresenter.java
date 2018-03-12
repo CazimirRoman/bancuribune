@@ -329,7 +329,8 @@ public class CommonPresenter implements ICommonPresenter {
         repository.writeJokeVote(new OnAddJokeVoteFinishedListener() {
             @Override
             public void onAddJokeVoteSuccess() {
-                getMainActivityView().showAlertDialog("Multumim pentru vot!", SweetAlertDialog.SUCCESS_TYPE);
+                //getMainActivityView().showToast("Multumim pentru vot!");
+                getMainActivityView().playOnVotedAudio();
             }
 
             @Override

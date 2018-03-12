@@ -61,7 +61,7 @@ public class ForgotPasswordActivityView extends BaseBackActivity implements IFor
 
     @Override
     public void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        buildToast(message).show();
     }
 
     @Override

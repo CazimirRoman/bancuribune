@@ -13,18 +13,14 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
-import android.widget.Toast;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
-import cazimir.com.bancuribune.ui.list.MainActivityView;
-import cazimir.com.bancuribune.ui.list.OnJokeClickListener;
-import cazimir.com.bancuribune.utils.EmptyRecyclerView;
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.model.Joke;
+import cazimir.com.bancuribune.ui.list.OnJokeClickListener;
+import cazimir.com.bancuribune.utils.EmptyRecyclerView;
 import cazimir.com.bancuribune.utils.UtilHelper;
 
 import static cazimir.com.bancuribune.constants.Constants.MY_STORAGE_REQUEST_CODE;
@@ -50,7 +46,7 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
         adapter = new LikedJokesAdapter(new OnJokeClickListener() {
             @Override
             public void onJokeShared(final Joke joke) {
-                Toast.makeText(LikedJokesActivityView.this, R.string.share_open, Toast.LENGTH_LONG).show();
+                showToast(getString(R.string.share_open));
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -99,7 +95,7 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 shareJoke(sharedText);
             } else {
-                Toast.makeText(this, R.string.permission_denied, Toast.LENGTH_SHORT).show();
+                showToast(getString(R.string.permission_denied));
             }
         }
     }
@@ -127,7 +123,7 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
 
     @Override
     public void showToast(String message) {
-
+        buildToast(message).show();
     }
 
     @Override

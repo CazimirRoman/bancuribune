@@ -1,10 +1,15 @@
 package cazimir.com.bancuribune.base;
 
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -17,6 +22,7 @@ import cazimir.com.bancuribune.utils.UtilHelper;
 public abstract class BaseActivity extends AppCompatActivity implements IGeneralView {
 
     private MySweetAlertDialog mAlertDialog;
+    private Toast mToast;
     private CommonPresenter mPresenter;
 
     @Override
@@ -36,7 +42,18 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
     protected abstract int setActionBarTitle();
 
     protected MySweetAlertDialog getAlertDialog(){
-        return this.mAlertDialog;
+        return mAlertDialog;
+    }
+    protected Toast buildToast(String message) {
+
+        mToast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
+        View view = mToast.getView();
+        view.setBackgroundResource(R.drawable.toast_background);
+        TextView text = (TextView) view.findViewById(android.R.id.message);
+        text.setGravity(Gravity.CENTER_HORIZONTAL);
+        text.setTextColor(Color.WHITE);
+        mToast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 10, 230);
+        return mToast;
     }
 
     protected CommonPresenter getPresenter() {
@@ -51,4 +68,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
 
         return true;
     }
+
+
 }
