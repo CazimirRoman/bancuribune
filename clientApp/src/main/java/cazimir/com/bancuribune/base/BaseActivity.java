@@ -1,10 +1,14 @@
 package cazimir.com.bancuribune.base;
 
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
@@ -13,13 +17,12 @@ import butterknife.ButterKnife;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.presenter.common.CommonPresenter;
 import cazimir.com.bancuribune.utils.MySweetAlertDialog;
-import cazimir.com.bancuribune.utils.MyToast;
 import cazimir.com.bancuribune.utils.UtilHelper;
 
 public abstract class BaseActivity extends AppCompatActivity implements IGeneralView {
 
     private MySweetAlertDialog mAlertDialog;
-    private MyToast mToast;
+    private Toast mToast;
     private CommonPresenter mPresenter;
 
     @Override
@@ -27,7 +30,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         mAlertDialog = new MySweetAlertDialog(this);
-        mToast = new MyToast(this);
         mPresenter = new CommonPresenter(this);
         ButterKnife.bind(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -42,8 +44,15 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
     protected MySweetAlertDialog getAlertDialog(){
         return mAlertDialog;
     }
-    protected MyToast buildToast(String message) {
-        mToast = (MyToast) MyToast.makeText(this, message, Toast.LENGTH_SHORT);
+    protected Toast buildToast(String message) {
+
+        mToast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
+        View view = mToast.getView();
+        view.setBackgroundResource(R.drawable.toast_background);
+        TextView text = (TextView) view.findViewById(android.R.id.message);
+        text.setGravity(Gravity.CENTER_HORIZONTAL);
+        text.setTextColor(Color.WHITE);
+        mToast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 10, 230);
         return mToast;
     }
 
