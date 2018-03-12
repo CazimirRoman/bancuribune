@@ -77,4 +77,5 @@
     <string name="no_internet_title">Nu esti conectat</string>
     <string name="add_joke_empty_title">Nu ai adaugat nimic</string>
     <string name="generic_error_title">Eroare</string>
+    <string name="leveled_up_message">Ai primit un nou rang!</string>
 </resources>

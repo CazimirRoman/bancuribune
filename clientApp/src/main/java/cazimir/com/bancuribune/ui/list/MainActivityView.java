@@ -146,7 +146,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
     public void checkIfNewRank(String rank) {
         String currentRank = getCurrentRankNameFromSharedPreferences();
         if (currentRank != null && !currentRank.equals(rank)) {
-            showAlertDialog("Leveled up!", SweetAlertDialog.SUCCESS_TYPE);
+            showAlertDialog(getString(R.string.leveled_up_message), SweetAlertDialog.SUCCESS_TYPE);
         }
 
         updateCurrentRank(rank);
