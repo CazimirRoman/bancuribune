@@ -7,8 +7,8 @@ android {
         applicationId "cazimir.com.bancuribune"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 7
-        versionName "2.0"
+        versionCode 9
+        versionName "2.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -20,10 +20,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-
-//        debug {
-//            testCoverageEnabled = true
-//        }
     }
 }
 
@@ -32,11 +28,11 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.google.firebase:firebase-core:11.8.0'
-    compile 'com.google.firebase:firebase-messaging:11.8.0'
-    compile 'com.google.firebase:firebase-auth:11.8.0'
-    compile 'com.google.firebase:firebase-database:11.8.0'
-    compile 'com.google.firebase:firebase-crash:11.8.0'
+    compile 'com.google.firebase:firebase-core:12.0.0'
+    compile 'com.google.firebase:firebase-messaging:12.0.0'
+    compile 'com.google.firebase:firebase-auth:12.0.0'
+    compile 'com.google.firebase:firebase-database:12.0.0'
+    compile 'com.google.firebase:firebase-crash:12.0.0'
     compile 'com.android.support:appcompat-v7:27.1.0'
     compile 'com.facebook.android:facebook-android-sdk:4.29.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -53,7 +49,6 @@ dependencies {
     compile 'com.julienvey.trello:trello-java-wrapper:0.3.2'
     compile 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
     compile 'com.github.thomper:sweet-alert-dialog:v1.4.0'
-
 }
 
 apply plugin: 'com.google.gms.google-services'
