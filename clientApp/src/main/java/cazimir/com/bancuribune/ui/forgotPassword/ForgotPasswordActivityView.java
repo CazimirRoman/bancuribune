@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -93,7 +92,7 @@ public class ForgotPasswordActivityView extends BaseBackActivity implements IFor
             etEmail.setError(getString(R.string.email_missing));
             return false;
         } else {
-            if (!UtilHelper.isValidEmail(email)) {
+            if (UtilHelper.isValidEmail(email)) {
                 etEmail.setError(getString(R.string.email_invalid));
                 return false;
             }

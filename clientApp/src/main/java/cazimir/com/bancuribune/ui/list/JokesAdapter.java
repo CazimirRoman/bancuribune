@@ -6,8 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -23,7 +21,6 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
 
     private List<Joke> jokes;
     private final OnJokeClickListener listener;
-    private MyViewHolder holder;
 
     public JokesAdapter(@NonNull OnJokeClickListener listener) {
         this.listener = listener;
@@ -63,7 +60,7 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
     @Override
     public JokesAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.joke_list_row, parent, false);
-        holder = new MyViewHolder(itemView);
+        MyViewHolder holder = new MyViewHolder(itemView);
         return holder;
     }
 

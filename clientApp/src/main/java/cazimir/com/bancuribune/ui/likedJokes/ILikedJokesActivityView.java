@@ -1,7 +1,5 @@
 package cazimir.com.bancuribune.ui.likedJokes;
 
-import java.util.ArrayList;
-
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.model.Joke;
 

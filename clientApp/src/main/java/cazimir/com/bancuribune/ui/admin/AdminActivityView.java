@@ -3,7 +3,6 @@ package cazimir.com.bancuribune.ui.admin;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.Toast;
 
 import java.util.List;
 

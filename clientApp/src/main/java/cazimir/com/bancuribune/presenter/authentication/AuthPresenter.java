@@ -58,7 +58,7 @@ public class AuthPresenter implements IAuthPresenter {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (!task.isSuccessful()) {
-                    listener.onRegistrationFailed(task.getException().getMessage().toString());
+                    listener.onRegistrationFailed(task.getException().getMessage());
                 } else {
                     final FirebaseUser user = auth.getCurrentUser();
                     if (user != null && !user.isEmailVerified()) {

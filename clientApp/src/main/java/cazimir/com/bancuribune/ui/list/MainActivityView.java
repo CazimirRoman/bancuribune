@@ -22,25 +22,23 @@ import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.Profile;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.julienvey.trello.Trello;
 import com.julienvey.trello.domain.Card;
 import com.julienvey.trello.impl.TrelloImpl;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
+import java.lang.ref.WeakReference;
 import java.util.Date;
 import java.util.List;
 
@@ -49,7 +47,6 @@ import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
-import cazimir.com.bancuribune.utils.ScrollListenerRecycleView;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
@@ -59,10 +56,32 @@ import cazimir.com.bancuribune.ui.likedJokes.LikedJokesActivityView;
 import cazimir.com.bancuribune.ui.myJokes.MyJokesActivityView;
 import cazimir.com.bancuribune.ui.tutorial.TutorialActivityView;
 import cazimir.com.bancuribune.utils.RatingDialogCustom;
+import cazimir.com.bancuribune.utils.ScrollListenerRecycleView;
 import cazimir.com.bancuribune.utils.UtilHelper;
 
-import static cazimir.com.bancuribune.constants.Constants.*;
-
+import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_LIMIT_HAMSIE;
+import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_LIMIT_HERING;
+import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_LIMIT_RECHIN;
+import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_LIMIT_SOMON;
+import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_LIMIT_STIUCA;
+import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_REQUEST;
+import static cazimir.com.bancuribune.constants.Constants.ADMIN;
+import static cazimir.com.bancuribune.constants.Constants.HAMSIE;
+import static cazimir.com.bancuribune.constants.Constants.HERING;
+import static cazimir.com.bancuribune.constants.Constants.MY_STORAGE_REQUEST_CODE;
+import static cazimir.com.bancuribune.constants.Constants.RANK;
+import static cazimir.com.bancuribune.constants.Constants.RANK_NAME;
+import static cazimir.com.bancuribune.constants.Constants.RECHIN;
+import static cazimir.com.bancuribune.constants.Constants.REMAINING;
+import static cazimir.com.bancuribune.constants.Constants.REMAINING_ADDS;
+import static cazimir.com.bancuribune.constants.Constants.REMINDER_INTERVAL_CHECK;
+import static cazimir.com.bancuribune.constants.Constants.SESSION_SHOW;
+import static cazimir.com.bancuribune.constants.Constants.SOMON;
+import static cazimir.com.bancuribune.constants.Constants.STAR_RATING_THRESHOLD;
+import static cazimir.com.bancuribune.constants.Constants.STIUCA;
+import static cazimir.com.bancuribune.constants.Constants.TRELLO_ACCESS_TOKEN;
+import static cazimir.com.bancuribune.constants.Constants.TRELLO_APP_KEY;
+import static cazimir.com.bancuribune.constants.Constants.TRELLO_FEEDBACK_LIST;
 import static java.lang.Math.abs;
 
 public class MainActivityView extends BaseActivity implements IMainActivityView {
@@ -184,25 +203,31 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
     }
 
     private void sendFeedbackToTrello(final String feedback) {
-        new sendFeedbackToTrello().execute(feedback);
+        new sendFeedbackToTrello(this).execute(feedback);
     }
 
-    private class sendFeedbackToTrello extends AsyncTask<String, Integer, Card> {
+    private static class sendFeedbackToTrello extends AsyncTask<String, Integer, Card> {
+
+        private WeakReference<MainActivityView> activityReference;
 
         Trello trelloApi = new TrelloImpl(TRELLO_APP_KEY, TRELLO_ACCESS_TOKEN);
+
+        sendFeedbackToTrello(MainActivityView context) {
+            activityReference = new WeakReference<>(context);
+        }
 
         @Override
         protected Card doInBackground(String... params) {
             Card feedBack = new Card();
             feedBack.setName(params[0]);
-            feedBack.setDesc(getPresenter().getAuthPresenter().getCurrrentUserEmail());
+            feedBack.setDesc(activityReference.get().getPresenter().getAuthPresenter().getCurrrentUserEmail());
             return trelloApi.createCard(TRELLO_FEEDBACK_LIST, feedBack);
         }
 
         @Override
         protected void onPostExecute(Card result) {
             super.onPostExecute(result);
-            showToast(getString(R.string.feedback_sent));
+            activityReference.get().showToast(activityReference.get().getString(R.string.feedback_sent));
         }
     }
 
@@ -297,7 +322,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
     }
 
     private void setOnScrollListener(final LinearLayoutManager layoutManager) {
-        jokesListRecyclerView.setOnScrollListener(new ScrollListenerRecycleView(layoutManager) {
+        jokesListRecyclerView.addOnScrollListener(new ScrollListenerRecycleView(layoutManager) {
 
             @Override
             public void show() {
@@ -365,16 +390,22 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
 
             if (!isAdmin) {
 
-                if (currentRank.equals(HAMSIE)) {
-                    getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_HAMSIE);
-                } else if (currentRank.equals(HERING)) {
-                    getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_HERING);
-                } else if (currentRank.equals(SOMON)) {
-                    getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_SOMON);
-                } else if (currentRank.equals(STIUCA)) {
-                    getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_STIUCA);
-                } else if (currentRank.equals(RECHIN)) {
-                    getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_RECHIN);
+                switch (currentRank) {
+                    case HAMSIE:
+                        getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_HAMSIE);
+                        break;
+                    case HERING:
+                        getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_HERING);
+                        break;
+                    case SOMON:
+                        getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_SOMON);
+                        break;
+                    case STIUCA:
+                        getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_STIUCA);
+                        break;
+                    case RECHIN:
+                        getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_RECHIN);
+                        break;
                 }
 
             } else {
