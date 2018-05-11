@@ -89,8 +89,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
     FrameLayout admin;
     @BindView(R.id.progress_bar)
     ProgressBar progressMain;
-    @BindView(R.id.search)
-    EditText search;
     @BindView(R.id.fabActionButtons)
     LinearLayout fabActionButtons;
     @BindView(R.id.fabScrollToTop)

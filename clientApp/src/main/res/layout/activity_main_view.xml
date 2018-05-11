@@ -12,52 +12,29 @@
         android:layout_height="wrap_content" />
 
     <FrameLayout
-        android:layout_width="wrap_content"
         android:id="@+id/fabScrollToTop"
-        android:layout_below="@+id/include_app_bar"
-        android:elevation="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_height="wrap_content">
+        android:layout_below="@+id/include_app_bar"
+        android:elevation="30dp">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/scrollToTop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp" />
-
-        <cazimir.com.bancuribune.utils.FontAwesomeTextView
-            style="@style/fontAwesome.iconSizeButtons"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:elevation="20dp"
-            android:text="@string/fa_icon_arrow_up"
-            android:textColor="#FFFFFF"
-            app:elevation="20dp" />
+            android:layout_margin="10dp"
+            android:scaleType="center"
+            android:src="@drawable/ic_up" />
 
     </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_below="@+id/include_app_bar"
         android:layout_height="match_parent"
+        android:layout_below="@+id/include_app_bar"
         android:focusableInTouchMode="true"
         android:orientation="vertical">
-
-        <com.beardedhen.androidbootstrap.BootstrapEditText
-            android:id="@+id/search"
-            style="@style/text.regular"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:drawableLeft="@drawable/search"
-            android:drawablePadding="5dp"
-            android:drawableStart="@drawable/search"
-            android:hint="@string/search_hint"
-            app:bootstrapBrand="info"
-            app:bootstrapSize="lg"
-            app:roundedCorners="true" />
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshLayout"
@@ -90,18 +67,9 @@
                 android:id="@+id/addJokeButtonFAB"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp" />
-
-            <cazimir.com.bancuribune.utils.FontAwesomeTextView
-                android:id="@+id/tvSellRecordCount"
-                style="@style/fontAwesome.iconSizeButtons"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:elevation="20dp"
-                android:text="@string/fa_icon_plus"
-                android:textColor="#FFFFFF"
-                app:elevation="20dp" />
+                android:layout_margin="10dp"
+                android:scaleType="center"
+                android:src="@drawable/ic_add" />
 
         </FrameLayout>
 
@@ -116,18 +84,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:clickable="true"
-                app:backgroundTint="@color/colorAccent"
-                app:rippleColor="@color/com_facebook_blue" />
-
-            <cazimir.com.bancuribune.utils.FontAwesomeTextView
-                style="@style/fontAwesome.iconSizeButtons"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:elevation="20dp"
-                android:text="@string/fa_icon_heart"
-                android:textColor="#FFFFFF"
-                app:elevation="20dp" />
+                android:scaleType="center"
+                android:src="@drawable/ic_heart" />
         </FrameLayout>
 
         <FrameLayout
@@ -141,18 +99,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:clickable="true"
-                app:backgroundTint="@color/colorAccent"
-                app:rippleColor="@color/com_facebook_blue" />
-
-            <cazimir.com.bancuribune.utils.FontAwesomeTextView
-                style="@style/fontAwesome.iconSizeButtons"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:elevation="20dp"
-                android:text="@string/fa_icon_user"
-                android:textColor="#FFFFFF"
-                app:elevation="20dp" />
+                android:scaleType="center"
+                android:src="@drawable/ic_profile" />
         </FrameLayout>
 
         <FrameLayout
@@ -167,19 +115,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
+                android:scaleType="center"
                 android:clickable="true"
-                app:backgroundTint="@color/colorAccent"
-                app:rippleColor="@color/com_facebook_blue" />
+                android:src="@drawable/ic_admin" />
 
-            <cazimir.com.bancuribune.utils.FontAwesomeTextView
-                style="@style/fontAwesome.iconSizeButtons"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:elevation="20dp"
-                android:text="@string/fa_icon_cogs"
-                android:textColor="#FFFFFF"
-                app:elevation="20dp" />
         </FrameLayout>
 
     </LinearLayout>
@@ -192,6 +131,5 @@
         android:layout_centerInParent="true"
         android:layout_gravity="center"
         android:visibility="gone" />
-
 
 </RelativeLayout>
