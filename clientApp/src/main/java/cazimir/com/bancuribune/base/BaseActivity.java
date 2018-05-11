@@ -22,7 +22,6 @@ import cazimir.com.bancuribune.utils.UtilHelper;
 public abstract class BaseActivity extends AppCompatActivity implements IGeneralView {
 
     private MySweetAlertDialog mAlertDialog;
-    private Toast mToast;
     private CommonPresenter mPresenter;
 
     @Override
@@ -46,10 +45,10 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
     }
     protected Toast buildToast(String message) {
 
-        mToast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
+        Toast mToast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
         View view = mToast.getView();
         view.setBackgroundResource(R.drawable.toast_background);
-        TextView text = (TextView) view.findViewById(android.R.id.message);
+        TextView text = view.findViewById(android.R.id.message);
         text.setGravity(Gravity.CENTER_HORIZONTAL);
         text.setTextColor(Color.WHITE);
         mToast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 10, 230);

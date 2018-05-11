@@ -33,24 +33,6 @@ public class UtilHelper {
                 cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
     }
 
-    public static boolean isFriday(){
-        Date date = new Date();
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(date);
-        return cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY;
-    }
-
-    public static boolean isDateInCurrentWeek(Date date) {
-        Calendar currentCalendar = Calendar.getInstance();
-        int week = currentCalendar.get(Calendar.WEEK_OF_YEAR);
-        int year = currentCalendar.get(Calendar.YEAR);
-        Calendar targetCalendar = Calendar.getInstance();
-        targetCalendar.setTime(date);
-        int targetWeek = targetCalendar.get(Calendar.WEEK_OF_YEAR);
-        int targetYear = targetCalendar.get(Calendar.YEAR);
-        return week == targetWeek && year == targetYear;
-    }
-
     public static String removeAccents(String text) {
         return text == null ? null :
                 Normalizer.normalize(text, Form.NFD)
@@ -67,11 +49,7 @@ public class UtilHelper {
     }
 
     public static boolean isValidEmail(CharSequence target) {
-        if (TextUtils.isEmpty(target)) {
-            return false;
-        } else {
-            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
-        }
+        return TextUtils.isEmpty(target) || !android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 
     public static void validateFormData(OnFormValidatedListener listener, String email, String password, String password2) {
@@ -80,7 +58,7 @@ public class UtilHelper {
             listener.onValidateFail(Constants.EMAIL_EMPTY);
             return;
         } else {
-            if (!isValidEmail(email)) {
+            if (isValidEmail(email)) {
                 listener.onValidateFail(Constants.EMAIL_INVALID);
                 return;
             }

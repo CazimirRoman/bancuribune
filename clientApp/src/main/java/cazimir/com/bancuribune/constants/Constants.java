@@ -42,6 +42,7 @@ public class Constants {
     public static final int SESSION_SHOW = 7;
     public static final int REMINDER_INTERVAL_CHECK = 7;
     public static final String RANK_CHANGED = "rank_changed";
+    public static final String CHANNEL_ID = "channel_id";
     public static int FILTER_MINIMUM_CHARACTERS = 3;
 
     public static final int TOTAL_ITEM_EACH_LOAD = 50;

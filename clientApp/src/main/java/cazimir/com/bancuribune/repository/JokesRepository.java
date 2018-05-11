@@ -14,17 +14,16 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
-import cazimir.com.bancuribune.BuildConfig;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.model.User;
 import cazimir.com.bancuribune.model.Vote;
 import cazimir.com.bancuribune.ui.add.OnAddJokeFinishedListener;
-import cazimir.com.bancuribune.ui.list.OnAddJokeVoteFinishedListener;
 import cazimir.com.bancuribune.ui.admin.OnGetAllPendingJokesListener;
 import cazimir.com.bancuribune.ui.admin.OnJokeApprovedListener;
 import cazimir.com.bancuribune.ui.likedJokes.OnGetLikedJokesListener;
+import cazimir.com.bancuribune.ui.list.OnAddJokeVoteFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnAllowedToAddFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnCheckIfVotedFinishedListener;
 import cazimir.com.bancuribune.ui.list.OnGetJokesListener;
@@ -333,7 +332,7 @@ public class JokesRepository implements IJokesRepository {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
-                    listener.onAddRankFailed(databaseError.getMessage().toString());
+                    listener.onAddRankFailed(databaseError.getMessage());
                 } else {
                     listener.onAddRankSuccess(rank);
                 }
@@ -413,7 +412,6 @@ public class JokesRepository implements IJokesRepository {
                     assert joke != null;
                     Date createdAt = new Date(joke.getCreatedAt());
                     long now = new Date().getTime();
-                    Date nowDate = new Date(now);
 
                     if (UtilHelper.isInCurrentDateInterval(lastCheckDate, createdAt)) {
                         addedJokeOverPastWeek.add(joke);
@@ -725,7 +723,7 @@ public class JokesRepository implements IJokesRepository {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
-                    listener.onAddUserFailed(databaseError.getMessage().toString());
+                    listener.onAddUserFailed(databaseError.getMessage());
                 } else {
                     listener.onAddUserSuccess();
                 }

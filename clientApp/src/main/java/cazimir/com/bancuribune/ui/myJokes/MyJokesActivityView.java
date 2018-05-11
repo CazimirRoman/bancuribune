@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 import com.squareup.picasso.Picasso;
@@ -22,12 +21,12 @@ import java.util.List;
 import butterknife.BindView;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
-import cazimir.com.bancuribune.utils.EmptyRecyclerView;
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.common.OnGetProfilePictureListener;
 import cazimir.com.bancuribune.ui.login.LoginActivityView;
+import cazimir.com.bancuribune.utils.EmptyRecyclerView;
 
 
 public class MyJokesActivityView extends BaseBackActivity implements IMyJokesActivityView {
