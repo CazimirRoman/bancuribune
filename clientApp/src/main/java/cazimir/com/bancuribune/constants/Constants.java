@@ -35,8 +35,8 @@ public class Constants {
     public static final String PASSWORD_INVALID = "password_invalid";
     public static final String PASSWORD_MATCH_ERROR = "password_match_error";
     public static final String PASSWORD_MATCH_NA = "no password repeat";
-    public static final String TRELLO_APP_KEY = "321ba6624c2447e55e60aac99d825756";
-    public static final java.lang.String TRELLO_ACCESS_TOKEN = "ba92d8c063b0669a93759bc5835e74f3a2be25e57cf2008c38d28b0fde99771c";
+    public static final String TRELLO_APP_KEY = "ecdcc5f1b6d80b58ce13935d85f0065a";
+    public static final java.lang.String TRELLO_ACCESS_TOKEN = "e7ae88359f1ec1dada5dc14c06f989eef447c95643cc716cbff620cce5f563aa";
     public static final String TRELLO_FEEDBACK_LIST = "5a8c3d4b5342355dc06de1a7";
     public static final int STAR_RATING_THRESHOLD = 3;
     public static final int SESSION_SHOW = 7;
