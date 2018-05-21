@@ -22,6 +22,7 @@ import cazimir.com.bancuribune.utils.UtilHelper;
 public class AddJokeActivityView extends BaseBackActivity implements IAddJokeActivityView {
 
     private CommonPresenter presenter;
+    private Intent intent;
 
     @BindView(R.id.editNewJoke)
     EditText addJokeEdit;
@@ -33,6 +34,7 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenter = new CommonPresenter(this);
+        intent = this.getIntent();
     }
 
     @Override
@@ -67,9 +69,13 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
 
     @Override
     public void closeAdd() {
-        Intent intent = this.getIntent();
         this.setResult(RESULT_OK, intent);
         finish();
+    }
+
+    @Override
+    public void populateIntent(String jokeText) {
+        intent.putExtra(Constants.JOKE_TEXT, jokeText);
     }
 
     @OnClick(R.id.addNewJokeButtonFAB)
@@ -78,7 +84,6 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
             if(UtilHelper.isInternetAvailable(this)){
                 sendDataToDatabase(constructJokeObject());
                 hideSoftInput(addJokeEdit);
-                closeAdd();
             }else{
                 getAlertDialog().show(getString(R.string.no_internet), SweetAlertDialog.ERROR_TYPE);
             }

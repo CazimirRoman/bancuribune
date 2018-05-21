@@ -8,4 +8,5 @@ public interface IAddJokeActivityView extends IGeneralView {
     void sendDataToDatabase(Joke joke);
     void onError();
     void closeAdd();
+    void populateIntent(String jokeText);
 }

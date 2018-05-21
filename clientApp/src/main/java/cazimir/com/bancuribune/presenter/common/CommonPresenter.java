@@ -177,17 +177,23 @@ public class CommonPresenter implements ICommonPresenter {
     }
 
     @Override
-    public void addJoke(Joke joke, Boolean isAdmin) {
+    public void addJoke(final Joke joke, final Boolean isAdmin) {
         joke.setCreatedBy(currentUserID);
         joke.setUserName(authPresenter.getCurrentUserName());
 
         if (isAdmin) {
             joke.setApproved(true);
         }
+
         repository.addJoke(new OnAddJokeFinishedListener() {
             @Override
             public void onAddSuccess() {
+                if (!isAdmin) {
+                    getAddJokeActivityView().populateIntent(joke.getJokeText());
+                }
+
                 getAddJokeActivityView().closeAdd();
+
             }
 
             @Override

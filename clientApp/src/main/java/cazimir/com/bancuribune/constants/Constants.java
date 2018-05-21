@@ -38,11 +38,13 @@ public class Constants {
     public static final String TRELLO_APP_KEY = "ecdcc5f1b6d80b58ce13935d85f0065a";
     public static final java.lang.String TRELLO_ACCESS_TOKEN = "e7ae88359f1ec1dada5dc14c06f989eef447c95643cc716cbff620cce5f563aa";
     public static final String TRELLO_FEEDBACK_LIST = "5a8c3d4b5342355dc06de1a7";
+    public static final String TRELLO_JOKE_LIST = "5b0328603e50d605106d71f4";
     public static final int STAR_RATING_THRESHOLD = 3;
     public static final int SESSION_SHOW = 7;
     public static final int REMINDER_INTERVAL_CHECK = 7;
     public static final String RANK_CHANGED = "rank_changed";
     public static final String CHANNEL_ID = "channel_id";
+    public static final String JOKE_TEXT = "cazimir.com.bancuribune.JOKE_TEXT";
     public static int FILTER_MINIMUM_CHARACTERS = 3;
 
     public static final int TOTAL_ITEM_EACH_LOAD = 50;

@@ -33,7 +33,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.Profile;
-import com.julienvey.trello.Trello;
 import com.julienvey.trello.domain.Card;
 import com.julienvey.trello.impl.TrelloImpl;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
@@ -82,6 +81,7 @@ import static cazimir.com.bancuribune.constants.Constants.STIUCA;
 import static cazimir.com.bancuribune.constants.Constants.TRELLO_ACCESS_TOKEN;
 import static cazimir.com.bancuribune.constants.Constants.TRELLO_APP_KEY;
 import static cazimir.com.bancuribune.constants.Constants.TRELLO_FEEDBACK_LIST;
+import static cazimir.com.bancuribune.constants.Constants.TRELLO_JOKE_LIST;
 import static java.lang.Math.abs;
 
 public class MainActivityView extends BaseActivity implements IMainActivityView {
@@ -202,32 +202,61 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         ratingDialog.show();
     }
 
-    private void sendFeedbackToTrello(final String feedback) {
-        new sendFeedbackToTrello(this).execute(feedback);
+    private class TrelloObject {
+        private String text;
+        private boolean isJoke;
+
+        TrelloObject(String text, boolean isJoke){
+            this.text = text;
+            this.isJoke = isJoke;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public boolean isJoke() {
+            return isJoke;
+        }
     }
 
-    private static class sendFeedbackToTrello extends AsyncTask<String, Integer, Card> {
+    private void sendFeedbackToTrello(final String feedback) {
+
+        new sendToTrello(this).execute(new TrelloObject(feedback, false));
+    }
+
+    @Override
+    public void sendJokeToTrello(String joke) {
+        new sendToTrello(this).execute(new TrelloObject(joke, true));
+    }
+
+    private static class sendToTrello extends AsyncTask<TrelloObject, Integer, Card> {
 
         private WeakReference<MainActivityView> activityReference;
 
-        Trello trelloApi = new TrelloImpl(TRELLO_APP_KEY, TRELLO_ACCESS_TOKEN);
+        com.julienvey.trello.Trello trelloApi = new TrelloImpl(TRELLO_APP_KEY, TRELLO_ACCESS_TOKEN);
 
-        sendFeedbackToTrello(MainActivityView context) {
+        sendToTrello(MainActivityView context) {
             activityReference = new WeakReference<>(context);
         }
 
         @Override
-        protected Card doInBackground(String... params) {
-            Card feedBack = new Card();
-            feedBack.setName(params[0]);
-            feedBack.setDesc(activityReference.get().getPresenter().getAuthPresenter().getCurrrentUserEmail());
-            return trelloApi.createCard(TRELLO_FEEDBACK_LIST, feedBack);
+        protected Card doInBackground(TrelloObject... params) {
+            Card card = new Card();
+            card.setName(params[0].getText());
+            card.setDesc(activityReference.get().getPresenter().getAuthPresenter().getCurrrentUserEmail());
+            if(params[0].isJoke()){
+                return trelloApi.createCard(TRELLO_JOKE_LIST, card);
+            }
+            return trelloApi.createCard(TRELLO_FEEDBACK_LIST, card);
         }
 
         @Override
         protected void onPostExecute(Card result) {
             super.onPostExecute(result);
-            activityReference.get().showToast(activityReference.get().getString(R.string.feedback_sent));
+            if(result.getIdList().equals(Constants.TRELLO_FEEDBACK_LIST)){
+                activityReference.get().showToast(activityReference.get().getString(R.string.feedback_sent));
+            }
         }
     }
 
@@ -459,6 +488,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_JOKE_REQUEST) {
             if (resultCode == RESULT_OK) {
+                sendJokeToTrello(data.getStringExtra(Constants.JOKE_TEXT));
                 showAddSuccessDialog();
                 getAllJokesData(true, false);
             }
@@ -466,7 +496,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
     }
 
     public void showAddSuccessDialog() {
-
         showAlertDialog(getString(R.string.add_success), SweetAlertDialog.SUCCESS_TYPE);
     }
 
