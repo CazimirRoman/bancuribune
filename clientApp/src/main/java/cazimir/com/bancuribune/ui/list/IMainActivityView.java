@@ -30,4 +30,5 @@ public interface IMainActivityView extends IGeneralView {
     Date addLastCheckDateToSharedPreferences();
     void checkIfNewRank(String rank);
     void playOnVotedAudio();
+    void sendJokeToTrello(String joke);
 }
