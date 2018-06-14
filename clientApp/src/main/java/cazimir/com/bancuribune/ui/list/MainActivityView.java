@@ -605,14 +605,20 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         this.sharedText = text;
 
         if (!requestWriteStoragePermissions()) {
-            Bitmap bitmap = UtilHelper.drawMultilineTextToBitmap(this, R.drawable.share_background, text);
-            String bitmapPath = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, "title", "description");
-            Uri bitmapUri = Uri.parse(bitmapPath);
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
-            sendIntent.setType("image/*");
-            startActivity(Intent.createChooser(sendIntent, "Share"));
+            if (UtilHelper.countWords(text) <= Constants.MAX_JOKE_SIZE_PER_PAGE) {
+                Bitmap bitmap = UtilHelper.drawMultilineTextToBitmap(this, R.drawable.share_background, text);
+                String bitmapPath = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, "title", "description");
+                Uri bitmapUri = Uri.parse(bitmapPath);
+                sendIntent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
+                sendIntent.setType("image/*");
+                startActivity(Intent.createChooser(sendIntent, "Share"));
+            }else{
+                sendIntent.putExtra(Intent.EXTRA_TEXT, text + "\n\n" + getString(R.string.share_text));
+                sendIntent.setType("text/plain");
+                startActivity(Intent.createChooser(sendIntent, "Share"));
+            }
         }
     }
 

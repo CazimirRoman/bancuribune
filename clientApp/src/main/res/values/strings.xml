@@ -59,6 +59,7 @@
     <string name="rating_send">Trimite</string>
     <string name="rating_cancel">Anuleaza</string>
     <string name="share_open">Deschid optiunile de share. Ai putina rabdare</string>
+    <string name="share_text">Descarca gratuit aplicatia Bancuri bune de pe Google Play: https://goo.gl/UjmsoA</string>
     <string name="permission_denied">Nu ai acceptat permisiunile. Pentru a putea da share trebuie sa le accepti</string>
     <string name="leveled_up_message">Ai primit un nou rang!</string>
 </resources>
