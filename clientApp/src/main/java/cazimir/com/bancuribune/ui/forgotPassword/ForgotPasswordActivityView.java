@@ -33,6 +33,8 @@ public class ForgotPasswordActivityView extends BaseBackActivity implements IFor
             @Override
             public void onClick(View view) {
 
+                hideKeyboard();
+
                 if(isFormDataValid()){
                     String email = etEmail.getText().toString().trim();
 

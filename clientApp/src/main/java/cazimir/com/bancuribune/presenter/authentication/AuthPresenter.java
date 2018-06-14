@@ -43,7 +43,7 @@ public class AuthPresenter implements IAuthPresenter {
                             if (auth.getCurrentUser().isEmailVerified()) {
                                 listener.onLoginWithEmailSuccess();
                             } else {
-                                listener.onLoginWithEmailFailed("Please verify your email to login");
+                                listener.onLoginWithEmailFailed("Te rog sa iti verifici mailul");
 
                             }
                         }

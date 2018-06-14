@@ -17,7 +17,6 @@ import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
-import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.presenter.authentication.AuthPresenter;
 import cazimir.com.bancuribune.ui.forgotPassword.ForgotPasswordActivityView;
 import cazimir.com.bancuribune.ui.list.MainActivityView;
@@ -25,6 +24,7 @@ import cazimir.com.bancuribune.ui.register.RegisterActivityView;
 import cazimir.com.bancuribune.utils.UtilHelper;
 
 import static cazimir.com.bancuribune.R.id.login_button_dummy;
+import static cazimir.com.bancuribune.constants.Constants.*;
 
 public class LoginActivityView extends BaseActivity implements ILoginActivityView {
 
@@ -77,6 +77,8 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         switch (view.getId()) {
             case R.id.btnLoginWithEmail:
 
+                hideKeyboard();
+
                 if (isInternetAvailable()) {
                     String email = etEmail.getText().toString();
                     String password = etPassword.getText().toString();
@@ -90,24 +92,24 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
                         @Override
                         public void onValidateFail(String what) {
                             switch (what) {
-                                case Constants.EMAIL_EMPTY:
+                                case EMAIL_EMPTY:
                                     setEmailError(getString(R.string.email_missing));
                                     break;
 
-                                case Constants.EMAIL_INVALID:
+                                case EMAIL_INVALID:
                                     setEmailError(getString(R.string.email_invalid));
                                     break;
 
-                                case Constants.PASSWORD_EMPTY:
+                                case PASSWORD_EMPTY:
                                     setPasswordError(getString(R.string.password_missing));
                                     break;
 
-                                case Constants.PASSWORD_INVALID:
+                                case PASSWORD_INVALID:
                                     setPasswordError(getString(R.string.password_minimum));
                                     break;
                             }
                         }
-                    }, email, password, Constants.PASSWORD_MATCH_NA);
+                    }, email, password, PASSWORD_MATCH_NA);
                 }
 
                 break;
@@ -118,7 +120,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
                 }
                 break;
             case R.id.btnRegister:
-                startActivity(new Intent(LoginActivityView.this, RegisterActivityView.class));
+                startActivityForResult(new Intent(LoginActivityView.this, RegisterActivityView.class), REGISTER_ACTIVITY_REQ_CODE);
                 break;
 
             case R.id.btnForgotPassword:
@@ -158,6 +160,14 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REGISTER_ACTIVITY_REQ_CODE) {
+            if (resultCode == RESULT_OK) {
+                String email = data.getStringExtra("email");
+                if(email != null){
+                    etEmail.setText(email);
+                }
+            }
+        }
     }
 
     public void setEmailError(String error) {
