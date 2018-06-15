@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -17,6 +18,7 @@ import java.text.Normalizer.Form;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Scanner;
 
 import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.ui.login.OnFormValidatedListener;
@@ -106,6 +108,8 @@ public class UtilHelper {
 
         Canvas canvas = new Canvas(background);
 
+        Typeface openSans = Typeface.createFromAsset(gContext.getAssets(), "OpenSans-Regular.ttf");
+
         // new antialiased Paint
         TextPaint paint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
         // text color - #3D3D3D
@@ -117,12 +121,14 @@ public class UtilHelper {
         // text shadow
         paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);
 
+        paint.setTypeface(openSans);
+
         // set text width to canvas width minus 16dp padding
         int textWidth = canvas.getWidth() - (int) (16 * scale);
 
         // init StaticLayout for text
         StaticLayout textLayout = new StaticLayout(
-                gText, paint, textWidth, Layout.Alignment.ALIGN_CENTER, 1.0f, 0.0f, false);
+                gText, paint, textWidth, Layout.Alignment.ALIGN_CENTER, 1.0f, 0.0f, true);
 
         // get height of multiline text
         int textHeight = textLayout.getHeight();
@@ -138,6 +144,46 @@ public class UtilHelper {
         canvas.restore();
 
         return background;
+    }
+
+    public static int countWords(String s){
+
+        int wordCount = 0;
+
+        boolean word = false;
+        int endOfLine = s.length() - 1;
+
+        for (int i = 0; i < s.length(); i++) {
+            // if the char is a letter, word = true.
+            if (Character.isLetter(s.charAt(i)) && i != endOfLine) {
+                word = true;
+                // if char isn't a letter and there have been letters before,
+                // counter goes up.
+            } else if (!Character.isLetter(s.charAt(i)) && word) {
+                wordCount++;
+                word = false;
+                // last word of String; if it doesn't end with a non letter, it
+                // wouldn't count without this.
+            } else if (Character.isLetter(s.charAt(i)) && i == endOfLine) {
+                wordCount++;
+            }
+        }
+        return wordCount;
+    }
+
+    public static String firstWords(String input, int words) {
+        for (int i = 0; i < input.length(); i++) {
+            // When a space is encountered, reduce words remaining by 1.
+            if (input.charAt(i) == ' ') {
+                words--;
+            }
+            // If no more words remaining, return a substring.
+            if (words == 0) {
+                return input.substring(0, i);
+            }
+        }
+        // Error case.
+        return "";
     }
 
     public static boolean isInCurrentDateInterval(Date lastCheckDate, Date createdAt) {

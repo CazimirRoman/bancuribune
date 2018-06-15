@@ -24,31 +24,31 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.google.firebase:firebase-core:12.0.0'
-    compile 'com.google.firebase:firebase-messaging:12.0.0'
-    compile 'com.google.firebase:firebase-auth:12.0.0'
-    compile 'com.google.firebase:firebase-database:12.0.0'
-    compile 'com.google.firebase:firebase-crash:12.0.0'
-    compile 'com.android.support:appcompat-v7:27.1.0'
-    compile 'com.facebook.android:facebook-android-sdk:4.29.0'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.jakewharton:butterknife:8.8.1'
-    compile 'com.android.support:recyclerview-v7:27.1.0'
-    compile 'com.android.support:design:27.1.0'
-    compile 'com.beardedhen:androidbootstrap:2.3.2'
-    testCompile 'junit:junit:4.12'
+    implementation 'com.google.firebase:firebase-core:12.0.0'
+    implementation 'com.google.firebase:firebase-messaging:12.0.0'
+    implementation 'com.google.firebase:firebase-auth:12.0.0'
+    implementation 'com.google.firebase:firebase-database:12.0.0'
+    implementation 'com.google.firebase:firebase-crash:12.0.0'
+    implementation 'com.android.support:appcompat-v7:27.1.0'
+    implementation 'com.facebook.android:facebook-android-sdk:4.29.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    implementation 'com.android.support:recyclerview-v7:27.1.0'
+    implementation 'com.android.support:design:27.1.0'
+    implementation 'com.beardedhen:androidbootstrap:2.3.2'
+    testImplementation 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'com.jakewharton:butterknife:8.8.1'
-    compile 'com.ramotion.paperonboarding:paper-onboarding:1.1.1'
-    compile 'com.codemybrainsout.rating:ratingdialog:1.0.8'
-    compile 'com.julienvey.trello:trello-java-wrapper:0.3.2'
-    compile 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
-    compile 'com.github.thomper:sweet-alert-dialog:v1.4.0'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    implementation 'com.ramotion.paperonboarding:paper-onboarding:1.1.1'
+    implementation 'com.codemybrainsout.rating:ratingdialog:1.0.8'
+    implementation 'com.julienvey.trello:trello-java-wrapper:0.3.2'
+    implementation 'org.springframework.android:spring-android-rest-template:2.0.0.M3'
+    implementation 'com.github.thomper:sweet-alert-dialog:v1.4.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,13 +13,20 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.View;
+
+import org.slf4j.helpers.Util;
+
+import java.util.Arrays;
 
 import butterknife.BindView;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
+import cazimir.com.bancuribune.constants.Constants;
 import cazimir.com.bancuribune.model.Joke;
+import cazimir.com.bancuribune.ui.list.MainActivityView;
 import cazimir.com.bancuribune.ui.list.OnJokeClickListener;
 import cazimir.com.bancuribune.utils.EmptyRecyclerView;
 import cazimir.com.bancuribune.utils.UtilHelper;
@@ -27,6 +35,7 @@ import static cazimir.com.bancuribune.constants.Constants.MY_STORAGE_REQUEST_COD
 
 public class LikedJokesActivityView extends BaseBackActivity implements ILikedJokesActivityView {
 
+    private static final String TAG = LikedJokesActivityView.class.getSimpleName();
     private LikedJokesAdapter adapter;
 
     @BindView(R.id.myLikedJokeList)
@@ -66,17 +75,21 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
 
     private void shareJoke(String text) {
 
-        this.sharedText = text;
-
         if (!requestWriteStoragePermissions()) {
-            Bitmap bitmap = UtilHelper.drawMultilineTextToBitmap(this, R.drawable.share_background, text);
-            String bitmapPath = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, "title", "description");
-            Uri bitmapUri = Uri.parse(bitmapPath);
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
-            sendIntent.setType("image/*");
-            startActivity(Intent.createChooser(sendIntent, "Share"));
+            if (UtilHelper.countWords(text) <= Constants.MAX_JOKE_SIZE_PER_PAGE) {
+                Bitmap bitmap = UtilHelper.drawMultilineTextToBitmap(this, R.drawable.share_background, text);
+                String bitmapPath = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, "title", "description");
+                Uri bitmapUri = Uri.parse(bitmapPath);
+                sendIntent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
+                sendIntent.setType("image/*");
+                startActivity(Intent.createChooser(sendIntent, "Share"));
+            }else{
+                sendIntent.putExtra(Intent.EXTRA_TEXT, text + "\n\n" + getString(R.string.share_text));
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+            }
         }
     }
 
