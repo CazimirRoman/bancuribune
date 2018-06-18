@@ -116,7 +116,7 @@ public class UtilHelper {
         paint.setColor(Color.rgb(0, 0, 0));
         // text size in pixels
 
-        paint.setTextSize((int) (50 * scale));
+        paint.setTextSize((int) (45 * scale));
 
         // text shadow
         paint.setShadowLayer(1f, 0f, 1f, Color.WHITE);

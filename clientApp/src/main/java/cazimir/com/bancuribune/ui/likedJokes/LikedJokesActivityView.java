@@ -15,6 +15,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import org.slf4j.helpers.Util;
 
@@ -31,7 +32,7 @@ import cazimir.com.bancuribune.ui.list.OnJokeClickListener;
 import cazimir.com.bancuribune.utils.EmptyRecyclerView;
 import cazimir.com.bancuribune.utils.UtilHelper;
 
-import static cazimir.com.bancuribune.constants.Constants.MY_STORAGE_REQUEST_CODE;
+import static cazimir.com.bancuribune.constants.Constants.MY_STORAGE_REQ_CODE;
 
 public class LikedJokesActivityView extends BaseBackActivity implements ILikedJokesActivityView {
 
@@ -75,17 +76,26 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
 
     private void shareJoke(String text) {
 
-        if (!requestWriteStoragePermissions()) {
+        if (writeStoragePermissionGranted()) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
-            if (UtilHelper.countWords(text) <= Constants.MAX_JOKE_SIZE_PER_PAGE) {
-                Bitmap bitmap = UtilHelper.drawMultilineTextToBitmap(this, R.drawable.share_background, text);
-                String bitmapPath = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, "title", "description");
-                Uri bitmapUri = Uri.parse(bitmapPath);
-                sendIntent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
-                sendIntent.setType("image/*");
-                startActivity(Intent.createChooser(sendIntent, "Share"));
-            }else{
+            int words = UtilHelper.countWords(text);
+
+            if (getPresenter().getCurrentUserID().equals("eXDuTHO9UPZAS02HctjQHI2hsRv2")) {
+                Log.d(TAG, "shareJoke: " + "Admin user logged in");
+                if (words <= Constants.MAX_JOKE_SIZE_PER_PAGE) {
+                    Log.d(TAG, "shareJoke: " + "Bancul este mai mic de 45 de cuvinte. Are lungimea de: " + words + " de cuvinte");
+                    Bitmap bitmap = UtilHelper.drawMultilineTextToBitmap(this, R.drawable.share_background, text);
+                    String bitmapPath = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, "title", "description");
+                    Uri bitmapUri = Uri.parse(bitmapPath);
+                    sendIntent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
+                    sendIntent.setType("image/*");
+                    startActivity(Intent.createChooser(sendIntent, "Share"));
+                } else {
+                    Log.d(TAG, "shareJoke: " + "Bancul este prea lung. Alege altul mai scurt");
+                    Toast.makeText(this, "Bancul este prea lung", Toast.LENGTH_SHORT).show();
+                }
+            } else {
                 sendIntent.putExtra(Intent.EXTRA_TEXT, text + "\n\n" + getString(R.string.share_text));
                 sendIntent.setType("text/plain");
                 startActivity(sendIntent);
@@ -93,18 +103,18 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
         }
     }
 
-    private boolean requestWriteStoragePermissions() {
+    private boolean writeStoragePermissionGranted() {
         if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_STORAGE_REQUEST_CODE);
-            return true;
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_STORAGE_REQ_CODE);
+            return false;
         }
-        return false;
+        return true;
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_STORAGE_REQUEST_CODE) {
+        if (requestCode == MY_STORAGE_REQ_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 shareJoke(sharedText);
             } else {

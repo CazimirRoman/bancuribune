@@ -45,8 +45,10 @@ public class Constants {
     public static final String RANK_CHANGED = "rank_changed";
     public static final String CHANNEL_ID = "channel_id";
     public static final String JOKE_TEXT = "cazimir.com.bancuribune.JOKE_TEXT";
-    public static final int MAX_JOKE_SIZE_PER_PAGE = 45;
-
-    public static final int TOTAL_ITEM_EACH_LOAD = 50;
-    public static final int MY_STORAGE_REQUEST_CODE = 523;
+    public static final int MAX_JOKE_SIZE_PER_PAGE = 35;
+<<<<<<< .mine
+=======>>>>>>> .theirs    public static final int TOTAL_ITEM_EACH_LOAD = 50;
+    public static final int MY_STORAGE_REQ_CODE = 523;
+    public static final int REGISTER_ACTIVITY_REQ_CODE = 745;
+    public static final int LEVEL_UP = 6;
 }

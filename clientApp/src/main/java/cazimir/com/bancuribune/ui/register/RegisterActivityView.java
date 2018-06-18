@@ -1,5 +1,7 @@
 package cazimir.com.bancuribune.ui.register;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -36,7 +38,10 @@ public class RegisterActivityView extends BaseBackActivity implements IRegisterA
 
     @OnClick(R.id.btnRegister)
     public void register(View view) {
-        if(isInternetAvailable()){
+
+        hideKeyboard();
+
+        if (isInternetAvailable()) {
             String email = etEmail.getText().toString();
             String password = etPassword.getText().toString();
             String passwordConfirm = etPasswordConfirm.getText().toString();
@@ -110,6 +115,9 @@ public class RegisterActivityView extends BaseBackActivity implements IRegisterA
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("email", etEmail.getText().toString());
+                setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             }
         }, 1000);
