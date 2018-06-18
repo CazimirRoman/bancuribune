@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -22,6 +22,7 @@ import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
@@ -31,6 +32,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.Profile;
 import com.julienvey.trello.domain.Card;
@@ -67,7 +69,7 @@ import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_REQUEST;
 import static cazimir.com.bancuribune.constants.Constants.ADMIN;
 import static cazimir.com.bancuribune.constants.Constants.HAMSIE;
 import static cazimir.com.bancuribune.constants.Constants.HERING;
-import static cazimir.com.bancuribune.constants.Constants.MY_STORAGE_REQUEST_CODE;
+import static cazimir.com.bancuribune.constants.Constants.MY_STORAGE_REQ_CODE;
 import static cazimir.com.bancuribune.constants.Constants.RANK;
 import static cazimir.com.bancuribune.constants.Constants.RANK_NAME;
 import static cazimir.com.bancuribune.constants.Constants.RECHIN;
@@ -92,7 +94,9 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
     private Boolean isAdmin = false;
     private String sharedText;
     private SharedPreferences preferences;
-    private MediaPlayer mediaPlayer;
+    private SoundPool soundPool;
+    private int soundID;
+    boolean loaded = false;
 
     @BindView(R.id.jokesList)
     RecyclerView jokesListRecyclerView;
@@ -130,8 +134,16 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
     }
 
     private void initializeLikeSound() {
-        mediaPlayer = MediaPlayer.create(this, R.raw.drop);
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        soundPool = new SoundPool(10, AudioManager.STREAM_SYSTEM, 0);
+        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int sampleId,
+                                       int status) {
+                loaded = true;
+            }
+        });
+        soundID = soundPool.load(this, R.raw.drop, 1);
+
     }
 
     private void checkIfReminderToAddShouldBeShown() {
@@ -173,7 +185,18 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
 
     @Override
     public void playOnVotedAudio() {
-        mediaPlayer.start();
+
+        AudioManager audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        float actualVolume = (float) audioManager
+                .getStreamVolume(AudioManager.STREAM_SYSTEM);
+        float maxVolume = (float) audioManager
+                .getStreamMaxVolume(AudioManager.STREAM_SYSTEM);
+        float volume = actualVolume / maxVolume;
+
+        if (loaded) {
+            soundPool.play(soundID, volume, volume, 1, 0, 1f);
+            Log.e("Test", "Played sound");
+        }
     }
 
     private String getCurrentRankNameFromSharedPreferences() {
@@ -206,7 +229,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         private String text;
         private boolean isJoke;
 
-        TrelloObject(String text, boolean isJoke){
+        TrelloObject(String text, boolean isJoke) {
             this.text = text;
             this.isJoke = isJoke;
         }
@@ -245,7 +268,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
             Card card = new Card();
             card.setName(params[0].getText());
             card.setDesc(activityReference.get().getPresenter().getAuthPresenter().getCurrrentUserEmail());
-            if(params[0].isJoke()){
+            if (params[0].isJoke()) {
                 return trelloApi.createCard(TRELLO_JOKE_LIST, card);
             }
             return trelloApi.createCard(TRELLO_FEEDBACK_LIST, card);
@@ -254,7 +277,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         @Override
         protected void onPostExecute(Card result) {
             super.onPostExecute(result);
-            if(result.getIdList().equals(Constants.TRELLO_FEEDBACK_LIST)){
+            if (result.getIdList().equals(Constants.TRELLO_FEEDBACK_LIST)) {
                 activityReference.get().showToast(activityReference.get().getString(R.string.feedback_sent));
             }
         }
@@ -447,8 +470,12 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
     public void startMyJokesActivity() {
 
         if (isInternetAvailable()) {
-            startActivity(new Intent(new Intent(this, MyJokesActivityView.class)));
+            goToMyJokesActivity();
         }
+    }
+
+    public void goToMyJokesActivity() {
+        startActivity(new Intent(new Intent(this, MyJokesActivityView.class)));
     }
 
     @OnClick(R.id.adminFAB)
@@ -488,7 +515,10 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_JOKE_REQUEST) {
             if (resultCode == RESULT_OK) {
-                sendJokeToTrello(data.getStringExtra(Constants.JOKE_TEXT));
+                if(data.getStringExtra(Constants.JOKE_TEXT) != null){
+                    sendJokeToTrello(data.getStringExtra(Constants.JOKE_TEXT));
+                }
+
                 showAddSuccessDialog();
                 getAllJokesData(true, false);
             }
@@ -596,44 +626,52 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
     }
 
     @Override
-    public void updateRemainingAdds(int remainingAdds) {
-        saveRemainingDataToSharedPreferences(remainingAdds);
+    public void updateRemainingAdds(int remaining) {
+        saveRemainingDataToSharedPreferences(remaining);
     }
 
     private void shareJoke(String text) {
 
         this.sharedText = text;
 
-        if (!requestWriteStoragePermissions()) {
+        if (writeStoragePermissionGranted()) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
-            if (UtilHelper.countWords(text) <= Constants.MAX_JOKE_SIZE_PER_PAGE) {
-                Bitmap bitmap = UtilHelper.drawMultilineTextToBitmap(this, R.drawable.share_background, text);
-                String bitmapPath = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, "title", "description");
-                Uri bitmapUri = Uri.parse(bitmapPath);
-                sendIntent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
-                sendIntent.setType("image/*");
-                startActivity(Intent.createChooser(sendIntent, "Share"));
-            }else{
+            int words = UtilHelper.countWords(text);
+            if (getPresenter().getCurrentUserID().equals("eXDuTHO9UPZAS02HctjQHI2hsRv2")) {
+                Log.d(TAG, "shareJoke: " + "Admin user logged in");
+                if (words <= Constants.MAX_JOKE_SIZE_PER_PAGE) {
+                    Log.d(TAG, "shareJoke: " + "Bancul este mai mic de 45 de cuvinte. Are lungimea de: " + words + " de cuvinte");
+                    Bitmap bitmap = UtilHelper.drawMultilineTextToBitmap(this, R.drawable.share_background, text);
+                    String bitmapPath = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, "title", "description");
+                    Uri bitmapUri = Uri.parse(bitmapPath);
+                    sendIntent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
+                    sendIntent.setType("image/*");
+                    startActivity(Intent.createChooser(sendIntent, "Share"));
+                } else {
+                    Log.d(TAG, "shareJoke: " + "Bancul este prea lung. Alege altul mai scurt");
+                    Toast.makeText(this, "Bancul este prea lung", Toast.LENGTH_SHORT).show();
+                }
+            } else {
                 sendIntent.putExtra(Intent.EXTRA_TEXT, text + "\n\n" + getString(R.string.share_text));
                 sendIntent.setType("text/plain");
-                startActivity(Intent.createChooser(sendIntent, "Share"));
+                startActivity(sendIntent);
             }
         }
     }
 
-    private boolean requestWriteStoragePermissions() {
+    private boolean writeStoragePermissionGranted() {
         if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_STORAGE_REQUEST_CODE);
-            return true;
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_STORAGE_REQ_CODE);
+            return false;
         }
-        return false;
+        return true;
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_STORAGE_REQUEST_CODE) {
+        if (requestCode == MY_STORAGE_REQ_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 shareJoke(sharedText);
             } else {

@@ -214,7 +214,7 @@ public class CommonPresenter implements ICommonPresenter {
             @Override
             public void onAddRankSuccess(Rank rank) {
                 getMainActivityView().saveRankDataToSharedPreferences(rank);
-                getMainActivityView().showAlertDialog("In momentul de fata ai rangul de Hamsie. Poti adauga 2 bancuri pe zi", SweetAlertDialog.SUCCESS_TYPE);
+                getMainActivityView().showAlertDialog("In momentul de fata ai rangul de Hamsie. Poti adauga 2 bancuri pe zi", Constants.LEVEL_UP);
             }
 
             @Override

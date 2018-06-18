@@ -22,7 +22,7 @@ public interface IMainActivityView extends IGeneralView {
     void showAdminButton();
     void saveRankDataToSharedPreferences (Rank rank);
     void updateCurrentRank(String rank);
-    void updateRemainingAdds(int remaininigAdds);
+    void updateRemainingAdds(int remaining);
     void hideSwipeRefresh();
     void refreshAdapter(Joke joke);
     void refreshJokesListAdapter();
@@ -31,4 +31,5 @@ public interface IMainActivityView extends IGeneralView {
     void checkIfNewRank(String rank);
     void playOnVotedAudio();
     void sendJokeToTrello(String joke);
+    void goToMyJokesActivity();
 }

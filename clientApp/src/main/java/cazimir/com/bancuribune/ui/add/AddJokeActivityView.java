@@ -75,7 +75,9 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
 
     @Override
     public void populateIntent(String jokeText) {
-        intent.putExtra(Constants.JOKE_TEXT, jokeText);
+        if(jokeText != null){
+            intent.putExtra(Constants.JOKE_TEXT, jokeText);
+        }
     }
 
     @OnClick(R.id.addNewJokeButtonFAB)
