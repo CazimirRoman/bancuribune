@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
 import butterknife.BindView;
@@ -20,10 +21,14 @@ public class ForgotPasswordActivityView extends BaseBackActivity implements IFor
 
     @BindView(R.id.etEmail)
     EditText etEmail;
+    @BindView(R.id.etPassword)
+    EditText etPassword;
     @BindView(R.id.btnForgotPassword)
     TextView btnForgotPassword;
     @BindView(R.id.progress)
     ProgressBar progress;
+    @BindView(R.id.btnResendVerificationEmail)
+    BootstrapButton btnResendVerificationEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,20 +37,30 @@ public class ForgotPasswordActivityView extends BaseBackActivity implements IFor
         btnForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 hideKeyboard();
-
-                if(isFormDataValid()){
-                    String email = etEmail.getText().toString().trim();
-
-                    if(isFormDataValid()){
-                        if(isInternetAvailable()){
-                            getPresenter().sendResetInstructions(email);
-                        }else{
-                            getAlertDialog().show(getString(R.string.no_internet), SweetAlertDialog.ERROR_TYPE);
-                        }
+                if (isFormDataValid(false)) {
+                    if (isInternetAvailable()) {
+                        getPresenter().sendResetInstructions(etEmail.getText().toString());
+                    } else {
+                        getAlertDialog().show(getString(R.string.no_internet), SweetAlertDialog.ERROR_TYPE);
                     }
                 }
+            }
+        });
+
+        btnResendVerificationEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideKeyboard();
+                if (isFormDataValid(true)) {
+                    if (isInternetAvailable()) {
+                        getPresenter().resendVerificationEmail(etEmail.getText().toString(), etPassword.getText().toString());
+                    } else {
+                        getAlertDialog().show(getString(R.string.no_internet), SweetAlertDialog.ERROR_TYPE);
+                    }
+
+                }
+
             }
         });
     }
@@ -86,9 +101,9 @@ public class ForgotPasswordActivityView extends BaseBackActivity implements IFor
         }, 1000);
     }
 
-    private boolean isFormDataValid() {
+    private boolean isFormDataValid(Boolean isPasswordRequired) {
 
-        String email = etEmail.getText().toString();
+        String email = etEmail.getText().toString().trim();
 
         if (TextUtils.isEmpty(email)) {
             etEmail.setError(getString(R.string.email_missing));
@@ -96,6 +111,13 @@ public class ForgotPasswordActivityView extends BaseBackActivity implements IFor
         } else {
             if (UtilHelper.isValidEmail(email)) {
                 etEmail.setError(getString(R.string.email_invalid));
+                return false;
+            }
+        }
+        if (isPasswordRequired) {
+            String password = etPassword.getText().toString().trim();
+            if (TextUtils.isEmpty(password)) {
+                etPassword.setError(getString(R.string.password_missing));
                 return false;
             }
         }

@@ -24,6 +24,7 @@
     <string name="register">Inregistreaza-te</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Parola</string>
+    <string name="hint_password_asterix">Parola *</string>
     <string name="email_missing">Te rog sa introduci o adresa de mail</string>
     <string name="email_invalid">Nu pare sa fie o adresa de email valida</string>
     <string name="password_missing">Parola lipseste!</string>
@@ -35,6 +36,7 @@
     <string name="forgot_password">Ai uitat parola?</string>
     <string name="forgot_password_msg">Te rog sa introduci mailul tau ca sa iti trimitem instructiunile de resetare</string>
     <string name="btn_reset_password">Reseteaza</string>
+    <string name="btn_resend_password">Retrimite</string>
     <string name="liked_jokes_title">Mi-au placut</string>
     <string name="tutorial1_title">Bine ai venit</string>
     <string name="tutorial1_text">Afla in 5 pasi cum functioneaza Bancuri bune.</string>
@@ -62,4 +64,5 @@
     <string name="share_text">Descarca gratuit aplicatia Bancuri bune de pe Google Play: https://goo.gl/UjmsoA</string>
     <string name="permission_denied">Nu ai acceptat permisiunile. Pentru a putea da share trebuie sa le accepti</string>
     <string name="leveled_up_message">Ai primit un nou rang!</string>
+    <string name="forgot_password_resend">* Parola este necesara numai pentru retrimiterea emailului de confirmare</string>
 </resources>

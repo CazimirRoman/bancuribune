@@ -33,4 +33,5 @@ public interface ICommonPresenter {
     void updateRankPointsAndName(int points, String rankName, String rankId);
     IAuthPresenter getAuthPresenter();
     void checkNumberOfAddsLastWeek(Date lastCheckDate);
+    void resendVerificationEmail(String email, String password);
 }
