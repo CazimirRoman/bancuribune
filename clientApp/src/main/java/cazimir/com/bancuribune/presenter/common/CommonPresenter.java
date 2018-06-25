@@ -421,6 +421,26 @@ public class CommonPresenter implements ICommonPresenter {
     }
 
     @Override
+    public void resendVerificationEmail(String email, String password) {
+        getForgotPasswordActivityView().showProgress();
+        authPresenter.performResendVerificationEmail(new OnResendVerificationEmailListener() {
+
+            @Override
+            public void onResendEmailSuccess(String message) {
+                getForgotPasswordActivityView().showToast(message);
+                getForgotPasswordActivityView().redirectToLogin();
+                getForgotPasswordActivityView().hideProgress();
+            }
+
+            @Override
+            public void onResendEmailFailed(String error) {
+                getForgotPasswordActivityView().hideProgress();
+                getForgotPasswordActivityView().showToast(error);
+            }
+        }, email, password);
+    }
+
+    @Override
     public void sendResetInstructions(String email) {
         getForgotPasswordActivityView().showProgress();
         authPresenter.performPasswordReset(new OnResetPasswordListener() {

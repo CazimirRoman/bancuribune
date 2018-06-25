@@ -4,6 +4,7 @@ package cazimir.com.bancuribune.presenter.authentication;
 import com.facebook.FacebookCallback;
 import com.facebook.login.LoginResult;
 
+import cazimir.com.bancuribune.presenter.common.OnResendVerificationEmailListener;
 import cazimir.com.bancuribune.ui.myJokes.IMyJokesActivityView;
 
 public interface IAuthPresenter {
@@ -16,4 +17,5 @@ public interface IAuthPresenter {
     String getCurrrentUserEmail();
     void logUserOut(IMyJokesActivityView view);
     void performPasswordReset(OnResetPasswordListener listener, String email);
+    void performResendVerificationEmail(OnResendVerificationEmailListener listener, String email, String password);
 }

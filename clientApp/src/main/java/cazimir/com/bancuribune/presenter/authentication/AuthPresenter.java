@@ -18,34 +18,37 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import cazimir.com.bancuribune.base.IGeneralView;
+import cazimir.com.bancuribune.presenter.common.OnResendVerificationEmailListener;
 import cazimir.com.bancuribune.ui.login.ILoginActivityView;
 import cazimir.com.bancuribune.ui.myJokes.IMyJokesActivityView;
 
 public class AuthPresenter implements IAuthPresenter {
 
-    private FirebaseAuth auth;
-    private IGeneralView view;
+    private static final String TAG = AuthPresenter.class.getSimpleName();
+    private FirebaseAuth mAuth;
+    private IGeneralView mView;
+    private FirebaseUser currentUser;
 
     public AuthPresenter(IGeneralView view) {
-        auth = FirebaseAuth.getInstance();
-        this.view = view;
+        mAuth = FirebaseAuth.getInstance();
+        this.mView = view;
     }
 
     @Override
     public void login(final OnLoginWithEmailFinishedListener listener, String email, String password) {
-        auth.signInWithEmailAndPassword(email, password)
+        mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (!task.isSuccessful()) {
-                            listener.onLoginWithEmailFailed(task.getException().getMessage());
-                        } else {
-                            if (auth.getCurrentUser().isEmailVerified()) {
+                        if (task.isSuccessful()) {
+                            currentUser = mAuth.getCurrentUser();
+                            if (mAuth.getCurrentUser().isEmailVerified()) {
                                 listener.onLoginWithEmailSuccess();
                             } else {
                                 listener.onLoginWithEmailFailed("Te rog sa iti verifici mailul");
-
                             }
+                        } else {
+                            listener.onLoginWithEmailFailed(task.getException().getMessage());
                         }
                     }
                 });
@@ -54,19 +57,18 @@ public class AuthPresenter implements IAuthPresenter {
     @Override
     public void registerUser(final OnRegistrationFinishedListener listener, String email, String password) {
 
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (!task.isSuccessful()) {
                     listener.onRegistrationFailed(task.getException().getMessage());
                 } else {
-                    final FirebaseUser user = auth.getCurrentUser();
+                    final FirebaseUser user = mAuth.getCurrentUser();
                     if (user != null && !user.isEmailVerified()) {
                         user.sendEmailVerification()
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-
                                         if (task.isSuccessful()) {
                                             listener.onRegistrationSuccess("Ti-am trimis un email de verificare la " + user.getEmail());
                                         } else {
@@ -104,8 +106,8 @@ public class AuthPresenter implements IAuthPresenter {
 
     @Override
     public void checkIfUserLoggedIn() {
-        if (auth.getCurrentUser() != null) {
-            ILoginActivityView view = (ILoginActivityView) this.view.getInstance();
+        if (mAuth.getCurrentUser() != null && mAuth.getCurrentUser().isEmailVerified()) {
+            ILoginActivityView view = (ILoginActivityView) this.mView.getInstance();
             view.launchMainActivity();
         }
     }
@@ -113,16 +115,16 @@ public class AuthPresenter implements IAuthPresenter {
     @Override
     public String getCurrentUserID() {
 
-        if (auth.getCurrentUser() != null) {
-            return auth.getCurrentUser().getUid();
+        if (mAuth.getCurrentUser() != null) {
+            return mAuth.getCurrentUser().getUid();
         }
         return "";
     }
 
     @Override
     public String getCurrentUserName() {
-        if (auth.getCurrentUser() != null) {
-            return auth.getCurrentUser().getEmail();
+        if (mAuth.getCurrentUser() != null) {
+            return mAuth.getCurrentUser().getEmail();
         }
 
         return "";
@@ -130,12 +132,12 @@ public class AuthPresenter implements IAuthPresenter {
 
     @Override
     public String getCurrrentUserEmail() {
-        return auth.getCurrentUser().getEmail();
+        return mAuth.getCurrentUser().getEmail();
     }
 
     @Override
     public void logUserOut(IMyJokesActivityView view) {
-        auth.signOut();
+        mAuth.signOut();
         LoginManager.getInstance().logOut();
         view.redirectToLoginPage();
         view.clearSharedPreferences();
@@ -143,11 +145,11 @@ public class AuthPresenter implements IAuthPresenter {
 
     private void handleFacebookAccessToken(AccessToken accessToken) {
 
-        final ILoginActivityView login = (ILoginActivityView) this.view.getInstance();
+        final ILoginActivityView login = (ILoginActivityView) this.mView.getInstance();
         Activity context = login.getContext();
 
         AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
-        auth.signInWithCredential(credential)
+        mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(context, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -164,8 +166,8 @@ public class AuthPresenter implements IAuthPresenter {
                 });
     }
 
-    public void performPasswordReset(final OnResetPasswordListener listener, String email){
-        auth.sendPasswordResetEmail(email)
+    public void performPasswordReset(final OnResetPasswordListener listener, String email) {
+        mAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -173,6 +175,34 @@ public class AuthPresenter implements IAuthPresenter {
                             listener.onResetPasswordSuccess("Ti-am trimis un mail cu instructiunile de resetare");
                         } else {
                             listener.onResetPasswordFailed(task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void performResendVerificationEmail(final OnResendVerificationEmailListener listener, final String email, final String password) {
+
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            currentUser = mAuth.getCurrentUser();
+                            if (currentUser != null) {
+                                currentUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            listener.onResendEmailSuccess("Ti-am retrimis emailul de verificare la: " + email);
+                                        } else {
+                                            listener.onResendEmailFailed(task.getException().getMessage());
+                                        }
+                                    }
+                                });
+                            }
+                        } else {
+                            listener.onResendEmailFailed(task.getException().getMessage());
                         }
                     }
                 });
