@@ -1,6 +1,13 @@
 package cazimir.com.bancuribune.constants;
 
+import java.lang.reflect.Array;
+
 public class Constants {
+
+    public static final String EVENT_VOTED = "joke_voted";
+    public static final String EVENT_SHARED = "joke_shared";
+    public static final String EVENT_LEVEL_UP = "level_up";
+    public static String [] TESTING_DEVICES = {"c22e01a4ac70d3d8"};
 
     public static final int ADD_JOKE_LIMIT_HAMSIE = 2;
     public static final int ADD_JOKE_LIMIT_HERING = 4;
@@ -40,7 +47,7 @@ public class Constants {
     public static final String TRELLO_FEEDBACK_LIST = "5a8c3d4b5342355dc06de1a7";
     public static final String TRELLO_JOKE_LIST = "5b0328603e50d605106d71f4";
     public static final int STAR_RATING_THRESHOLD = 3;
-    public static final int SESSION_SHOW = 7;
+    public static final int SESSION_SHOW = 3;
     public static final int REMINDER_INTERVAL_CHECK = 7;
     public static final String RANK_CHANGED = "rank_changed";
     public static final String CHANNEL_ID = "channel_id";

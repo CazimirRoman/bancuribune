@@ -1,5 +1,7 @@
 package cazimir.com.bancuribune.ui.list;
 
+import android.os.Bundle;
+
 import java.util.Date;
 import java.util.List;
 
@@ -32,4 +34,5 @@ public interface IMainActivityView extends IGeneralView {
     void playOnVotedAudio();
     void sendJokeToTrello(String joke);
     void goToMyJokesActivity();
+    void logFirebaseEvent(String event, Bundle bundle);
 }
