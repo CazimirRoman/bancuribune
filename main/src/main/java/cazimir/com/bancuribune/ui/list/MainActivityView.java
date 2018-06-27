@@ -90,6 +90,7 @@ import static cazimir.com.constants.Constants.TRELLO_ACCESS_TOKEN;
 import static cazimir.com.constants.Constants.TRELLO_APP_KEY;
 import static cazimir.com.constants.Constants.TRELLO_FEEDBACK_LIST;
 import static cazimir.com.constants.Constants.TRELLO_JOKE_LIST;
+import static cazimir.com.constants.Constants.USER_LOGOUT_REQ;
 import static java.lang.Math.abs;
 
 public class MainActivityView extends BaseActivity implements IMainActivityView {
@@ -486,7 +487,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
     }
 
     public void goToMyJokesActivity() {
-        startActivity(new Intent(new Intent(this, MyJokesActivityView.class)));
+        startActivityForResult(new Intent(new Intent(this, MyJokesActivityView.class)), USER_LOGOUT_REQ);
     }
 
     @Override
@@ -531,13 +532,18 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ADD_JOKE_REQUEST) {
             if (resultCode == RESULT_OK) {
-                if(data.getStringExtra(Constants.JOKE_TEXT) != null){
+                if (data.getStringExtra(Constants.JOKE_TEXT) != null) {
                     sendJokeToTrello(data.getStringExtra(Constants.JOKE_TEXT));
                 }
 
                 showAddSuccessDialog();
                 getAllJokesData(true, false);
             }
+        } else if (requestCode == Constants.USER_LOGOUT_REQ) {
+            if (resultCode == RESULT_OK) {
+                this.finish();
+            }
+
         }
     }
 
@@ -685,7 +691,8 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_STORAGE_REQ_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

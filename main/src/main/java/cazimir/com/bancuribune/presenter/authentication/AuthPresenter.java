@@ -3,6 +3,7 @@ package cazimir.com.bancuribune.presenter.authentication;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.facebook.FacebookCallback;
@@ -111,11 +112,25 @@ public class AuthPresenter implements IAuthPresenter {
     @Override
     public void checkIfUserLoggedIn() {
 
-        if (mAuth.getCurrentUser() != null && mAuth.getCurrentUser().isEmailVerified()) {
+        if (isLoggedInViaEmail() || isLoggedInViaFacebook()) {
             ILoginActivityView view = (ILoginActivityView) this.mView.getInstance();
             view.launchMainActivity();
         }
     }
+
+    private boolean isLoggedInViaEmail() {
+        Boolean result = mAuth.getCurrentUser() != null && mAuth.getCurrentUser().isEmailVerified();
+        Log.d(TAG, "isLoggedInViaEmail: " + result);
+        return result;
+    }
+
+    private boolean isLoggedInViaFacebook() {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        Boolean result = accessToken != null;
+        Log.d(TAG, "isLoggedInViaFacebook: " + String.valueOf(result));
+        return result;
+    }
+
 
     @Override
     public String getCurrentUserID() {

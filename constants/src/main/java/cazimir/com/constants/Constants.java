@@ -1,7 +1,5 @@
 package cazimir.com.constants;
 
-import java.lang.reflect.Array;
-
 public class Constants {
 
     public static final String EVENT_VOTED = "joke_voted";
@@ -55,6 +53,7 @@ public class Constants {
     public static final int MAX_JOKE_SIZE_PER_PAGE = 35;
     public static final int TOTAL_ITEM_EACH_LOAD = 50;
     public static final int MY_STORAGE_REQ_CODE = 523;
+    public static final int USER_LOGOUT_REQ = 887;
     public static final int REGISTER_ACTIVITY_REQ_CODE = 745;
     public static final int LEVEL_UP = 6;
 }

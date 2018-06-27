@@ -146,7 +146,7 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
     @Override
     public void showMyJokesList(List<Joke> myJokes) {
 
-        if(myJokes.isEmpty()){
+        if (myJokes.isEmpty()) {
             findViewById(R.id.no_jokes_added).setVisibility(View.VISIBLE);
         }
 
@@ -184,8 +184,9 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
 
     @Override
     public void redirectToLoginPage() {
-        startActivity(new Intent(this, LoginActivityView.class));
+        setResult(RESULT_OK);
         finish();
+        startActivity(new Intent(this, LoginActivityView.class));
     }
 
     @Override
