@@ -67,6 +67,9 @@ import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_LIMIT_SOMON;
 import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_LIMIT_STIUCA;
 import static cazimir.com.bancuribune.constants.Constants.ADD_JOKE_REQUEST;
 import static cazimir.com.bancuribune.constants.Constants.ADMIN;
+import static cazimir.com.bancuribune.constants.Constants.EVENT_LEVEL_UP;
+import static cazimir.com.bancuribune.constants.Constants.EVENT_SHARED;
+import static cazimir.com.bancuribune.constants.Constants.EVENT_VOTED;
 import static cazimir.com.bancuribune.constants.Constants.HAMSIE;
 import static cazimir.com.bancuribune.constants.Constants.HERING;
 import static cazimir.com.bancuribune.constants.Constants.MY_STORAGE_REQ_CODE;
@@ -177,6 +180,9 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
     public void checkIfNewRank(String rank) {
         String currentRank = getCurrentRankNameFromSharedPreferences();
         if (currentRank != null && !currentRank.equals(rank)) {
+            Bundle bundle = new Bundle();
+            bundle.putString("rang", rank);
+            logFirebaseEvent(EVENT_LEVEL_UP, bundle);
             showAlertDialog(getString(R.string.leveled_up_message), SweetAlertDialog.SUCCESS_TYPE);
         }
 
@@ -337,6 +343,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         adapter = new JokesAdapter(new OnJokeClickListener() {
             @Override
             public void onJokeShared(final Joke joke) {
+                logEvent(EVENT_SHARED, null);
                 showToast(getString(R.string.share_open));
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -348,6 +355,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
 
             @Override
             public void onJokeVoted(Joke joke) {
+                logEvent(EVENT_VOTED, null);
                 getPresenter().checkIfAlreadyVoted(joke);
             }
         });
@@ -476,6 +484,11 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
 
     public void goToMyJokesActivity() {
         startActivity(new Intent(new Intent(this, MyJokesActivityView.class)));
+    }
+
+    @Override
+    public void logFirebaseEvent(String event, Bundle bundle) {
+        logEvent(event, bundle);
     }
 
     @OnClick(R.id.adminFAB)
