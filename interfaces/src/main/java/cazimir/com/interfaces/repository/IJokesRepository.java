@@ -3,6 +3,7 @@ package cazimir.com.interfaces.repository;
 import java.util.Date;
 
 import cazimir.com.interfaces.reporting.OnGetTotalNumberOfJokesCompleted;
+import cazimir.com.interfaces.reporting.OnGetUsersWithMostPointsCompleted;
 import cazimir.com.interfaces.ui.admin.OnGetAllPendingJokesListener;
 import cazimir.com.interfaces.ui.admin.OnJokeApprovedListener;
 import cazimir.com.interfaces.ui.likedJokes.OnGetLikedJokesListener;
@@ -34,4 +35,5 @@ public interface IJokesRepository {
     void checkIfRankDataInDB(OnCheckIfRankDataInDBListener listener, String userId);
     void addUserToDatabase(OnAddUserListener listener, String userId, String userName);
     void checkIfAdmin(OnAdminCheckFinishedListener listener, String userId);
+    void getUsersWithMostPoints(OnGetUsersWithMostPointsCompleted listener);
 }

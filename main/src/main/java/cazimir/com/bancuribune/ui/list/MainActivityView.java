@@ -62,7 +62,7 @@ import cazimir.com.interfaces.ui.list.OnJokeClickListener;
 import cazimir.com.interfaces.ui.list.OnUpdateListFinished;
 import cazimir.com.models.Joke;
 import cazimir.com.models.Rank;
-import cazimir.com.reports.MainReportActivity;
+import cazimir.com.reports.ReportActivityView;
 import cazimir.com.utils.UtilHelper;
 
 import static cazimir.com.constants.Constants.ADD_JOKE_LIMIT_HAMSIE;
@@ -190,7 +190,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         if (currentRank != null && !currentRank.equals(rank)) {
             Bundle bundle = new Bundle();
             bundle.putString("rang", rank);
-            logFirebaseEvent(EVENT_LEVEL_UP, bundle);
+            logEvent(EVENT_LEVEL_UP, bundle);
             showAlertDialog(getString(R.string.leveled_up_message), SweetAlertDialog.SUCCESS_TYPE);
         }
 
@@ -494,11 +494,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         startActivityForResult(new Intent(new Intent(this, MyJokesActivityView.class)), USER_LOGOUT_REQ);
     }
 
-    @Override
-    public void logFirebaseEvent(String event, Bundle bundle) {
-        logEvent(event, bundle);
-    }
-
     @OnClick(R.id.adminFAB)
     public void startAdminJokesActivity() {
         if (isInternetAvailable()) {
@@ -509,7 +504,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
     @OnClick(R.id.reportsFAB)
     public void startReportsActivity() {
         if (isInternetAvailable()) {
-            startActivity(new Intent(this, MainReportActivity.class));
+            startActivity(new Intent(this, ReportActivityView.class));
         }
     }
 

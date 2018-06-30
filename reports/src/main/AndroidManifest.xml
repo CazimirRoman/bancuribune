@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainReportActivity"
+            android:name=".ReportActivityView"
             android:label="@string/report_app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
