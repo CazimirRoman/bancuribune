@@ -1,1 +1,1 @@
-include ':clientApp'
+include ':main', ':repository', ':models', ':interfaces', ':constants', ':utils', ':reports'

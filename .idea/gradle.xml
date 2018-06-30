@@ -8,7 +8,13 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/clientApp" />
+            <option value="$PROJECT_DIR$/constants" />
+            <option value="$PROJECT_DIR$/interfaces" />
+            <option value="$PROJECT_DIR$/main" />
+            <option value="$PROJECT_DIR$/models" />
+            <option value="$PROJECT_DIR$/reports" />
+            <option value="$PROJECT_DIR$/repository" />
+            <option value="$PROJECT_DIR$/utils" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
