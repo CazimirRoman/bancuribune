@@ -233,6 +233,7 @@ public class CommonPresenter implements ICommonPresenter {
             @Override
             public void onIsAdmin() {
                 getMainActivityView().showAdminButton();
+                getMainActivityView().showReportButton();
                 getMainActivityView().setAdmin(true);
             }
 

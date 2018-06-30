@@ -35,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.Profile;
+import com.julienvey.trello.Trello;
 import com.julienvey.trello.domain.Card;
 import com.julienvey.trello.impl.TrelloImpl;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
@@ -61,6 +62,7 @@ import cazimir.com.interfaces.ui.list.OnJokeClickListener;
 import cazimir.com.interfaces.ui.list.OnUpdateListFinished;
 import cazimir.com.models.Joke;
 import cazimir.com.models.Rank;
+import cazimir.com.reports.MainReportActivity;
 import cazimir.com.utils.UtilHelper;
 
 import static cazimir.com.constants.Constants.ADD_JOKE_LIMIT_HAMSIE;
@@ -117,6 +119,8 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
     FloatingActionButton myJokesFAB;
     @BindView(R.id.admin)
     FrameLayout admin;
+    @BindView(R.id.reports)
+    FrameLayout reports;
     @BindView(R.id.progress_bar)
     ProgressBar progressMain;
     @BindView(R.id.fabActionButtons)
@@ -267,7 +271,7 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
 
         private WeakReference<MainActivityView> activityReference;
 
-        com.julienvey.trello.Trello trelloApi = new TrelloImpl(TRELLO_APP_KEY, TRELLO_ACCESS_TOKEN);
+        Trello trelloApi = new TrelloImpl(TRELLO_APP_KEY, TRELLO_ACCESS_TOKEN);
 
         sendToTrello(MainActivityView context) {
             activityReference = new WeakReference<>(context);
@@ -502,6 +506,13 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         }
     }
 
+    @OnClick(R.id.reportsFAB)
+    public void startReportsActivity() {
+        if (isInternetAvailable()) {
+            startActivity(new Intent(this, MainReportActivity.class));
+        }
+    }
+
     @OnClick(R.id.myLikedJokesButtonFAB)
     public void startMyLikedJokesActivity() {
         if (isInternetAvailable()) {
@@ -574,6 +585,11 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
     @Override
     public void showAdminButton() {
         admin.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showReportButton() {
+        reports.setVisibility(View.VISIBLE);
     }
 
     @Override

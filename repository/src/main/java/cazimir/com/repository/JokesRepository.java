@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 import cazimir.com.constants.Constants;
+import cazimir.com.interfaces.reporting.OnGetTotalNumberOfJokesCompleted;
 import cazimir.com.interfaces.repository.IJokesRepository;
 import cazimir.com.interfaces.repository.OnAddRankFinishedListener;
 import cazimir.com.interfaces.repository.OnAddUserListener;
@@ -179,10 +180,9 @@ public class JokesRepository implements IJokesRepository {
     }
 
     @Override
-    public void getAllFilteredJokes(final OnGetJokesListener listener, final String text) {
-        final ArrayList<Joke> filteredJokes = new ArrayList<>();
+    public void getTotalNumberOfJokes(final OnGetTotalNumberOfJokesCompleted listener) {
 
-        final String cleanedText = UtilHelper.removeAccents(text);
+        final ArrayList<Joke> allJokes = new ArrayList<>();
 
         jokesRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -191,17 +191,16 @@ public class JokesRepository implements IJokesRepository {
                 for (DataSnapshot jokeSnapshot : dataSnapshot.getChildren()) {
                     Joke joke = jokeSnapshot.getValue(Joke.class);
                     assert joke != null;
-                    if (UtilHelper.removeAccents(joke.getJokeText().trim().toLowerCase()).contains(cleanedText.toLowerCase())) {
-                        filteredJokes.add(joke);
-                    }
+                    allJokes.add(joke);
+
                 }
 
-                listener.onGetJokesSuccess(filteredJokes);
+                listener.onSuccess(allJokes.size());
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                listener.onGetJokesFailed(databaseError.getMessage());
+                listener.onFailed(databaseError.getMessage());
             }
         });
     }

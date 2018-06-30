@@ -1,1 +1,1 @@
-include ':main', ':repository', ':models', ':interfaces', ':constants', ':utils'
+include ':main', ':repository', ':models', ':interfaces', ':constants', ':utils', ':reports'

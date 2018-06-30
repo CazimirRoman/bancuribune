@@ -2,6 +2,7 @@ package cazimir.com.interfaces.repository;
 
 import java.util.Date;
 
+import cazimir.com.interfaces.reporting.OnGetTotalNumberOfJokesCompleted;
 import cazimir.com.interfaces.ui.admin.OnGetAllPendingJokesListener;
 import cazimir.com.interfaces.ui.admin.OnJokeApprovedListener;
 import cazimir.com.interfaces.ui.likedJokes.OnGetLikedJokesListener;
@@ -17,7 +18,7 @@ import cazimir.com.models.Vote;
 
 public interface IJokesRepository {
     void getAllJokes(OnGetJokesListener listener, boolean reset);
-    void getAllFilteredJokes(OnGetJokesListener listener, String text);
+    void getTotalNumberOfJokes(OnGetTotalNumberOfJokesCompleted listener);
     void getAllPendingJokes(OnGetAllPendingJokesListener listener);
     void getMyJokes(OnGetMyJokesListener listener, String userId);
     void getVotesForUser(OnGetLikedJokesListener listener, String userId);

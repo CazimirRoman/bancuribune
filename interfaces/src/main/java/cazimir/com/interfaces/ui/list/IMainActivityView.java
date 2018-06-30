@@ -22,6 +22,7 @@ public interface IMainActivityView extends IGeneralView {
     void showProgressBar();
     void hideProgressBar();
     void showAdminButton();
+    void showReportButton();
     void saveRankDataToSharedPreferences(Rank rank);
     void updateCurrentRank(String rank);
     void updateRemainingAdds(int remaining);

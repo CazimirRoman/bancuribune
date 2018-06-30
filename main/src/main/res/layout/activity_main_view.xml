@@ -114,8 +114,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:scaleType="center"
                 android:clickable="true"
+                android:scaleType="center"
+                android:src="@drawable/ic_admin" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/reports"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:visibility="gone">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/reportsFAB"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:clickable="true"
+                android:scaleType="center"
                 android:src="@drawable/ic_admin" />
 
         </FrameLayout>
