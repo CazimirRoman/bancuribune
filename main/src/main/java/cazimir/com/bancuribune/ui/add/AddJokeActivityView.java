@@ -20,6 +20,8 @@ import cazimir.com.interfaces.ui.add.IAddJokeActivityView;
 import cazimir.com.models.Joke;
 import cazimir.com.utils.UtilHelper;
 
+import static cazimir.com.constants.Constants.EVENT_ADDED;
+
 public class AddJokeActivityView extends BaseBackActivity implements IAddJokeActivityView {
 
     private CommonPresenter presenter;
@@ -71,6 +73,7 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
     @Override
     public void closeAdd() {
         this.setResult(RESULT_OK, intent);
+        logEvent(EVENT_ADDED, null);
         finish();
     }
 

@@ -16,6 +16,7 @@ import java.util.List;
 
 import cazimir.com.constants.Constants;
 import cazimir.com.interfaces.reporting.OnGetTotalNumberOfJokesCompleted;
+import cazimir.com.interfaces.reporting.OnGetUsersWithMostPointsCompleted;
 import cazimir.com.interfaces.repository.IJokesRepository;
 import cazimir.com.interfaces.repository.OnAddRankFinishedListener;
 import cazimir.com.interfaces.repository.OnAddUserListener;
@@ -57,17 +58,17 @@ public class JokesRepository implements IJokesRepository {
 //            this.ranksRef = database.getReference("_dev/ranks_dev");
 //            this.usersRef = database.getReference("_dev/users_dev");
 //        }else{
-            this.jokesRef = database.getReference("jokes");
-            this.votesRef = database.getReference("votes");
-            this.ranksRef = database.getReference("ranks");
-            this.usersRef = database.getReference("users");
+        this.jokesRef = database.getReference("jokes");
+        this.votesRef = database.getReference("votes");
+        this.ranksRef = database.getReference("ranks");
+        this.usersRef = database.getReference("users");
 //        }
     }
 
     @Override
     public void getAllJokes(final OnGetJokesListener listener, boolean reset) {
 
-        if(reset){
+        if (reset) {
             keyStep = null;
         }
         getNewestEntry(listener);
@@ -84,7 +85,7 @@ public class JokesRepository implements IJokesRepository {
                     if (joke != null) {
                         keyNewest = jokeSnapshot.getKey();
                         sendJokesBackToView(listener);
-                    }else{
+                    } else {
                         listener.onEndOfListReached();
                     }
                 }
@@ -120,17 +121,17 @@ public class JokesRepository implements IJokesRepository {
                                 }
                             }
 
-                            if(jokes.size() == 1){
+                            if (jokes.size() == 1) {
                                 listener.onEndOfListReached();
                                 keyStep = null;
                                 return;
                             }
 
-                            jokes.remove(jokes.size()-1);
+                            jokes.remove(jokes.size() - 1);
 
                             Collections.reverse(jokes);
 
-                            keyStep = jokes.get(jokes.size()-1).getUid();
+                            keyStep = jokes.get(jokes.size() - 1).getUid();
 
                             listener.onGetJokesSuccess(jokes);
                         }
@@ -162,11 +163,11 @@ public class JokesRepository implements IJokesRepository {
                                     jokes.add(joke);
                                 }
                             }
-                            if(!jokes.isEmpty()){
+                            if (!jokes.isEmpty()) {
                                 keyStep = jokes.get(0).getUid();
                                 Collections.reverse(jokes);
                                 listener.onGetJokesSuccess(jokes);
-                            }else{
+                            } else {
                                 listener.onEndOfListReached();
                             }
                         }
@@ -298,31 +299,31 @@ public class JokesRepository implements IJokesRepository {
 
     private void getVotedJokes(final OnGetLikedJokesListener listener, ArrayList<Vote> votes) {
 
-        if(votes.isEmpty()){
+        if (votes.isEmpty()) {
             listener.onNoLikedJokes();
         }
 
-            for (final Vote vote : votes) {
-                Query query = jokesRef.orderByChild("uid").equalTo(vote.getJokeId());
+        for (final Vote vote : votes) {
+            Query query = jokesRef.orderByChild("uid").equalTo(vote.getJokeId());
 
-                query.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                        for (DataSnapshot jokeSnapshot : dataSnapshot.getChildren()) {
-                            Joke joke = jokeSnapshot.getValue(Joke.class);
-                            if(joke != null){
-                                listener.onGetLikedJokesSuccess(joke);
-                            }
+                    for (DataSnapshot jokeSnapshot : dataSnapshot.getChildren()) {
+                        Joke joke = jokeSnapshot.getValue(Joke.class);
+                        if (joke != null) {
+                            listener.onGetLikedJokesSuccess(joke);
                         }
                     }
+                }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        listener.onGetLikedJokesFailed(databaseError.getMessage());
-                    }
-                });
-            }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    listener.onGetLikedJokesFailed(databaseError.getMessage());
+                }
+            });
+        }
 
     }
 
@@ -424,7 +425,7 @@ public class JokesRepository implements IJokesRepository {
                     }
                 }
 
-                if(addedJokeOverPastWeek.size() == 0){
+                if (addedJokeOverPastWeek.size() == 0) {
                     listener.showAddReminderToUser();
                 }
             }
@@ -758,7 +759,7 @@ public class JokesRepository implements IJokesRepository {
                     } else {
                         listener.onIsNotAdmin();
                     }
-                }else{
+                } else {
                     listener.onIsNotAdmin();
                 }
 
@@ -770,6 +771,30 @@ public class JokesRepository implements IJokesRepository {
             }
         });
 
+    }
+
+    @Override
+    public void getUsersWithMostPoints(final OnGetUsersWithMostPointsCompleted listener) {
+        Query query = ranksRef.orderByChild("totalPoints").limitToLast(5);
+
+        final ArrayList<Rank> top5 = new ArrayList<>();
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot rankSnapshot : dataSnapshot.getChildren()) {
+                    top5.add(rankSnapshot.getValue(Rank.class));
+                }
+
+                listener.onSuccess(top5);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                listener.onFailed(databaseError.getMessage());
+            }
+        });
     }
 
 }

@@ -5,6 +5,7 @@ public class Constants {
     public static final String EVENT_VOTED = "joke_voted";
     public static final String EVENT_SHARED = "joke_shared";
     public static final String EVENT_LEVEL_UP = "level_up";
+    public static final String EVENT_ADDED = "joke added";
     public static String [] TESTING_DEVICES = {"c22e01a4ac70d3d8"};
 
     public static final int ADD_JOKE_LIMIT_HAMSIE = 2;
