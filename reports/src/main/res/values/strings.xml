@@ -7,4 +7,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="number_of_jokes">Numar total de bancuri: %s</string>
+    <string name="report_app_name">Reports</string>
 </resources>
