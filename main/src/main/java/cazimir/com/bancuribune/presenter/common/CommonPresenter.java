@@ -403,7 +403,7 @@ public class CommonPresenter implements ICommonPresenter {
         repository.getAllJokesAddedOverThePastWeek(new OnShowReminderToAddListener() {
             @Override
             public void showAddReminderToUser() {
-                getMainActivityView().showAlertDialog("Se pare ca nu ai adaugat nici un banc saptamana asta.", SweetAlertDialog.WARNING_TYPE);
+                getMainActivityView().showAlertDialog("Stii bancuri amuzante? Adauga-le acum in aplicatie si castiga like-urile celorlalti useri", SweetAlertDialog.SUCCESS_TYPE);
                 getMainActivityView().addLastCheckDateToSharedPreferences();
             }
         }, currentUserID, lastCheckDate);

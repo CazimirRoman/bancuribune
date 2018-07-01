@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
+import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.ui.list.MainActivityView;
 import cazimir.com.constants.Constants;
 
@@ -27,6 +28,21 @@ public class MySweetAlertDialog {
                         .show();
                 break;
 
+            case SweetAlertDialog.SUCCESS_TYPE:
+                new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
+                        .setTitleText("Succes!")
+                        .setContentText(message)
+                        .show();
+                break;
+
+
+            case SweetAlertDialog.WARNING_TYPE:
+                new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Atentie!")
+                        .setContentText(message)
+                        .show();
+                break;
+
             case Constants.LEVEL_UP:
                 new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
                         .setTitleText("Ai crescut in rang!")
@@ -42,17 +58,10 @@ public class MySweetAlertDialog {
                         .show();
                 break;
 
-            case SweetAlertDialog.SUCCESS_TYPE:
-                new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Succes!")
-                        .setContentText(message)
-                        .show();
-                break;
-
-
-            case SweetAlertDialog.WARNING_TYPE:
-                new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("Atentie!")
+            case Constants.ADD_JOKE_REMINDER:
+                new SweetAlertDialog(mContext, SweetAlertDialog.CUSTOM_IMAGE_TYPE)
+                        .setTitleText("Bloop!")
+                        .setCustomImage(R.drawable.ic_add_joke_reminder)
                         .setContentText(message)
                         .show();
                 break;

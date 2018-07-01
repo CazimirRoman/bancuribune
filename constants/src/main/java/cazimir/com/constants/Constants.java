@@ -55,4 +55,5 @@ public class Constants {
     public static final int USER_LOGOUT_REQ = 887;
     public static final int REGISTER_ACTIVITY_REQ_CODE = 745;
     public static final int LEVEL_UP = 6;
+    public static final int ADD_JOKE_REMINDER = 7;
 }
