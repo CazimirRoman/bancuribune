@@ -457,6 +457,7 @@ public class CommonPresenter implements ICommonPresenter {
             @Override
             public void onResetPasswordFailed(String error) {
                 getForgotPasswordActivityView().showToast(error);
+                getForgotPasswordActivityView().hideProgress();
             }
         }, email);
     }
@@ -478,8 +479,6 @@ public class CommonPresenter implements ICommonPresenter {
             }
         }, email, password);
     }
-
-    //get views
 
     private ILoginActivityView getLoginActivityView() {
         return (ILoginActivityView) this.view.getInstance();

@@ -6,11 +6,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
-import android.widget.ProgressBar;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
+import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -25,7 +27,6 @@ import cazimir.com.interfaces.ui.login.ILoginActivityView;
 import cazimir.com.interfaces.ui.login.OnFormValidatedListener;
 import cazimir.com.utils.UtilHelper;
 
-import static cazimir.com.bancuribune.R.id.login_button_dummy;
 import static cazimir.com.constants.Constants.EMAIL_EMPTY;
 import static cazimir.com.constants.Constants.EMAIL_INVALID;
 import static cazimir.com.constants.Constants.PASSWORD_EMPTY;
@@ -43,17 +44,19 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     @BindView(R.id.etPassword)
     EditText etPassword;
     @BindView(R.id.btnLoginWithEmail)
-    TextView btnLoginWithEmail;
-    @BindView(R.id.login_button)
+    BootstrapButton btnLoginWithEmail;
+    @BindView(R.id.btnLoginWithFacebook)
     LoginButton facebookButton;
-    @BindView(login_button_dummy)
+    @BindView(R.id.login_button_dummy)
     TextView loginButtonDummy;
-    @BindView(R.id.btnRegister)
-    TextView btnRegister;
+    @BindView(R.id.btnGoToRegister)
+    BootstrapButton btnGoToRegister;
     @BindView(R.id.btnForgotPassword)
-    TextView btnForgotPassword;
+    BootstrapButton btnForgotPassword;
     @BindView(R.id.progress)
-    ProgressBar progress;
+    FrameLayout progress;
+    @BindView(R.id.expandableLayout)
+    ExpandableRelativeLayout expandableLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,15 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         mAuthPresenter = new AuthPresenter(this);
         mAuthPresenter.checkIfUserLoggedIn();
         setFacebookButtonClickListener();
+        initUI();
+    }
+
+    private void initUI() {
+        btnLoginWithEmail.setBootstrapBrand(getAuthenticationBrand());
+        btnGoToRegister.setBootstrapBrand(getAuthenticationBrand());
+        btnLoginWithEmail.setBootstrapBrand(getAuthenticationBrand());
+        btnForgotPassword.setBootstrapBrand(getAuthenticationBrand());
+        expandableLayout.collapse();
     }
 
     @Override
@@ -76,47 +88,53 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
 
     @Override
     protected int setActionBarTitle() {
-        return R.string.login;
+        return R.string.nothing;
     }
 
-    @OnClick({R.id.btnLoginWithEmail, R.id.login_button_dummy, R.id.btnRegister, R.id.btnForgotPassword})
+    @OnClick({R.id.btnLoginWithEmail, R.id.login_button_dummy, R.id.btnGoToRegister, R.id.btnForgotPassword})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnLoginWithEmail:
+                if (expandableLayout.isExpanded()) {
 
-                hideKeyboard();
+                    hideKeyboard();
 
-                if (isInternetAvailable()) {
-                    String email = etEmail.getText().toString();
-                    String password = etPassword.getText().toString();
-                    UtilHelper.validateFormData(new OnFormValidatedListener() {
-                        @Override
-                        public void onValidateSuccess(String email, String password) {
-                            getPresenter().performLogin(email, password);
-                            showProgress();
-                        }
-
-                        @Override
-                        public void onValidateFail(String what) {
-                            switch (what) {
-                                case EMAIL_EMPTY:
-                                    setEmailError(getString(R.string.email_missing));
-                                    break;
-
-                                case EMAIL_INVALID:
-                                    setEmailError(getString(R.string.email_invalid));
-                                    break;
-
-                                case PASSWORD_EMPTY:
-                                    setPasswordError(getString(R.string.password_missing));
-                                    break;
-
-                                case PASSWORD_INVALID:
-                                    setPasswordError(getString(R.string.password_minimum));
-                                    break;
+                    if (isInternetAvailable()) {
+                        String email = etEmail.getText().toString();
+                        String password = etPassword.getText().toString();
+                        UtilHelper.validateFormData(new OnFormValidatedListener() {
+                            @Override
+                            public void onValidateSuccess(String email, String password) {
+                                getPresenter().performLogin(email, password);
+                                showProgress();
                             }
-                        }
-                    }, email, password, PASSWORD_MATCH_NA);
+
+                            @Override
+                            public void onValidateFail(String what) {
+                                switch (what) {
+                                    case EMAIL_EMPTY:
+                                        setEmailError(getString(R.string.email_missing));
+                                        break;
+
+                                    case EMAIL_INVALID:
+                                        setEmailError(getString(R.string.email_invalid));
+                                        break;
+
+                                    case PASSWORD_EMPTY:
+                                        setPasswordError(getString(R.string.password_missing));
+                                        break;
+
+                                    case PASSWORD_INVALID:
+                                        setPasswordError(getString(R.string.password_minimum));
+                                        break;
+                                }
+                            }
+                        }, email, password, PASSWORD_MATCH_NA);
+
+                    }
+
+                } else {
+                    expandableLayout.expand();
                 }
 
                 break;
@@ -124,9 +142,10 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
                 if (isInternetAvailable()) {
                     facebookButton.performClick();
                     loginButtonDummy.setText(getString(R.string.loading_data));
+                    showProgress();
                 }
                 break;
-            case R.id.btnRegister:
+            case R.id.btnGoToRegister:
                 startActivityForResult(new Intent(LoginActivityView.this, RegisterActivityView.class), REGISTER_ACTIVITY_REQ_CODE);
                 break;
 
@@ -170,7 +189,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         if (requestCode == REGISTER_ACTIVITY_REQ_CODE) {
             if (resultCode == RESULT_OK) {
                 String email = data.getStringExtra("email");
-                if(email != null){
+                if (email != null) {
                     etEmail.setText(email);
                 }
             }

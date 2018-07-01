@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,6 +47,19 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
         getLikedJokes();
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    @Override
+    protected void setBackArrowColour() {
+        final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
+        upArrow.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
+    }
+
     private void initRecycleView() {
         EmptyRecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         likedJokesListRecyclerView.setLayoutManager(layoutManager);
@@ -70,6 +85,8 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
     }
 
     private void shareJoke(String text) {
+
+        sharedText = text;
 
         if (writeStoragePermissionGranted()) {
             Intent sendIntent = new Intent();

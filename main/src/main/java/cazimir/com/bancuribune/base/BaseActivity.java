@@ -1,14 +1,12 @@
 package cazimir.com.bancuribune.base;
 
-import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -19,10 +17,11 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
 import butterknife.ButterKnife;
+import cazimir.com.bancuribune.BuildConfig;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.presenter.common.CommonPresenter;
+import cazimir.com.bancuribune.ui.login.AuthenticationBrand;
 import cazimir.com.bancuribune.utils.MySweetAlertDialog;
-import cazimir.com.constants.Constants;
 import cazimir.com.interfaces.base.IGeneralView;
 import cazimir.com.utils.UtilHelper;
 
@@ -32,6 +31,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
     private MySweetAlertDialog mAlertDialog;
     private CommonPresenter mPresenter;
     private FirebaseAnalytics mFirebaseAnalytics;
+    AuthenticationBrand loginRegisterBrand;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,11 +39,18 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
         setContentView(getLayoutId());
         mAlertDialog = new MySweetAlertDialog(this);
         mPresenter = new CommonPresenter(this);
+        loginRegisterBrand = new AuthenticationBrand(this);
         ButterKnife.bind(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(getString(setActionBarTitle()));
+        toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_overflow_icon));
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        getFirebaseAnalytics().setAnalyticsCollectionEnabled(!BuildConfig.DEBUG);
+    }
+
+    public AuthenticationBrand getAuthenticationBrand() {
+        return loginRegisterBrand;
     }
 
     protected abstract int getLayoutId();
@@ -93,22 +100,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
     }
 
     protected void logEvent(String event, Bundle bundle) {
-        if (!isDeviceForTesting(this))
-            getFirebaseAnalytics().logEvent(event, bundle);
-    }
-
-    private static String getDeviceID(Context c) {
-        return Settings.Secure.getString(c.getContentResolver(), Settings.Secure.ANDROID_ID);
-    }
-
-    private static boolean isDeviceForTesting(Context c) {
-        for (String testingID : Constants.TESTING_DEVICES)
-            if (getDeviceID(c).equals(testingID)){
-                Log.d(TAG, "isDeviceForTesting: true");
-                return true;
-            }
-
-        Log.d(TAG, "isDeviceForTesting: false");
-        return false;
+        getFirebaseAnalytics().logEvent(event, bundle);
     }
 }

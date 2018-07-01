@@ -34,7 +34,7 @@
     <string name="password_not_matching">Parola nu este aceeasi</string>
     <string name="password_forgot">Parola uitata</string>
     <string name="forgot_password">Ai uitat parola?</string>
-    <string name="forgot_password_msg">Te rog sa introduci mailul tau ca sa iti trimitem instructiunile de resetare</string>
+    <string name="forgot_password_msg">Te rog sa introduci mailul tau ca sa iti putem trimite instructiunile de resetare</string>
     <string name="btn_reset_password">Reseteaza</string>
     <string name="btn_resend_password">Retrimite</string>
     <string name="liked_jokes_title">Mi-au placut</string>
@@ -66,4 +66,5 @@
     <string name="leveled_up_message">Ai primit un nou rang!</string>
     <string name="forgot_password_resend">* Parola este necesara numai pentru retrimiterea emailului de confirmare</string>
     <string name="channel_name">general_notification_channel</string>
+    <string name="nothing" />
 </resources>

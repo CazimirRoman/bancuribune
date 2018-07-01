@@ -2,12 +2,15 @@ package cazimir.com.bancuribune.ui.register;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.FrameLayout;
+
+import com.beardedhen.androidbootstrap.BootstrapButton;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -28,13 +31,27 @@ public class RegisterActivityView extends BaseBackActivity implements IRegisterA
     @BindView(R.id.etPasswordConfirm)
     EditText etPasswordConfirm;
     @BindView(R.id.btnRegister)
-    TextView btnRegister;
+    BootstrapButton btnRegister;
     @BindView(R.id.progress)
-    ProgressBar progress;
+    FrameLayout progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        btnRegister.setBootstrapBrand(getAuthenticationBrand());
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    @Override
+    protected void setBackArrowColour() {
+        final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
+        upArrow.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
     }
 
     @OnClick(R.id.btnRegister)
@@ -88,7 +105,7 @@ public class RegisterActivityView extends BaseBackActivity implements IRegisterA
 
     @Override
     protected int setActionBarTitle() {
-        return R.string.register;
+        return R.string.nothing;
     }
 
     @Override
