@@ -176,10 +176,12 @@ public class AuthPresenter implements IAuthPresenter {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             login.loginSuccess();
+                            login.hideProgress();
 
                         } else {
                             // If sign in fails, display a message to the user.
                             login.loginFailed(task.getException().toString());
+                            login.hideProgress();
                         }
 
                     }

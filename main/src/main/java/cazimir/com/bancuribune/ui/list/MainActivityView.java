@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.Uri;
@@ -19,7 +20,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -47,7 +47,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
-import cazimir.com.bancuribune.base.BaseActivity;
+import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.ui.add.AddJokeActivityView;
 import cazimir.com.bancuribune.ui.admin.AdminActivityView;
 import cazimir.com.bancuribune.ui.likedJokes.LikedJokesActivityView;
@@ -95,7 +95,7 @@ import static cazimir.com.constants.Constants.TRELLO_JOKE_LIST;
 import static cazimir.com.constants.Constants.USER_LOGOUT_REQ;
 import static java.lang.Math.abs;
 
-public class MainActivityView extends BaseActivity implements IMainActivityView {
+public class MainActivityView extends BaseBackActivity implements IMainActivityView {
 
     private static final String TAG = MainActivityView.class.getSimpleName();
     private JokesAdapter adapter;
@@ -133,7 +133,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setUpActionbar();
         setSwipeRefreshListener();
         onboardingNeeded();
         initializeRatingReminder();
@@ -142,6 +141,17 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         getMyRank();
         getAllJokesData(true, false);
         initializeLikeSound();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        return true;
+    }
+
+    @Override
+    protected void setBackArrowColour() {
+        final Drawable logo = getResources().getDrawable(R.mipmap.ic_launcher);
+        getSupportActionBar().setHomeAsUpIndicator(logo);
     }
 
     private void initializeLikeSound() {
@@ -336,14 +346,6 @@ public class MainActivityView extends BaseActivity implements IMainActivityView 
         }
 
         return false;
-    }
-
-    private void setUpActionbar() {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("  " + getString(R.string.app_name));
-            getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE);
-            getSupportActionBar().setIcon(R.mipmap.ic_launcher);
-        }
     }
 
     public void refreshJokesListAdapter() {

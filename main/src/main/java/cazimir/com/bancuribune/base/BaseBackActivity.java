@@ -9,12 +9,12 @@ public abstract class BaseBackActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         if(getSupportActionBar() != null){
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            setBackArrowColour();
         }
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
+    public abstract boolean onSupportNavigateUp();
+
+    protected abstract void setBackArrowColour();
 }

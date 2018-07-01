@@ -1,12 +1,13 @@
 package cazimir.com.bancuribune.ui.forgotPassword;
 
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.FrameLayout;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
@@ -25,11 +26,11 @@ public class ForgotPasswordActivityView extends BaseBackActivity implements IFor
     @BindView(R.id.etPassword)
     EditText etPassword;
     @BindView(R.id.btnForgotPassword)
-    TextView btnForgotPassword;
-    @BindView(R.id.progress)
-    ProgressBar progress;
+    BootstrapButton btnForgotPassword;
     @BindView(R.id.btnResendVerificationEmail)
     BootstrapButton btnResendVerificationEmail;
+    @BindView(R.id.progress)
+    FrameLayout progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +65,22 @@ public class ForgotPasswordActivityView extends BaseBackActivity implements IFor
 
             }
         });
+
+        btnForgotPassword.setBootstrapBrand(getAuthenticationBrand());
+        btnResendVerificationEmail.setBootstrapBrand(getAuthenticationBrand());
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    @Override
+    protected void setBackArrowColour() {
+        final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_material);
+        upArrow.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+        getSupportActionBar().setHomeAsUpIndicator(upArrow);
     }
 
     @Override
@@ -73,7 +90,7 @@ public class ForgotPasswordActivityView extends BaseBackActivity implements IFor
 
     @Override
     protected int setActionBarTitle() {
-        return R.string.forgot_password;
+        return R.string.nothing;
     }
 
     @Override

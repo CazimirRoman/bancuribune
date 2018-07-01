@@ -1,135 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <include
         android:id="@+id/include_app_bar"
-        layout="@layout/app_bar_main"
+        layout="@layout/app_bar_secondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <ScrollView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <LinearLayout
         android:layout_width="match_parent"
+        android:orientation="vertical"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        <ImageView
+            style="@style/logo"
+            android:layout_weight="0.05"
+            android:src="@drawable/login_logo" />
 
-            <ImageView
-                style="@style/logo"
-                android:src="@drawable/login_logo" />
+        <ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_weight="0.3"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            android:fitsSystemWindows="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:descendantFocusability="beforeDescendants"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:orientation="vertical">
 
-                <android.support.design.widget.TextInputLayout
+                <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <EditText
-                        android:id="@+id/etEmail"
-                        style="@style/text.medium"
+                    <com.facebook.login.widget.LoginButton
+                        android:id="@+id/btnLoginWithFacebook"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:visibility="gone" />
+
+                    <com.beardedhen.androidbootstrap.BootstrapButton
+                        android:id="@+id/login_button_dummy"
                         android:layout_width="300dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:drawableLeft="@drawable/com_facebook_button_icon_white"
+                        android:drawableStart="@drawable/com_facebook_button_icon_white"
+                        app:bootstrapBrand="primary"
+                        app:bootstrapSize="lg"
+                        app:bootstrapText="@string/facebook_login"
+                        app:buttonMode="regular"
+                        app:roundedCorners="true"
+                        tools:text="fb icon" />
+
+                </FrameLayout>
+
+                <com.github.aakira.expandablelayout.ExpandableRelativeLayout
+                    android:id="@+id/expandableLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center_horizontal"
+                    app:ael_duration="500"
+                    app:ael_interpolator="bounce"
+                    app:ael_orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <com.beardedhen.androidbootstrap.BootstrapEditText
+                        android:id="@+id/etEmail"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="5dp"
                         android:layout_marginEnd="20dp"
                         android:layout_marginStart="20dp"
                         android:hint="@string/hint_email"
                         android:inputType="textEmailAddress"
                         android:maxLines="1"
-                        android:textColor="@color/colorPrimary" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <EditText
-                        android:id="@+id/etPassword"
-                        style="@style/text.medium"
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginEnd="20dp"
-                        android:layout_marginStart="20dp"
-                        android:focusableInTouchMode="true"
-                        android:hint="@string/hint_password"
-                        android:imeOptions="actionUnspecified"
-                        android:inputType="textPassword"
-                        android:maxLines="1"
-                        android:textColor="@color/colorPrimary" />
-                </android.support.design.widget.TextInputLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:gravity="center_vertical"
-                    android:layout_marginTop="17dp"
-                    android:orientation="vertical"
-                    android:layout_height="match_parent">
-
-                    <com.beardedhen.androidbootstrap.BootstrapButton
-                        android:id="@+id/btnLoginWithEmail"
-                        style="@style/text.medium"
-                        android:layout_width="300dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:text="@string/login"
-                        app:bootstrapBrand="info"
+                        android:textColor="@color/colorPrimaryDark"
                         app:bootstrapSize="lg"
-                        app:buttonMode="regular"
-                        app:roundedCorners="true"
-                        app:showOutline="true" />
+                        app:roundedCorners="true" />
 
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <com.facebook.login.widget.LoginButton
-                            android:id="@+id/login_button"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:visibility="gone" />
-
-                        <com.beardedhen.androidbootstrap.BootstrapButton
-                            android:id="@+id/login_button_dummy"
+                        <com.beardedhen.androidbootstrap.BootstrapEditText
+                            android:id="@+id/etPassword"
                             android:layout_width="300dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:layout_margin="5dp"
-                            android:text="@string/facebook_login"
-                            app:bootstrapBrand="primary"
+                            android:layout_marginEnd="20dp"
+                            android:layout_marginStart="20dp"
+                            android:focusableInTouchMode="true"
+                            android:hint="@string/hint_password"
+                            android:imeOptions="actionUnspecified"
+                            android:inputType="textPassword"
+                            android:maxLines="1"
+                            android:textColor="@color/colorPrimaryDark"
                             app:bootstrapSize="lg"
-                            app:buttonMode="regular"
-                            app:roundedCorners="true"
-                            app:showOutline="false" />
+                            app:roundedCorners="true" />
 
-                    </FrameLayout>
+                    </LinearLayout>
+                </com.github.aakira.expandablelayout.ExpandableRelativeLayout>
+
+                <com.beardedhen.androidbootstrap.BootstrapButton
+                    android:id="@+id/btnLoginWithEmail"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/login"
+                    app:bootstrapSize="lg"
+                    app:buttonMode="regular"
+                    app:roundedCorners="true" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
 
                     <com.beardedhen.androidbootstrap.BootstrapButton
-                        android:id="@+id/btnRegister"
+                        android:id="@+id/btnGoToRegister"
                         android:layout_width="300dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
                         android:text="@string/register"
-                        app:bootstrapBrand="info"
-                        app:bootstrapSize="lg"
+                        app:bootstrapSize="sm"
                         app:buttonMode="regular"
-                        app:roundedCorners="true"
                         app:showOutline="true" />
 
                     <com.beardedhen.androidbootstrap.BootstrapButton
@@ -140,30 +155,31 @@
                         android:layout_margin="5dp"
                         android:layout_weight="1"
                         android:text="@string/password_forgot"
-                        android:textAllCaps="false"
-                        android:textColor="@color/colorAccent"
-                        app:bootstrapBrand="info"
-                        app:bootstrapSize="lg"
+                        app:bootstrapSize="sm"
                         app:buttonMode="regular"
-                        app:roundedCorners="true"
                         app:showOutline="true" />
-
-                    <ProgressBar
-                        android:id="@+id/progress"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center|bottom"
-                        android:layout_marginBottom="20dp"
-                        android:layout_weight="1"
-                        android:visibility="gone" />
-
                 </LinearLayout>
-
 
             </LinearLayout>
 
-        </LinearLayout>
+        </ScrollView>
 
-    </ScrollView>
+        <FrameLayout
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:visibility="invisible"
+            tools:visibility="visible">
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:layout_width="wrap_content"
+                app:indicatorColor="@color/colorPrimary"
+                android:layout_height="match_parent"
+                app:indicatorName="BallBeatIndicator" />
+        </FrameLayout>
+
+    </LinearLayout>
 
 </LinearLayout>
