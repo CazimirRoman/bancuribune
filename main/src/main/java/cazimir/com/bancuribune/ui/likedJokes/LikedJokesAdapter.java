@@ -5,6 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ms.square.android.expandabletextview.ExpandableTextView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class LikedJokesAdapter extends EmptyRecyclerView.Adapter<LikedJokesAdapt
 
     class MyViewHolder extends EmptyRecyclerView.ViewHolder{
 
-        TextView text;
+        ExpandableTextView text;
         TextView approved;
         TextView points;
         TextView date;
@@ -35,7 +37,7 @@ public class LikedJokesAdapter extends EmptyRecyclerView.Adapter<LikedJokesAdapt
 
         MyViewHolder(View view){
             super(view);
-            text = view.findViewById(R.id.jokeText);
+            text = view.findViewById(R.id.expand_joke_text_view);
             approved = view.findViewById(R.id.approved);
             points = view.findViewById(R.id.points);
             date = view.findViewById(R.id.date);

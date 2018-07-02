@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.ms.square.android.expandabletextview.ExpandableTextView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +36,7 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView text;
+        ExpandableTextView text;
         TextView author;
         TextView share;
         TextView vote;
@@ -45,7 +47,7 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
 
         MyViewHolder(View view) {
             super(view);
-            text = view.findViewById(R.id.jokeText);
+            text = view.findViewById(R.id.expand_joke_text_view);
             author = view.findViewById(R.id.authorText);
             share = view.findViewById(R.id.share);
             vote = view.findViewById(R.id.vote);
