@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:paddingEnd="10dp"
-              android:paddingStart="10dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingEnd="10dp"
+    android:paddingStart="10dp">
 
 
     <com.beardedhen.androidbootstrap.BootstrapWell
         android:layout_width="match_parent"
-        android:background="@color/white"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="8dp"
+        android:background="@color/white"
         app:bootstrapSize="xs">
 
         <LinearLayout
@@ -27,14 +27,36 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/jokeText"
-                    style="@style/text.joke"
+                <com.ms.square.android.expandabletextview.ExpandableTextView xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/expand_joke_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="start"
-                    tools:text="Joke Text"/>
+                    expandableTextView:animDuration="200"
+                    expandableTextView:collapseDrawable="@drawable/ic_keyboard_arrow_up"
+                    expandableTextView:expandDrawable="@drawable/ic_keyboard_arrow_down"
+                    expandableTextView:maxCollapsedLines="6">
+
+                    <TextView
+                        android:id="@+id/expandable_text"
+                        style="@style/text.joke"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:ellipsize="marquee"
+                        android:fadingEdgeLength="40dp"
+                        android:gravity="start"
+                        android:requiresFadingEdge="horizontal"
+                        tools:text="Joke Text" />
+
+                    <ImageButton
+                        android:id="@id/expand_collapse"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|bottom"
+                        android:background="@android:color/transparent"
+                        android:padding="16dp" />
+                </com.ms.square.android.expandabletextview.ExpandableTextView>
 
             </LinearLayout>
 
@@ -61,8 +83,7 @@
                             android:layout_gravity="bottom"
                             android:elevation="20dp"
                             android:text="@string/fa_icon_thumbs_up"
-                            app:elevation="20dp">
-                        </cazimir.com.bancuribune.utils.FontAwesomeTextView>
+                            app:elevation="20dp"></cazimir.com.bancuribune.utils.FontAwesomeTextView>
 
                     </FrameLayout>
 
@@ -79,8 +100,7 @@
                             android:layout_gravity="bottom"
                             android:elevation="20dp"
                             android:text="@string/fa_icon_share"
-                            app:elevation="20dp">
-                        </cazimir.com.bancuribune.utils.FontAwesomeTextView>
+                            app:elevation="20dp"></cazimir.com.bancuribune.utils.FontAwesomeTextView>
 
                     </FrameLayout>
 
@@ -101,10 +121,10 @@
                         <cazimir.com.bancuribune.utils.FontAwesomeTextView
                             android:id="@+id/authorText"
                             style="@style/fontAwesome.secondaryText"
-                            android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="AuthorText"/>
+                            android:visibility="gone"
+                            tools:text="AuthorText" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -115,21 +135,21 @@
 
                         <TextView
                             android:id="@+id/points"
-                            android:layout_gravity="center_vertical"
                             style="@style/text.medium"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="123"/>
+                            android:layout_gravity="center_vertical"
+                            tools:text="123" />
 
                         <cazimir.com.bancuribune.utils.FontAwesomeTextView
+                            android:id="@+id/heart_icon"
                             style="@style/text.medium"
                             android:layout_width="wrap_content"
-                            android:textColor="@android:color/holo_red_light"
-                            android:padding="5dp"
-                            android:elevation="20dp"
-                            android:id="@+id/heart_icon"
                             android:layout_height="wrap_content"
-                            android:text="@string/fa_icon_heart"/>
+                            android:elevation="20dp"
+                            android:padding="5dp"
+                            android:text="@string/fa_icon_heart"
+                            android:textColor="@android:color/holo_red_light" />
 
                     </LinearLayout>
 
@@ -142,10 +162,10 @@
                         <cazimir.com.bancuribune.utils.FontAwesomeTextView
                             android:id="@+id/date"
                             style="@style/fontAwesome.secondaryText"
-                            android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="24/07/2012"/>
+                            android:visibility="gone"
+                            tools:text="24/07/2012" />
 
                     </LinearLayout>
 

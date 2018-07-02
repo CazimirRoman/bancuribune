@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.ms.square.android.expandabletextview.ExpandableTextView;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,13 +34,13 @@ public class AdminJokesAdapter extends RecyclerView.Adapter<AdminJokesAdapter.My
 
     class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView text;
+        ExpandableTextView text;
         TextView author;
         TextView approve;
 
         MyViewHolder(View view) {
             super(view);
-            text = view.findViewById(R.id.jokeText);
+            text = view.findViewById(R.id.expand_joke_text_view);
             author = view.findViewById(R.id.authorText);
             approve = view.findViewById(R.id.approve);
         }

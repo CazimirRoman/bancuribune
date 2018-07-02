@@ -20,14 +20,36 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/jokeText"
-                style="@style/text.joke"
+            <com.ms.square.android.expandabletextview.ExpandableTextView xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/expand_joke_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="start"
-                tools:text="JokeText" />
+                expandableTextView:animDuration="200"
+                expandableTextView:collapseDrawable="@drawable/ic_keyboard_arrow_up"
+                expandableTextView:expandDrawable="@drawable/ic_keyboard_arrow_down"
+                expandableTextView:maxCollapsedLines="6">
+
+                <TextView
+                    android:id="@+id/expandable_text"
+                    style="@style/text.joke"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:ellipsize="marquee"
+                    android:fadingEdgeLength="40dp"
+                    android:gravity="start"
+                    android:requiresFadingEdge="horizontal"
+                    tools:text="Joke Text" />
+
+                <ImageButton
+                    android:id="@id/expand_collapse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|bottom"
+                    android:background="@android:color/transparent"
+                    android:padding="16dp" />
+            </com.ms.square.android.expandabletextview.ExpandableTextView>
 
             <LinearLayout
                 android:layout_width="match_parent"
