@@ -34,7 +34,7 @@
                     android:layout_height="wrap_content"
                     expandableTextView:animDuration="200"
                     expandableTextView:collapseDrawable="@drawable/ic_keyboard_arrow_up"
-                    expandableTextView:expandDrawable="@drawable/ic_keyboard_arrow_down"
+                    expandableTextView:expandDrawable="@drawable/ic_more"
                     expandableTextView:maxCollapsedLines="6">
 
                     <TextView
@@ -43,19 +43,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:ellipsize="marquee"
-                        android:fadingEdgeLength="40dp"
                         android:gravity="start"
-                        android:requiresFadingEdge="horizontal"
                         tools:text="Joke Text" />
 
                     <ImageButton
                         android:id="@id/expand_collapse"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center|bottom"
                         android:background="@android:color/transparent"
-                        android:padding="16dp" />
+                        android:padding="10dp" />
                 </com.ms.square.android.expandabletextview.ExpandableTextView>
 
             </LinearLayout>
@@ -83,7 +80,7 @@
                             android:layout_gravity="bottom"
                             android:elevation="20dp"
                             android:text="@string/fa_icon_thumbs_up"
-                            app:elevation="20dp"></cazimir.com.bancuribune.utils.FontAwesomeTextView>
+                            app:elevation="20dp" />
 
                     </FrameLayout>
 
@@ -100,7 +97,7 @@
                             android:layout_gravity="bottom"
                             android:elevation="20dp"
                             android:text="@string/fa_icon_share"
-                            app:elevation="20dp"></cazimir.com.bancuribune.utils.FontAwesomeTextView>
+                            app:elevation="20dp" />
 
                     </FrameLayout>
 
