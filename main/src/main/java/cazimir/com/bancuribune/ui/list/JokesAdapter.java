@@ -2,6 +2,7 @@ package cazimir.com.bancuribune.ui.list;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -70,8 +71,11 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
 
     @Override
     public void onBindViewHolder(final JokesAdapter.MyViewHolder holder, final int position) {
+
+        SparseBooleanArray mTogglePositions = new SparseBooleanArray();
+
         final Joke joke = jokes.get(position);
-        holder.text.setText(joke.getJokeText());
+        holder.text.setText(joke.getJokeText(), mTogglePositions, position);
         holder.author.setText(joke.getUserName());
         holder.share.setOnClickListener(new OnClickListener() {
             @Override
