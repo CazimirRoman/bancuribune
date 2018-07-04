@@ -2,7 +2,6 @@ package cazimir.com.bancuribune.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.view.View;
 
 import com.codemybrainsout.ratingdialog.RatingDialog;
@@ -28,11 +27,6 @@ public class RatingDialogCustom extends RatingDialog {
     private RatingDialogCustom(Context context, Builder builder) {
         super(context, builder);
         this.context = context;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     private void showNeverOff() {

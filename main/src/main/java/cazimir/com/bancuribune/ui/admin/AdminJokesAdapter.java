@@ -2,6 +2,7 @@ package cazimir.com.bancuribune.ui.admin;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,13 +35,13 @@ public class AdminJokesAdapter extends RecyclerView.Adapter<AdminJokesAdapter.My
 
     class MyViewHolder extends RecyclerView.ViewHolder {
 
-        ExpandableTextView text;
+        ExpandableTextView expandableTextView;
         TextView author;
         TextView approve;
 
         MyViewHolder(View view) {
             super(view);
-            text = view.findViewById(R.id.expand_joke_text_view);
+            expandableTextView = view.findViewById(R.id.expand_joke_text_view);
             author = view.findViewById(R.id.authorText);
             approve = view.findViewById(R.id.approve);
         }
@@ -58,8 +59,9 @@ public class AdminJokesAdapter extends RecyclerView.Adapter<AdminJokesAdapter.My
 
     @Override
     public void onBindViewHolder(final AdminJokesAdapter.MyViewHolder holder, final int position) {
+        SparseBooleanArray mTogglePositions = new SparseBooleanArray();
         final Joke joke = jokes.get(position);
-        holder.text.setText(joke.getJokeText());
+        holder.expandableTextView.setText(joke.getJokeText(), mTogglePositions, position);
         holder.author.setText(joke.getUserName());
         holder.approve.setOnClickListener(new OnClickListener() {
             @Override

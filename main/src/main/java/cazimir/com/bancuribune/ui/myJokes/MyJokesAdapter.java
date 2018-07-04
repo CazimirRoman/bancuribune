@@ -1,5 +1,6 @@
 package cazimir.com.bancuribune.ui.myJokes;
 
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,7 @@ public class MyJokesAdapter extends EmptyRecyclerView.Adapter<MyJokesAdapter.MyV
 
     class MyViewHolder extends EmptyRecyclerView.ViewHolder{
 
-        ExpandableTextView text;
+        ExpandableTextView expandableTextView;
         TextView approved;
         TextView points;
         TextView date;
@@ -34,7 +35,7 @@ public class MyJokesAdapter extends EmptyRecyclerView.Adapter<MyJokesAdapter.MyV
 
         MyViewHolder(View view){
             super(view);
-            text = view.findViewById(R.id.expand_joke_text_view);
+            expandableTextView = view.findViewById(R.id.expand_joke_text_view);
             approved = view.findViewById(R.id.approved);
             points = view.findViewById(R.id.points);
             date = view.findViewById(R.id.date);
@@ -55,8 +56,9 @@ public class MyJokesAdapter extends EmptyRecyclerView.Adapter<MyJokesAdapter.MyV
 
     @Override
     public void onBindViewHolder(final MyJokesAdapter.MyViewHolder holder, int position) {
+        SparseBooleanArray mTogglePositions = new SparseBooleanArray();
         final Joke joke = myJokes.get(position);
-        holder.text.setText(joke.getJokeText());
+        holder.expandableTextView.setText(joke.getJokeText(), mTogglePositions, position);
         if(joke.isApproved()){
             holder.approved.setText(R.string.approved);
             holder.points.setText(String.valueOf(joke.getPoints()));

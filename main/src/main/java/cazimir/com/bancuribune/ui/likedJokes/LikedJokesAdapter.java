@@ -1,5 +1,6 @@
 package cazimir.com.bancuribune.ui.likedJokes;
 
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,7 @@ public class LikedJokesAdapter extends EmptyRecyclerView.Adapter<LikedJokesAdapt
 
     class MyViewHolder extends EmptyRecyclerView.ViewHolder{
 
-        ExpandableTextView text;
+        ExpandableTextView expandableTextView;
         TextView approved;
         TextView points;
         TextView date;
@@ -37,7 +38,7 @@ public class LikedJokesAdapter extends EmptyRecyclerView.Adapter<LikedJokesAdapt
 
         MyViewHolder(View view){
             super(view);
-            text = view.findViewById(R.id.expand_joke_text_view);
+            expandableTextView = view.findViewById(R.id.expand_joke_text_view);
             approved = view.findViewById(R.id.approved);
             points = view.findViewById(R.id.points);
             date = view.findViewById(R.id.date);
@@ -58,8 +59,9 @@ public class LikedJokesAdapter extends EmptyRecyclerView.Adapter<LikedJokesAdapt
 
     @Override
     public void onBindViewHolder(final LikedJokesAdapter.MyViewHolder holder, int position) {
+        SparseBooleanArray mTogglePositions = new SparseBooleanArray();
         final Joke joke = myLikedJokes.get(position);
-        holder.text.setText(joke.getJokeText());
+        holder.expandableTextView.setText(joke.getJokeText(), mTogglePositions, position);
         holder.points.setText(String.valueOf(joke.getPoints()));
         holder.date.setVisibility(View.GONE);
         holder.share.setOnClickListener(new View.OnClickListener() {
