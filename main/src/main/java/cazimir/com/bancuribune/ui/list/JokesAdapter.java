@@ -24,6 +24,7 @@ import cazimir.com.utils.UtilHelper;
 
 public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder> {
 
+    private static final String TAG = JokesAdapter.class.getSimpleName();
     private List<Joke> jokes;
     private final OnJokeClickListener listener;
 
@@ -37,7 +38,7 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        ExpandableTextView text;
+        ExpandableTextView expandableTextView;
         TextView author;
         TextView share;
         TextView vote;
@@ -48,7 +49,7 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
 
         MyViewHolder(View view) {
             super(view);
-            text = view.findViewById(R.id.expand_joke_text_view);
+            expandableTextView = view.findViewById(R.id.expand_joke_text_view);
             author = view.findViewById(R.id.authorText);
             share = view.findViewById(R.id.share);
             vote = view.findViewById(R.id.vote);
@@ -65,17 +66,14 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
     @Override
     public JokesAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.joke_list_row, parent, false);
-        MyViewHolder holder = new MyViewHolder(itemView);
-        return holder;
+        return new MyViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(final JokesAdapter.MyViewHolder holder, final int position) {
-
         SparseBooleanArray mTogglePositions = new SparseBooleanArray();
-
         final Joke joke = jokes.get(position);
-        holder.text.setText(joke.getJokeText(), mTogglePositions, position);
+        holder.expandableTextView.setText(joke.getJokeText(), mTogglePositions, position);
         holder.author.setText(joke.getUserName());
         holder.share.setOnClickListener(new OnClickListener() {
             @Override
@@ -93,6 +91,15 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
 
         holder.points.setText(String.valueOf(joke.getPoints()));
         holder.date.setText(UtilHelper.convertEpochToDate(joke.getCreatedAt()));
+
+        holder.expandableTextView.setOnExpandStateChangeListener(new ExpandableTextView.OnExpandStateChangeListener() {
+            @Override
+            public void onExpandStateChanged(TextView textView, boolean isExpanded) {
+                if(isExpanded){
+                    listener.onJokeExpanded();
+                }
+            }
+        });
     }
 
     @Override

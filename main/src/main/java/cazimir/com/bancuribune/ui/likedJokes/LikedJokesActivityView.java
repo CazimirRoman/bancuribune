@@ -79,6 +79,11 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
             public void onJokeVoted(Joke joke) {
 
             }
+
+            @Override
+            public void onJokeExpanded() {
+                //do nothing - it is just for reporting for the main jokes screen
+            }
         });
         likedJokesListRecyclerView.setAdapter(adapter);
         likedJokesListRecyclerView.setEmptyView(findViewById(R.id.empty_view));

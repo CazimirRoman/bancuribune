@@ -5,7 +5,8 @@ public class Constants {
     public static final String EVENT_VOTED = "joke_voted";
     public static final String EVENT_SHARED = "joke_shared";
     public static final String EVENT_LEVEL_UP = "level_up";
-    public static final String EVENT_ADDED = "joke added";
+    public static final String EVENT_ADDED = "joke_added";
+    public static final String EVENT_JOKE_EXPANDED = "joke_expanded";
     public static final int ADD_JOKE_LIMIT_HAMSIE = 2;
     public static final int ADD_JOKE_LIMIT_HERING = 4;
     public static final int ADD_JOKE_LIMIT_SOMON = 8;

@@ -368,6 +368,11 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
                 logEvent(EVENT_VOTED, null);
                 getPresenter().checkIfAlreadyVoted(joke);
             }
+
+            @Override
+            public void onJokeExpanded() {
+                logEvent(Constants.EVENT_JOKE_EXPANDED, null);
+            }
         });
         jokesListRecyclerView.setAdapter(adapter);
     }
