@@ -23,7 +23,6 @@
         android:fontFamily="@font/open_sans"
         android:inputType="textMultiLine"
         android:lines="8"
-        android:maxLines="100"
         android:padding="10dp"
         android:scrollbars="vertical"
         app:bootstrapBrand="info"
