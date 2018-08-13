@@ -1,6 +1,6 @@
 package cazimir.com.bancuribune.base;
 
-import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 import com.crashlytics.android.Crashlytics;
@@ -10,7 +10,7 @@ import com.facebook.appevents.AppEventsLogger;
 import cazimir.com.bancuribune.BuildConfig;
 import io.fabric.sdk.android.Fabric;
 
-public class BaseApplication extends Application {
+public class BaseApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
