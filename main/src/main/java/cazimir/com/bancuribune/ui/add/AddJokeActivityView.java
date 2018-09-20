@@ -102,6 +102,7 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
     public void addJoke(View view){
         if(dataValid()){
             if(UtilHelper.isInternetAvailable(this)){
+                addJokeButton.setEnabled(false);
                 sendDataToDatabase(constructJokeObject());
                 hideSoftInput(addJokeEdit);
             }else{
