@@ -15,11 +15,13 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
+import cazimir.com.bancuribune.presenter.authentication.AuthPresenter;
 import cazimir.com.bancuribune.presenter.common.CommonPresenter;
 import cazimir.com.constants.Constants;
 import cazimir.com.interfaces.base.IGeneralView;
 import cazimir.com.interfaces.ui.add.IAddJokeActivityView;
 import cazimir.com.models.Joke;
+import cazimir.com.repository.JokesRepository;
 import cazimir.com.utils.UtilHelper;
 
 import static cazimir.com.constants.Constants.EVENT_ADDED;
@@ -38,7 +40,7 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new CommonPresenter(this);
+        presenter = new CommonPresenter(this, new AuthPresenter(this), new JokesRepository());
         intent = this.getIntent();
     }
 

@@ -48,6 +48,8 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
+import cazimir.com.bancuribune.presenter.authentication.AuthPresenter;
+import cazimir.com.bancuribune.presenter.main.MainPresenter;
 import cazimir.com.bancuribune.ui.add.AddJokeActivityView;
 import cazimir.com.bancuribune.ui.admin.AdminActivityView;
 import cazimir.com.bancuribune.ui.likedJokes.LikedJokesActivityView;
@@ -63,6 +65,7 @@ import cazimir.com.interfaces.ui.list.OnUpdateListFinished;
 import cazimir.com.models.Joke;
 import cazimir.com.models.Rank;
 import cazimir.com.reports.ReportActivityView;
+import cazimir.com.repository.JokesRepository;
 import cazimir.com.utils.UtilHelper;
 
 import static cazimir.com.constants.Constants.ADD_JOKE_LIMIT_HAMSIE;
@@ -98,6 +101,8 @@ import static java.lang.Math.abs;
 public class MainActivityView extends BaseBackActivity implements IMainActivityView {
 
     private static final String TAG = MainActivityView.class.getSimpleName();
+
+    private MainPresenter mMainPresenter;
     private JokesAdapter adapter;
     private String currentRank;
     private Boolean isAdmin = false;
@@ -133,6 +138,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mMainPresenter = new MainPresenter(this, new AuthPresenter(this), new JokesRepository());
         setSwipeRefreshListener();
         onboardingNeeded();
         initializeRatingReminder();
@@ -171,7 +177,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         Date lastCheckDate = getLastCheckDateFromSharedPreferences();
         int daysApart = (int) ((lastCheckDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24l));
         if (abs(daysApart) >= REMINDER_INTERVAL_CHECK) {
-            getPresenter().checkNumberOfAddsLastWeek(lastCheckDate);
+            mMainPresenter.checkNumberOfAddsLastWeek(lastCheckDate);
         }
     }
 
@@ -366,7 +372,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
             @Override
             public void onJokeVoted(Joke joke) {
                 logEvent(EVENT_VOTED, null);
-                getPresenter().checkIfAlreadyVoted(joke);
+                mMainPresenter.checkIfAlreadyVoted(joke);
             }
 
             @Override
@@ -383,11 +389,11 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     }
 
     private void getMyRank() {
-        getPresenter().checkAndGetMyRank();
+        mMainPresenter.checkAndGetMyRank();
     }
 
     private void getAllJokesData(boolean reset, boolean swipe) {
-        getPresenter().getAllJokesData(reset, swipe);
+        mMainPresenter.getAllJokesData(reset, swipe);
     }
 
     private RecyclerView.LayoutManager initRecycleView() {
