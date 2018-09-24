@@ -9,6 +9,8 @@ import cazimir.com.models.Joke;
  */
 public interface IMainPresenter {
 
+    boolean isAdmin();
+    void updateUIForAdmin();
     void checkNumberOfAddsLastWeek(Date lastCheckDate);
     void checkIfAlreadyVoted(Joke joke);
     void checkAndGetMyRank();

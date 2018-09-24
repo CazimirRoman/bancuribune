@@ -10,7 +10,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import cazimir.com.bancuribune.presenter.authentication.AuthPresenter;
-import cazimir.com.bancuribune.presenter.common.CommonPresenter;
+import cazimir.com.bancuribune.presenter.main.MainPresenter;
 import cazimir.com.bancuribune.ui.list.MainActivityView;
 import cazimir.com.interfaces.repository.OnCheckIfRankDataInDBListener;
 import cazimir.com.models.Rank;
@@ -23,11 +23,11 @@ import static org.mockito.Mockito.when;
 /**
  * TODO: Add a class header comment!
  */
-public class CommonPresenterTest {
+public class MainPresenterTest {
 
     String userId = "userId";
 
-    private CommonPresenter mCommonPresenter;
+    private MainPresenter mMainPresenter;
 
     @Mock
     private MainActivityView mMainActivityView;
@@ -47,7 +47,7 @@ public class CommonPresenterTest {
 
         MockitoAnnotations.initMocks(this);
         when(mAuthPresenter.getCurrentUserID()).thenReturn(userId);
-        mCommonPresenter = new CommonPresenter(mMainActivityView, mAuthPresenter, mJokesRepository);
+        mMainPresenter = new MainPresenter(mMainActivityView, mAuthPresenter, mJokesRepository);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class CommonPresenterTest {
         String userId = "userId";
         Rank rank = new Rank();
 
-        mCommonPresenter.checkAndGetMyRank();
+        mMainPresenter.checkAndGetMyRank();
 
         verify(mJokesRepository).checkIfRankDataInDB(mOnCheckIfRankDataInDBListener.capture(), eq(userId));
         mOnCheckIfRankDataInDBListener.getValue().rankDataIsInDB(rank);

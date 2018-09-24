@@ -297,7 +297,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         protected Card doInBackground(TrelloObject... params) {
             Card card = new Card();
             card.setName(params[0].getText());
-            card.setDesc(activityReference.get().getPresenter().getAuthPresenter().getCurrrentUserEmail());
+            card.setDesc(activityReference.get().mMainPresenter.getAuthPresenter().getCurrentUserEmail());
             if (params[0].isJoke()) {
                 return trelloApi.createCard(TRELLO_JOKE_LIST, card);
             }
@@ -343,7 +343,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         Boolean mFirstRun;
 
         SharedPreferences mPreferences = this.getSharedPreferences("first_time", Context.MODE_PRIVATE);
-        mFirstRun = mPreferences.getBoolean(getPresenter().getCurrentUserID(), true);
+        mFirstRun = mPreferences.getBoolean(mMainPresenter.getAuthPresenter().getCurrentUserID(), true);
         if (mFirstRun) {
             SharedPreferences.Editor editor = mPreferences.edit();
             editor.putBoolean(getPresenter().getCurrentUserID(), false);
@@ -473,19 +473,19 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
 
                 switch (currentRank) {
                     case HAMSIE:
-                        getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_HAMSIE);
+                        mMainPresenter.checkNumberOfAdds(ADD_JOKE_LIMIT_HAMSIE);
                         break;
                     case HERING:
-                        getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_HERING);
+                        mMainPresenter.checkNumberOfAdds(ADD_JOKE_LIMIT_HERING);
                         break;
                     case SOMON:
-                        getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_SOMON);
+                        mMainPresenter.checkNumberOfAdds(ADD_JOKE_LIMIT_SOMON);
                         break;
                     case STIUCA:
-                        getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_STIUCA);
+                        mMainPresenter.checkNumberOfAdds(ADD_JOKE_LIMIT_STIUCA);
                         break;
                     case RECHIN:
-                        getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_RECHIN);
+                        mMainPresenter.checkNumberOfAdds(ADD_JOKE_LIMIT_RECHIN);
                         break;
                 }
 
@@ -684,7 +684,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             int words = UtilHelper.countWords(text);
-            if (getPresenter().getCurrentUserID().equals("eXDuTHO9UPZAS02HctjQHI2hsRv2")) {
+            if (mMainPresenter.isAdmin()) {
                 Log.d(TAG, "shareJoke: " + "Admin user logged in");
                 if (words <= Constants.MAX_JOKE_SIZE_PER_PAGE) {
                     Log.d(TAG, "shareJoke: " + "Bancul este mai mic de 45 de cuvinte. Are lungimea de: " + words + " de cuvinte");
@@ -729,7 +729,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
 
     @Override
     public void checkIfAdmin() {
-        getPresenter().checkIfAdmin();
+        mMainPresenter.updateUIForAdmin();
     }
 
     @Override

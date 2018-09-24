@@ -41,6 +41,8 @@ import cazimir.com.utils.UtilHelper;
 
 public class JokesRepository implements IJokesRepository {
 
+    private FirebaseDatabase database;
+
     private DatabaseReference jokesRef;
     private DatabaseReference votesRef;
     private DatabaseReference ranksRef;
@@ -50,19 +52,23 @@ public class JokesRepository implements IJokesRepository {
     private String keyStep;
 
     public JokesRepository() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        database = FirebaseDatabase.getInstance();
+        //initializeDebugDB();
+        initializeProdDB();
+    }
 
-//        if (!BuildConfig.DEBUG) {
-//            this.jokesRef = database.getReference("_dev/jokes_dev");
-//            this.votesRef = database.getReference("_dev/votes_dev");
-//            this.ranksRef = database.getReference("_dev/ranks_dev");
-//            this.usersRef = database.getReference("_dev/users_dev");
-//        }else{
+    private void initializeProdDB() {
         this.jokesRef = database.getReference("jokes");
         this.votesRef = database.getReference("votes");
         this.ranksRef = database.getReference("ranks");
         this.usersRef = database.getReference("users");
-//        }
+    }
+
+    private void initializeDebugDB() {
+        this.jokesRef = database.getReference("_dev/jokes_dev");
+        this.votesRef = database.getReference("_dev/votes_dev");
+        this.ranksRef = database.getReference("_dev/ranks_dev");
+        this.usersRef = database.getReference("_dev/users_dev");
     }
 
     @Override

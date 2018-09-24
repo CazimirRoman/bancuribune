@@ -11,6 +11,7 @@ import cazimir.com.interfaces.authentication.IAuthPresenter;
 import cazimir.com.interfaces.repository.IJokesRepository;
 import cazimir.com.interfaces.repository.OnAddRankFinishedListener;
 import cazimir.com.interfaces.repository.OnAddUserListener;
+import cazimir.com.interfaces.repository.OnAdminCheckFinishedListener;
 import cazimir.com.interfaces.repository.OnCheckIfRankDataInDBListener;
 import cazimir.com.interfaces.repository.OnShowReminderToAddListener;
 import cazimir.com.interfaces.ui.list.IMainActivityView;
@@ -31,10 +32,40 @@ public class MainPresenter implements IMainPresenter {
     private IAuthPresenter mAuthPresenter;
     private IJokesRepository mJokesRepository;
 
+    public IAuthPresenter getAuthPresenter() {
+        return mAuthPresenter;
+    }
+
     public MainPresenter(IMainActivityView view, IAuthPresenter authPresenter, IJokesRepository jokesRepository) {
         mMainActivityView = view;
         mAuthPresenter = authPresenter;
         mJokesRepository = jokesRepository;
+    }
+
+    @Override
+    public boolean isAdmin() {
+        if(mAuthPresenter.getCurrentUserID().equals(Constants.CAZIMIR) ||
+                mAuthPresenter.getCurrentUserID().equals(Constants.ANA_MARIA)){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void updateUIForAdmin() {
+        mJokesRepository.checkIfAdmin(new OnAdminCheckFinishedListener() {
+            @Override
+            public void onIsAdmin() {
+                mMainActivityView.showAdminButton();
+                mMainActivityView.showReportButton();
+                mMainActivityView.setAdmin(true);
+            }
+
+            @Override
+            public void onIsNotAdmin() {
+                mMainActivityView.setAdmin(false);
+            }
+        }, mAuthPresenter.getCurrentUserID());
     }
 
     @Override

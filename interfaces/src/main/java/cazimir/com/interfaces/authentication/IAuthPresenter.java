@@ -13,7 +13,7 @@ public interface IAuthPresenter {
     void checkIfUserLoggedIn();
     String getCurrentUserID();
     String getCurrentUserName();
-    String getCurrrentUserEmail();
+    String getCurrentUserEmail();
     void logUserOut(IMyJokesActivityView view);
     void performPasswordReset(OnResetPasswordListener listener, String email);
     void performResendVerificationEmail(OnResendVerificationEmailListener listener, String email, String password);
