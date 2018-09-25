@@ -10,10 +10,9 @@ import cazimir.com.models.Joke;
 public interface IMainPresenter {
 
     boolean isAdmin();
-    void updateUIForAdmin();
+    void showAdminButtonsIfAdmin();
     void checkNumberOfAddsLastWeek(Date lastCheckDate);
     void checkIfAlreadyVoted(Joke joke);
-    void checkAndGetMyRank();
     void getAllJokesData(boolean reset, boolean shouldShowProgress);
     void checkNumberOfAdds(int addLimit);
     void increaseJokePointByOne(Joke joke);

@@ -20,7 +20,7 @@ import cazimir.com.interfaces.reporting.OnGetUsersWithMostPointsCompleted;
 import cazimir.com.interfaces.repository.IJokesRepository;
 import cazimir.com.interfaces.repository.OnAddRankFinishedListener;
 import cazimir.com.interfaces.repository.OnAddUserListener;
-import cazimir.com.interfaces.repository.OnAdminCheckFinishedListener;
+import cazimir.com.interfaces.repository.OnAdminCheckCallback;
 import cazimir.com.interfaces.repository.OnCheckIfRankDataInDBListener;
 import cazimir.com.interfaces.repository.OnShowReminderToAddListener;
 import cazimir.com.interfaces.repository.OnUpdateRankPointsSuccess;
@@ -744,7 +744,7 @@ public class JokesRepository implements IJokesRepository {
     }
 
     @Override
-    public void checkIfAdmin(final OnAdminCheckFinishedListener listener, String userId) {
+    public void checkIfAdmin(final OnAdminCheckCallback listener, String userId) {
 
         Query query = usersRef.orderByChild("userId").equalTo(userId);
 
@@ -762,13 +762,8 @@ public class JokesRepository implements IJokesRepository {
                 if (user != null) {
                     if (user.getRole().equals("Admin")) {
                         listener.onIsAdmin();
-                    } else {
-                        listener.onIsNotAdmin();
                     }
-                } else {
-                    listener.onIsNotAdmin();
                 }
-
             }
 
             @Override

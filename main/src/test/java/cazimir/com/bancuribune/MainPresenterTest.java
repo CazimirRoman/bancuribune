@@ -1,19 +1,19 @@
 package cazimir.com.bancuribune;
 
+import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InOrder;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import cazimir.com.bancuribune.presenter.authentication.AuthPresenter;
 import cazimir.com.bancuribune.presenter.main.MainPresenter;
 import cazimir.com.bancuribune.ui.list.MainActivityView;
-import cazimir.com.interfaces.repository.OnCheckIfRankDataInDBListener;
-import cazimir.com.models.Rank;
+import cazimir.com.constants.Constants;
+import cazimir.com.interfaces.repository.OnAdminCheckCallback;
 import cazimir.com.repository.JokesRepository;
 
 import static org.mockito.ArgumentMatchers.eq;
@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
  */
 public class MainPresenterTest {
 
+    private static final String USER_ID = "userId";
     String userId = "userId";
 
     private MainPresenter mMainPresenter;
@@ -39,39 +40,39 @@ public class MainPresenterTest {
     private AuthPresenter mAuthPresenter;
 
     @Captor
-    private ArgumentCaptor<OnCheckIfRankDataInDBListener> mOnCheckIfRankDataInDBListener;
+    private ArgumentCaptor<OnAdminCheckCallback> mOnAdminCheckCallbackArgumentCaptor;
 
 
     @Before
     public void setUp() throws Exception {
 
         MockitoAnnotations.initMocks(this);
-        when(mAuthPresenter.getCurrentUserID()).thenReturn(userId);
         mMainPresenter = new MainPresenter(mMainActivityView, mAuthPresenter, mJokesRepository);
     }
 
     @Test
-    public void checkAndGetMyRank() {
+    public void shouldReturnTrueIfUserAdmin() {
 
-        String userId = "userId";
-        Rank rank = new Rank();
-
-        mMainPresenter.checkAndGetMyRank();
-
-        verify(mJokesRepository).checkIfRankDataInDB(mOnCheckIfRankDataInDBListener.capture(), eq(userId));
-        mOnCheckIfRankDataInDBListener.getValue().rankDataIsInDB(rank);
-
-        InOrder inOrder = Mockito.inOrder(mMainActivityView);
-        inOrder.verify(mMainActivityView).checkIfNewRank(rank.getRank());
-        inOrder.verify(mMainActivityView).saveRankDataToSharedPreferences(rank);
-        inOrder.verify(mMainActivityView).checkIfAdmin();
+        when(mAuthPresenter.getCurrentUserID()).thenReturn(Constants.CAZIMIR);
+        Boolean isAdmin = mMainPresenter.isAdmin();
+        Assert.assertTrue(isAdmin);
     }
 
     @Test
-    public void addRankToDatabase() {
+    public void shouldReturnFalseIfUserNotAdmin() {
+
+        when(mAuthPresenter.getCurrentUserID()).thenReturn(USER_ID);
+        Boolean isAdmin = mMainPresenter.isAdmin();
+        Assert.assertFalse(isAdmin);
     }
 
     @Test
-    public void updateRankPointsAndName() {
+    public void shouldShowAdminButtonsIfAdmin(){
+
+        when(mAuthPresenter.getCurrentUserID()).thenReturn(USER_ID);
+        mMainPresenter.showAdminButtonsIfAdmin();
+        verify(mJokesRepository).checkIfAdmin(mOnAdminCheckCallbackArgumentCaptor.capture(), eq(USER_ID));
+        mOnAdminCheckCallbackArgumentCaptor.getValue().onIsAdmin();
+        verify(mMainActivityView).showAdminButtons();
     }
 }

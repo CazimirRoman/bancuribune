@@ -76,9 +76,10 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
         }
     }
 
+    //get Intent extras (admin) to set joke to approved state if admin added it.
     @Override
     public void sendDataToDatabase(Joke joke) {
-        presenter.addJoke(joke, getIntent().getExtras().getBoolean(Constants.ADMIN));
+        presenter.addJoke(joke, intent.getExtras().getBoolean(Constants.ADMIN));
     }
 
     @Override
@@ -119,6 +120,9 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
     }
 
     private Joke constructJokeObject() {
+
+
+
         return new Joke(addJokeEdit.getText().toString().trim());
     }
 

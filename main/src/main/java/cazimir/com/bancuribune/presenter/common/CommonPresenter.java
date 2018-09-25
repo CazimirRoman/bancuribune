@@ -28,7 +28,6 @@ import cazimir.com.interfaces.ui.forgotPassword.IForgotPasswordActivityView;
 import cazimir.com.interfaces.ui.likedJokes.ILikedJokesActivityView;
 import cazimir.com.interfaces.ui.likedJokes.OnGetLikedJokesListener;
 import cazimir.com.interfaces.ui.list.IMainActivityView;
-import cazimir.com.interfaces.ui.list.OnAllowedToAddFinishedListener;
 import cazimir.com.interfaces.ui.login.ILoginActivityView;
 import cazimir.com.interfaces.ui.myJokes.IMyJokesActivityView;
 import cazimir.com.interfaces.ui.myJokes.OnCalculatePointsListener;
@@ -155,22 +154,6 @@ public class CommonPresenter implements ICommonPresenter {
                 getMainActivityView().showAddFailedDialog();
             }
         }, joke);
-    }
-
-    @Override
-    public void checkNumberOfAdds(int addLimit) {
-        repository.getAllJokesAddedToday(new OnAllowedToAddFinishedListener() {
-            @Override
-            public void isAllowedToAdd(int remainingAdds) {
-                getMainActivityView().updateRemainingAdds(remainingAdds);
-                getMainActivityView().navigateToAddJokeActivity();
-            }
-
-            @Override
-            public void isNotAllowedToAdd(int addLimit) {
-                getMainActivityView().isNotAllowedToAdd(addLimit);
-            }
-        }, currentUserID, addLimit);
     }
 
     @Override

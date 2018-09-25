@@ -16,7 +16,6 @@ public interface ICommonPresenter {
     void getMyJokes();
     void getLikedJokes();
     void addJoke(Joke joke, Boolean isAdmin);
-    void checkNumberOfAdds(int addLimit);
     void logOutUser();
     void approveJoke(String uid);
     void getFacebookProfilePicture(OnGetProfilePictureListener listener) throws IOException;

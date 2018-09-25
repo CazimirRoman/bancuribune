@@ -104,8 +104,6 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
 
     private MainPresenter mMainPresenter;
     private JokesAdapter adapter;
-    private String currentRank;
-    private Boolean isAdmin = false;
     private String sharedText;
     private SharedPreferences preferences;
     private SoundPool soundPool;
@@ -143,8 +141,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         onboardingNeeded();
         initializeRatingReminder();
         checkIfReminderToAddShouldBeShown();
-        checkIfAdmin();
-        getMyRank();
+        updateUIForAdmin();
         getAllJokesData(true, false);
         initializeLikeSound();
     }
@@ -209,8 +206,6 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
             logEvent(EVENT_LEVEL_UP, bundle);
             showAlertDialog(getString(R.string.leveled_up_message), SweetAlertDialog.SUCCESS_TYPE);
         }
-
-        updateCurrentRank(rank);
     }
 
     @Override
@@ -313,10 +308,22 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         }
     }
 
+    //if first run then no rank data or user data is in DB so add it
     private void onboardingNeeded() {
         if (isFirstRun()) {
             startTutorialActivity();
+            addRankToDatabase();
+            addUserToDatabase();
         }
+    }
+
+    private void addUserToDatabase() {
+        mMainPresenter.addUserToDatabase(mMainPresenter.getAuthPresenter().getCurrentUserID(),
+                mMainPresenter.getAuthPresenter().getCurrentUserName());
+    }
+
+    private void addRankToDatabase() {
+        mMainPresenter.addRankToDatabase();
     }
 
     private void startTutorialActivity() {
@@ -388,10 +395,6 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         getAlertDialog().show(message, type);
     }
 
-    private void getMyRank() {
-        mMainPresenter.checkAndGetMyRank();
-    }
-
     private void getAllJokesData(boolean reset, boolean swipe) {
         mMainPresenter.getAllJokesData(reset, swipe);
     }
@@ -436,11 +439,6 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     }
 
     @Override
-    public void setAdmin(Boolean value) {
-        isAdmin = value;
-    }
-
-    @Override
     public void displayJokes(List<Joke> jokes) {
 
         for (Joke joke : jokes) {
@@ -467,9 +465,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
 
         if (isInternetAvailable()) {
 
-            checkIfAdmin();
-
-            if (!isAdmin) {
+            if (!mMainPresenter.isAdmin()) {
 
                 switch (currentRank) {
                     case HAMSIE:
@@ -537,7 +533,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     @Override
     public void navigateToAddJokeActivity() {
         Intent addJokeIntent = new Intent(this, AddJokeActivityView.class);
-        addJokeIntent.putExtra(ADMIN, isAdmin);
+        addJokeIntent.putExtra(ADMIN, mMainPresenter.isAdmin());
         startActivityForResult(addJokeIntent, ADD_JOKE_REQUEST);
     }
 
@@ -591,12 +587,8 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     }
 
     @Override
-    public void showAdminButton() {
+    public void showAdminButtons() {
         admin.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void showReportButton() {
         reports.setVisibility(View.VISIBLE);
     }
 
@@ -667,11 +659,6 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     }
 
     @Override
-    public void updateCurrentRank(String rank) {
-        this.currentRank = rank;
-    }
-
-    @Override
     public void updateRemainingAdds(int remaining) {
         saveRemainingDataToSharedPreferences(remaining);
     }
@@ -728,8 +715,8 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     }
 
     @Override
-    public void checkIfAdmin() {
-        mMainPresenter.updateUIForAdmin();
+    public void updateUIForAdmin() {
+        mMainPresenter.showAdminButtonsIfAdmin();
     }
 
     @Override

@@ -8,21 +8,18 @@ import cazimir.com.models.Joke;
 import cazimir.com.models.Rank;
 
 public interface IMainActivityView extends IGeneralView {
-    void setAdmin(Boolean value);
     void displayJokes(List<Joke> jokes);
     void requestFailed(String error);
     void navigateToAddJokeActivity();
     void isNotAllowedToAdd(int addLimit);
-    void checkIfAdmin();
+    void updateUIForAdmin();
     void showAddSuccessDialog();
     void showAddFailedDialog();
     void showToast(String message);
     void showProgressBar();
     void hideProgressBar();
-    void showAdminButton();
-    void showReportButton();
+    void showAdminButtons();
     void saveRankDataToSharedPreferences(Rank rank);
-    void updateCurrentRank(String rank);
     void updateRemainingAdds(int remaining);
     void hideSwipeRefresh();
     void refreshAdapter(Joke joke);
