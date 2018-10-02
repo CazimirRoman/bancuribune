@@ -134,8 +134,8 @@ public class CommonPresenter implements ICommonPresenter {
     }
 
     @Override
-    public void approveJoke(String jokeUid) {
-        repository.setApprovedStatusToTrue(new OnJokeApprovedListener() {
+    public void approveJoke(String uid, String jokeText) {
+        repository.approveJoke(new OnJokeApprovedListener() {
             @Override
             public void onJokeApprovedSuccess() {
                 getAdminActivityView().showToast("Approved!");
@@ -146,7 +146,7 @@ public class CommonPresenter implements ICommonPresenter {
             public void onJokeApprovedFailed(String error) {
                 getAdminActivityView().showToast(error);
             }
-        }, jokeUid);
+        }, uid, jokeText);
     }
 
     @Override

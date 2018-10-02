@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -20,10 +21,13 @@ import cazimir.com.bancuribune.R;
 import cazimir.com.interfaces.ui.admin.OnAdminJokeItemClickListener;
 import cazimir.com.models.Joke;
 
+import static cazimir.com.constants.Constants.NO_MODIFICATIONS;
+
 public class AdminJokesAdapter extends RecyclerView.Adapter<AdminJokesAdapter.MyViewHolder> {
 
     private List<Joke> jokes;
     private final OnAdminJokeItemClickListener listener;
+    private boolean editStarted = false;
 
     public AdminJokesAdapter(@NonNull OnAdminJokeItemClickListener listener) {
         this.listener = listener;
@@ -36,14 +40,18 @@ public class AdminJokesAdapter extends RecyclerView.Adapter<AdminJokesAdapter.My
     class MyViewHolder extends RecyclerView.ViewHolder {
 
         ExpandableTextView expandableTextView;
+        TextView expandableText;
         TextView author;
         TextView approve;
+        EditText edit;
 
         MyViewHolder(View view) {
             super(view);
             expandableTextView = view.findViewById(R.id.expand_joke_text_view);
+            expandableText = view.findViewById(R.id.expandable_text);
             author = view.findViewById(R.id.authorText);
             approve = view.findViewById(R.id.approve);
+            edit = view.findViewById(R.id.expandable_text_edit);
         }
     }
 
@@ -66,7 +74,22 @@ public class AdminJokesAdapter extends RecyclerView.Adapter<AdminJokesAdapter.My
         holder.approve.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onItemApproved(joke.getUid());
+                if(editStarted){
+                    listener.onItemApproved(joke.getUid(), holder.edit.getText().toString());
+                }
+
+                listener.onItemApproved(joke.getUid(), NO_MODIFICATIONS);
+
+            }
+        });
+        holder.expandableText.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                editStarted = true;
+                holder.expandableTextView.setVisibility(View.GONE);
+                holder.edit.setText(joke.getJokeText());
+                holder.edit.setVisibility(View.VISIBLE);
+                return true;
             }
         });
     }

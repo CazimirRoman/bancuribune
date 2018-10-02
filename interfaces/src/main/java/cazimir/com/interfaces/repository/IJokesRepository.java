@@ -28,7 +28,7 @@ public interface IJokesRepository {
     void getAllJokesAddedToday(OnAllowedToAddFinishedListener listener, String userId, int addLimit);
     void getAllJokesAddedOverThePastWeek(OnShowReminderToAddListener listener, String userId, Date lastCheckDate);
     void updateJokePoints(OnUpdatePointsFinishedListener listener, Joke joke);
-    void setApprovedStatusToTrue(OnJokeApprovedListener listener, String uid);
+    void approveJoke(OnJokeApprovedListener listener, String uid, String text);
     void updateRankPointsAndName(OnUpdateRankPointsSuccess listener, String rankName, int points, String userId);
     void writeJokeVote(OnAddJokeVoteFinishedListener listener, Vote vote);
     void checkIfVoted(OnCheckIfVotedFinishedListener listener, Joke joke, String userId);
