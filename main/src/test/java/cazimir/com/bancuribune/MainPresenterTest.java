@@ -75,4 +75,9 @@ public class MainPresenterTest {
         mOnAdminCheckCallbackArgumentCaptor.getValue().onIsAdmin();
         verify(mMainActivityView).showAdminButtons();
     }
+
+    @Test
+    public void checkNumberOfAddsLastWeek(){
+        
+    }
 }

@@ -20,7 +20,6 @@ import cazimir.com.interfaces.common.OnGetProfilePictureListener;
 import cazimir.com.interfaces.repository.IJokesRepository;
 import cazimir.com.interfaces.repository.OnUpdateRankPointsSuccess;
 import cazimir.com.interfaces.ui.add.IAddJokeActivityView;
-import cazimir.com.interfaces.ui.add.OnAddJokeFinishedListener;
 import cazimir.com.interfaces.ui.admin.IAdminActivityView;
 import cazimir.com.interfaces.ui.admin.OnGetAllPendingJokesListener;
 import cazimir.com.interfaces.ui.admin.OnJokeApprovedListener;
@@ -127,33 +126,6 @@ public class CommonPresenter implements ICommonPresenter {
                 getLikedJokesActivityView().showNoLikedJokesText();
             }
         }, currentUserID);
-    }
-
-    @Override
-    public void addJoke(final Joke joke, final Boolean isAdmin) {
-        joke.setCreatedBy(currentUserID);
-        joke.setUserName(authPresenter.getCurrentUserName());
-
-        if (isAdmin) {
-            joke.setApproved(true);
-        }
-
-        repository.addJoke(new OnAddJokeFinishedListener() {
-            @Override
-            public void onAddSuccess() {
-                if (!isAdmin) {
-                    getAddJokeActivityView().populateIntent(joke.getJokeText());
-                }
-
-                getAddJokeActivityView().closeAdd();
-
-            }
-
-            @Override
-            public void onAddFailed() {
-                getMainActivityView().showAddFailedDialog();
-            }
-        }, joke);
     }
 
     @Override

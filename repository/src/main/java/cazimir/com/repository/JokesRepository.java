@@ -361,7 +361,7 @@ public class JokesRepository implements IJokesRepository {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
-                    listener.onAddFailed();
+                    listener.onAddFailed(databaseError.getMessage());
                 } else {
                     listener.onAddSuccess();
                 }
