@@ -8,8 +8,8 @@ android {
         applicationId "cazimir.com.bancuribune"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 17
-        versionName "3.3"
+        versionCode 18
+        versionName "3.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true

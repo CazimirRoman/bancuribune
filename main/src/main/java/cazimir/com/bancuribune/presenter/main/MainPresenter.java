@@ -11,7 +11,6 @@ import cazimir.com.interfaces.authentication.IAuthPresenter;
 import cazimir.com.interfaces.repository.IJokesRepository;
 import cazimir.com.interfaces.repository.OnAddRankFinishedListener;
 import cazimir.com.interfaces.repository.OnAddUserListener;
-import cazimir.com.interfaces.repository.OnAdminCheckCallback;
 import cazimir.com.interfaces.repository.OnShowReminderToAddListener;
 import cazimir.com.interfaces.ui.list.IMainActivityView;
 import cazimir.com.interfaces.ui.list.OnAddJokeVoteFinishedListener;
@@ -54,12 +53,16 @@ public class MainPresenter implements IMainPresenter {
     @Override
     public void showAdminButtonsIfAdmin() {
 
-        mJokesRepository.checkIfAdmin(new OnAdminCheckCallback() {
-            @Override
-            public void onIsAdmin() {
-                mMainActivityView.showAdminButtons();
-            }
-        }, mAuthPresenter.getCurrentUserID());
+        if(isAdmin()){
+            mMainActivityView.showAdminButtons();
+        }
+
+//        mJokesRepository.checkIfAdmin(new OnAdminCheckCallback() {
+//            @Override
+//            public void onIsAdmin() {
+//                mMainActivityView.showAdminButtons();
+//            }
+//        }, mAuthPresenter.getCurrentUserID());
     }
 
     @Override

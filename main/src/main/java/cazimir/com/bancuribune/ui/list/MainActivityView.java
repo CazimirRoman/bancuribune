@@ -46,6 +46,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cazimir.com.bancuribune.BuildConfig;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.presenter.authentication.AuthPresenter;
@@ -513,7 +514,9 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     @OnClick(R.id.reportsFAB)
     public void startReportsActivity() {
         if (isInternetAvailable()) {
-            startActivity(new Intent(this, ReportActivityView.class));
+            Intent i = new Intent(this, ReportActivityView.class);
+            i.putExtra("app_version", BuildConfig.VERSION_NAME);
+            startActivity(i);
         }
     }
 
