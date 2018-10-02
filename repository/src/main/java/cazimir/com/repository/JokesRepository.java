@@ -597,23 +597,23 @@ public class JokesRepository implements IJokesRepository {
     }
 
     @Override
-    public void updateRankPointsAndName(final OnUpdateRankPointsSuccess listener, final String rankName, final int points, final String uid) {
+    public void updateRankPointsAndName(final OnUpdateRankPointsSuccess listener, final String rankName, final int points, final String userId) {
 
-        Query query = ranksRef.orderByChild("uid").equalTo(uid);
+        Query query = ranksRef.orderByChild("userId").equalTo(userId);
 
         query.addChildEventListener(new ChildEventListener() {
 
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Rank rank = dataSnapshot.getValue(Rank.class);
+                final Rank rank = dataSnapshot.getValue(Rank.class);
                 assert rank != null;
 
-                ranksRef.child(uid).child("totalPoints").setValue(points, new DatabaseReference.CompletionListener() {
+                ranksRef.child(rank.getUid()).child("totalPoints").setValue(points, new DatabaseReference.CompletionListener() {
 
                     @Override
                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                         if (databaseError == null) {
-                            ranksRef.child(uid).child("rank").setValue(rankName, new DatabaseReference.CompletionListener() {
+                            ranksRef.child(rank.getUid()).child("rank").setValue(rankName, new DatabaseReference.CompletionListener() {
 
                                 @Override
                                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
