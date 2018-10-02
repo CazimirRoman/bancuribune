@@ -48,6 +48,8 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
+import cazimir.com.bancuribune.presenter.authentication.AuthPresenter;
+import cazimir.com.bancuribune.presenter.main.MainPresenter;
 import cazimir.com.bancuribune.ui.add.AddJokeActivityView;
 import cazimir.com.bancuribune.ui.admin.AdminActivityView;
 import cazimir.com.bancuribune.ui.likedJokes.LikedJokesActivityView;
@@ -63,6 +65,7 @@ import cazimir.com.interfaces.ui.list.OnUpdateListFinished;
 import cazimir.com.models.Joke;
 import cazimir.com.models.Rank;
 import cazimir.com.reports.ReportActivityView;
+import cazimir.com.repository.JokesRepository;
 import cazimir.com.utils.UtilHelper;
 
 import static cazimir.com.constants.Constants.ADD_JOKE_LIMIT_HAMSIE;
@@ -98,9 +101,9 @@ import static java.lang.Math.abs;
 public class MainActivityView extends BaseBackActivity implements IMainActivityView {
 
     private static final String TAG = MainActivityView.class.getSimpleName();
+
+    private MainPresenter mMainPresenter;
     private JokesAdapter adapter;
-    private String currentRank;
-    private Boolean isAdmin = false;
     private String sharedText;
     private SharedPreferences preferences;
     private SoundPool soundPool;
@@ -133,12 +136,12 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mMainPresenter = new MainPresenter(this, new AuthPresenter(this), new JokesRepository());
         setSwipeRefreshListener();
         onboardingNeeded();
         initializeRatingReminder();
         checkIfReminderToAddShouldBeShown();
-        checkIfAdmin();
-        getMyRank();
+        updateUIForAdmin();
         getAllJokesData(true, false);
         initializeLikeSound();
     }
@@ -171,7 +174,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         Date lastCheckDate = getLastCheckDateFromSharedPreferences();
         int daysApart = (int) ((lastCheckDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24l));
         if (abs(daysApart) >= REMINDER_INTERVAL_CHECK) {
-            getPresenter().checkNumberOfAddsLastWeek(lastCheckDate);
+            mMainPresenter.checkNumberOfAddsLastWeek(lastCheckDate);
         }
     }
 
@@ -203,8 +206,6 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
             logEvent(EVENT_LEVEL_UP, bundle);
             showAlertDialog(getString(R.string.leveled_up_message), SweetAlertDialog.SUCCESS_TYPE);
         }
-
-        updateCurrentRank(rank);
     }
 
     @Override
@@ -291,7 +292,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         protected Card doInBackground(TrelloObject... params) {
             Card card = new Card();
             card.setName(params[0].getText());
-            card.setDesc(activityReference.get().getPresenter().getAuthPresenter().getCurrrentUserEmail());
+            card.setDesc(activityReference.get().mMainPresenter.getAuthPresenter().getCurrentUserEmail());
             if (params[0].isJoke()) {
                 return trelloApi.createCard(TRELLO_JOKE_LIST, card);
             }
@@ -307,10 +308,22 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         }
     }
 
+    //if first run then no rank data or user data is in DB so add it
     private void onboardingNeeded() {
         if (isFirstRun()) {
             startTutorialActivity();
+            addRankToDatabase();
+            addUserToDatabase();
         }
+    }
+
+    private void addUserToDatabase() {
+        mMainPresenter.addUserToDatabase(mMainPresenter.getAuthPresenter().getCurrentUserID(),
+                mMainPresenter.getAuthPresenter().getCurrentUserName());
+    }
+
+    private void addRankToDatabase() {
+        mMainPresenter.addRankToDatabase();
     }
 
     private void startTutorialActivity() {
@@ -337,7 +350,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         Boolean mFirstRun;
 
         SharedPreferences mPreferences = this.getSharedPreferences("first_time", Context.MODE_PRIVATE);
-        mFirstRun = mPreferences.getBoolean(getPresenter().getCurrentUserID(), true);
+        mFirstRun = mPreferences.getBoolean(mMainPresenter.getAuthPresenter().getCurrentUserID(), true);
         if (mFirstRun) {
             SharedPreferences.Editor editor = mPreferences.edit();
             editor.putBoolean(getPresenter().getCurrentUserID(), false);
@@ -366,7 +379,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
             @Override
             public void onJokeVoted(Joke joke) {
                 logEvent(EVENT_VOTED, null);
-                getPresenter().checkIfAlreadyVoted(joke);
+                mMainPresenter.checkIfAlreadyVoted(joke);
             }
 
             @Override
@@ -382,12 +395,8 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         getAlertDialog().show(message, type);
     }
 
-    private void getMyRank() {
-        getPresenter().checkAndGetMyRank();
-    }
-
     private void getAllJokesData(boolean reset, boolean swipe) {
-        getPresenter().getAllJokesData(reset, swipe);
+        mMainPresenter.getAllJokesData(reset, swipe);
     }
 
     private RecyclerView.LayoutManager initRecycleView() {
@@ -430,11 +439,6 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     }
 
     @Override
-    public void setAdmin(Boolean value) {
-        isAdmin = value;
-    }
-
-    @Override
     public void displayJokes(List<Joke> jokes) {
 
         for (Joke joke : jokes) {
@@ -461,25 +465,23 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
 
         if (isInternetAvailable()) {
 
-            checkIfAdmin();
-
-            if (!isAdmin) {
+            if (!mMainPresenter.isAdmin()) {
 
                 switch (currentRank) {
                     case HAMSIE:
-                        getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_HAMSIE);
+                        mMainPresenter.checkNumberOfAdds(ADD_JOKE_LIMIT_HAMSIE);
                         break;
                     case HERING:
-                        getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_HERING);
+                        mMainPresenter.checkNumberOfAdds(ADD_JOKE_LIMIT_HERING);
                         break;
                     case SOMON:
-                        getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_SOMON);
+                        mMainPresenter.checkNumberOfAdds(ADD_JOKE_LIMIT_SOMON);
                         break;
                     case STIUCA:
-                        getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_STIUCA);
+                        mMainPresenter.checkNumberOfAdds(ADD_JOKE_LIMIT_STIUCA);
                         break;
                     case RECHIN:
-                        getPresenter().checkNumberOfAdds(ADD_JOKE_LIMIT_RECHIN);
+                        mMainPresenter.checkNumberOfAdds(ADD_JOKE_LIMIT_RECHIN);
                         break;
                 }
 
@@ -531,7 +533,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     @Override
     public void navigateToAddJokeActivity() {
         Intent addJokeIntent = new Intent(this, AddJokeActivityView.class);
-        addJokeIntent.putExtra(ADMIN, isAdmin);
+        addJokeIntent.putExtra(ADMIN, mMainPresenter.isAdmin());
         startActivityForResult(addJokeIntent, ADD_JOKE_REQUEST);
     }
 
@@ -585,12 +587,8 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     }
 
     @Override
-    public void showAdminButton() {
+    public void showAdminButtons() {
         admin.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void showReportButton() {
         reports.setVisibility(View.VISIBLE);
     }
 
@@ -661,11 +659,6 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     }
 
     @Override
-    public void updateCurrentRank(String rank) {
-        this.currentRank = rank;
-    }
-
-    @Override
     public void updateRemainingAdds(int remaining) {
         saveRemainingDataToSharedPreferences(remaining);
     }
@@ -678,7 +671,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             int words = UtilHelper.countWords(text);
-            if (getPresenter().getCurrentUserID().equals("eXDuTHO9UPZAS02HctjQHI2hsRv2")) {
+            if (mMainPresenter.isAdmin()) {
                 Log.d(TAG, "shareJoke: " + "Admin user logged in");
                 if (words <= Constants.MAX_JOKE_SIZE_PER_PAGE) {
                     Log.d(TAG, "shareJoke: " + "Bancul este mai mic de 45 de cuvinte. Are lungimea de: " + words + " de cuvinte");
@@ -722,8 +715,8 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     }
 
     @Override
-    public void checkIfAdmin() {
-        getPresenter().checkIfAdmin();
+    public void updateUIForAdmin() {
+        mMainPresenter.showAdminButtonsIfAdmin();
     }
 
     @Override

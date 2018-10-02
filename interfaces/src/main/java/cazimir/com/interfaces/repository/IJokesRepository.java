@@ -34,6 +34,6 @@ public interface IJokesRepository {
     void checkIfVoted(OnCheckIfVotedFinishedListener listener, Joke joke, String userId);
     void checkIfRankDataInDB(OnCheckIfRankDataInDBListener listener, String userId);
     void addUserToDatabase(OnAddUserListener listener, String userId, String userName);
-    void checkIfAdmin(OnAdminCheckFinishedListener listener, String userId);
+    void checkIfAdmin(OnAdminCheckCallback listener, String userId);
     void getUsersWithMostPoints(OnGetUsersWithMostPointsCompleted listener);
 }

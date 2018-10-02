@@ -111,7 +111,6 @@ public class AuthPresenter implements IAuthPresenter {
 
     @Override
     public void checkIfUserLoggedIn() {
-
         if (isLoggedInViaEmail() || isLoggedInViaFacebook()) {
             ILoginActivityView view = (ILoginActivityView) this.mView.getInstance();
             view.launchMainActivity();
@@ -151,7 +150,7 @@ public class AuthPresenter implements IAuthPresenter {
     }
 
     @Override
-    public String getCurrrentUserEmail() {
+    public String getCurrentUserEmail() {
         return mAuth.getCurrentUser().getEmail();
     }
 

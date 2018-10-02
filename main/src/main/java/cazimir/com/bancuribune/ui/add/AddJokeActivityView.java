@@ -15,18 +15,20 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
-import cazimir.com.bancuribune.presenter.common.CommonPresenter;
+import cazimir.com.bancuribune.presenter.add.AddJokePresenter;
+import cazimir.com.bancuribune.presenter.authentication.AuthPresenter;
 import cazimir.com.constants.Constants;
 import cazimir.com.interfaces.base.IGeneralView;
 import cazimir.com.interfaces.ui.add.IAddJokeActivityView;
 import cazimir.com.models.Joke;
+import cazimir.com.repository.JokesRepository;
 import cazimir.com.utils.UtilHelper;
 
 import static cazimir.com.constants.Constants.EVENT_ADDED;
 
 public class AddJokeActivityView extends BaseBackActivity implements IAddJokeActivityView {
 
-    private CommonPresenter presenter;
+    private AddJokePresenter mPresenter;
     private Intent intent;
 
     @BindView(R.id.editNewJoke)
@@ -38,7 +40,7 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new CommonPresenter(this);
+        mPresenter = new AddJokePresenter(this, new AuthPresenter(this), new JokesRepository());
         intent = this.getIntent();
     }
 
@@ -74,9 +76,10 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
         }
     }
 
+    //get Intent extras (admin) to set joke to approved state if admin added it.
     @Override
     public void sendDataToDatabase(Joke joke) {
-        presenter.addJoke(joke, getIntent().getExtras().getBoolean(Constants.ADMIN));
+        mPresenter.addJoke(joke, intent.getExtras().getBoolean(Constants.ADMIN));
     }
 
     @Override

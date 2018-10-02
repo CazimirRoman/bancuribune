@@ -19,10 +19,12 @@ import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 import butterknife.ButterKnife;
 import cazimir.com.bancuribune.BuildConfig;
 import cazimir.com.bancuribune.R;
+import cazimir.com.bancuribune.presenter.authentication.AuthPresenter;
 import cazimir.com.bancuribune.presenter.common.CommonPresenter;
 import cazimir.com.bancuribune.ui.login.AuthenticationBrand;
 import cazimir.com.bancuribune.utils.MySweetAlertDialog;
 import cazimir.com.interfaces.base.IGeneralView;
+import cazimir.com.repository.JokesRepository;
 import cazimir.com.utils.UtilHelper;
 
 public abstract class BaseActivity extends AppCompatActivity implements IGeneralView {
@@ -38,7 +40,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         mAlertDialog = new MySweetAlertDialog(this);
-        mPresenter = new CommonPresenter(this);
+        mPresenter = new CommonPresenter(this, new AuthPresenter(this), new JokesRepository());
         loginRegisterBrand = new AuthenticationBrand(this);
         ButterKnife.bind(this);
         Toolbar toolbar = findViewById(R.id.toolbar);

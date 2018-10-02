@@ -20,7 +20,7 @@ import cazimir.com.interfaces.reporting.OnGetUsersWithMostPointsCompleted;
 import cazimir.com.interfaces.repository.IJokesRepository;
 import cazimir.com.interfaces.repository.OnAddRankFinishedListener;
 import cazimir.com.interfaces.repository.OnAddUserListener;
-import cazimir.com.interfaces.repository.OnAdminCheckFinishedListener;
+import cazimir.com.interfaces.repository.OnAdminCheckCallback;
 import cazimir.com.interfaces.repository.OnCheckIfRankDataInDBListener;
 import cazimir.com.interfaces.repository.OnShowReminderToAddListener;
 import cazimir.com.interfaces.repository.OnUpdateRankPointsSuccess;
@@ -41,6 +41,8 @@ import cazimir.com.utils.UtilHelper;
 
 public class JokesRepository implements IJokesRepository {
 
+    private FirebaseDatabase database;
+
     private DatabaseReference jokesRef;
     private DatabaseReference votesRef;
     private DatabaseReference ranksRef;
@@ -50,19 +52,23 @@ public class JokesRepository implements IJokesRepository {
     private String keyStep;
 
     public JokesRepository() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        database = FirebaseDatabase.getInstance();
+        //initializeDebugDB();
+        initializeProdDB();
+    }
 
-//        if (!BuildConfig.DEBUG) {
-//            this.jokesRef = database.getReference("_dev/jokes_dev");
-//            this.votesRef = database.getReference("_dev/votes_dev");
-//            this.ranksRef = database.getReference("_dev/ranks_dev");
-//            this.usersRef = database.getReference("_dev/users_dev");
-//        }else{
+    private void initializeProdDB() {
         this.jokesRef = database.getReference("jokes");
         this.votesRef = database.getReference("votes");
         this.ranksRef = database.getReference("ranks");
         this.usersRef = database.getReference("users");
-//        }
+    }
+
+    private void initializeDebugDB() {
+        this.jokesRef = database.getReference("_dev/jokes_dev");
+        this.votesRef = database.getReference("_dev/votes_dev");
+        this.ranksRef = database.getReference("_dev/ranks_dev");
+        this.usersRef = database.getReference("_dev/users_dev");
     }
 
     @Override
@@ -355,7 +361,7 @@ public class JokesRepository implements IJokesRepository {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
-                    listener.onAddFailed();
+                    listener.onAddFailed(databaseError.getMessage());
                 } else {
                     listener.onAddSuccess();
                 }
@@ -738,7 +744,7 @@ public class JokesRepository implements IJokesRepository {
     }
 
     @Override
-    public void checkIfAdmin(final OnAdminCheckFinishedListener listener, String userId) {
+    public void checkIfAdmin(final OnAdminCheckCallback listener, String userId) {
 
         Query query = usersRef.orderByChild("userId").equalTo(userId);
 
@@ -756,13 +762,8 @@ public class JokesRepository implements IJokesRepository {
                 if (user != null) {
                     if (user.getRole().equals("Admin")) {
                         listener.onIsAdmin();
-                    } else {
-                        listener.onIsNotAdmin();
                     }
-                } else {
-                    listener.onIsNotAdmin();
                 }
-
             }
 
             @Override
