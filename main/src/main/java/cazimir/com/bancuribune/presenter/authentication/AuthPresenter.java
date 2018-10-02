@@ -50,7 +50,7 @@ public class AuthPresenter implements IAuthPresenter {
                             if (mAuth.getCurrentUser().isEmailVerified()) {
                                 listener.onLoginWithEmailSuccess();
                             } else {
-                                listener.onLoginWithEmailFailed("Te rog sa iti verifici mailul");
+                                listener.onLoginWithEmailFailed("Te rog să îți verifici mailul. Ți-am trimis un link de confirmare.");
                             }
                         } else {
                             listener.onLoginWithEmailFailed(task.getException().getMessage());
@@ -75,7 +75,7 @@ public class AuthPresenter implements IAuthPresenter {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            listener.onRegistrationSuccess("Ti-am trimis un email de verificare la " + user.getEmail());
+                                            listener.onRegistrationSuccess("Ți-am trimis un email de verificare la " + user.getEmail());
                                         } else {
                                             listener.onRegistrationFailed("Nu am putut trimite mailul de verificare");
                                         }
@@ -193,7 +193,7 @@ public class AuthPresenter implements IAuthPresenter {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            listener.onResetPasswordSuccess("Ti-am trimis un mail cu instructiunile de resetare");
+                            listener.onResetPasswordSuccess("Ți-am trimis un mail cu instrucțiunile de resetare");
                         } else {
                             listener.onResetPasswordFailed(task.getException().getMessage());
                         }
@@ -215,7 +215,7 @@ public class AuthPresenter implements IAuthPresenter {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
-                                            listener.onResendEmailSuccess("Ti-am retrimis emailul de verificare la: " + email);
+                                            listener.onResendEmailSuccess("Ți-am retrimis emailul de verificare la: " + email);
                                         } else {
                                             listener.onResendEmailFailed(task.getException().getMessage());
                                         }
