@@ -59,4 +59,5 @@ public class Constants {
     public static final int ADD_JOKE_REMINDER = 7;
     public static final String ANA_MARIA = "IINgcJQYhrar9QBi2qcojfRqely2";
     public static final String CAZIMIR = "eXDuTHO9UPZAS02HctjQHI2hsRv2";
+    public static final String NO_MODIFICATIONS = "no modifications";
 }

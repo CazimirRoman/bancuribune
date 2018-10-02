@@ -45,9 +45,9 @@ public class AdminActivityView extends BaseBackActivity implements IAdminActivit
         adminJokesListRecyclerView.setLayoutManager(layoutManager);
         adapter = new AdminJokesAdapter(new OnAdminJokeItemClickListener() {
             @Override
-            public void onItemApproved(String uid) {
-                getPresenter().approveJoke(uid);
-            }
+            public void onItemApproved(String uid, String jokeText) {
+                    getPresenter().approveJoke(uid, jokeText);
+                }
         });
         adminJokesListRecyclerView.setAdapter(adapter);
     }
@@ -69,12 +69,14 @@ public class AdminActivityView extends BaseBackActivity implements IAdminActivit
 
     @Override
     public void refreshJokes(List<Joke> jokes) {
+
         adapter = new AdminJokesAdapter(new OnAdminJokeItemClickListener() {
             @Override
-            public void onItemApproved(String uid) {
-                getPresenter().approveJoke(uid);
+            public void onItemApproved(String uid, String jokeText) {
+                getPresenter().approveJoke(uid, jokeText);
             }
         });
+
         adminJokesListRecyclerView.setAdapter(adapter);
         for (Joke joke : jokes) {
             adapter.add(joke);

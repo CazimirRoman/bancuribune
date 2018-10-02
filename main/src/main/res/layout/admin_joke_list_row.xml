@@ -57,6 +57,17 @@
                         android:padding="16dp" />
                 </com.ms.square.android.expandabletextview.ExpandableTextView>
 
+                <EditText
+                    android:layout_width="match_parent"
+                    android:visibility="gone"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="start"
+                    tools:visibility="visible"
+                    android:text="@string/add_failed"
+                    android:requiresFadingEdge="horizontal"
+                    android:id="@+id/expandable_text_edit"
+                    android:layout_height="wrap_content" />
+
             </LinearLayout>
 
             <LinearLayout

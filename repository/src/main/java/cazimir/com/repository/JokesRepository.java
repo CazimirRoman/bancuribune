@@ -39,6 +39,8 @@ import cazimir.com.models.User;
 import cazimir.com.models.Vote;
 import cazimir.com.utils.UtilHelper;
 
+import static cazimir.com.constants.Constants.NO_MODIFICATIONS;
+
 public class JokesRepository implements IJokesRepository {
 
     private FirebaseDatabase database;
@@ -535,7 +537,7 @@ public class JokesRepository implements IJokesRepository {
     }
 
     @Override
-    public void setApprovedStatusToTrue(final OnJokeApprovedListener listener, final String uid) {
+    public void approveJoke(final OnJokeApprovedListener listener, final String uid, final String text) {
         Query query = jokesRef.orderByChild("uid").equalTo(uid);
 
         query.addChildEventListener(new ChildEventListener() {
@@ -550,9 +552,23 @@ public class JokesRepository implements IJokesRepository {
                     @Override
                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                         if (databaseError != null) {
+
                             listener.onJokeApprovedFailed(databaseError.getMessage());
                         } else {
-                            listener.onJokeApprovedSuccess();
+                            //was the joke tet modified by the admin? Change that as well after approving the joke.
+                            if (!text.equals(NO_MODIFICATIONS)) {
+                                jokesRef.child(uid).child("jokeText").setValue(text, new DatabaseReference.CompletionListener() {
+
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                        if (databaseError != null) {
+                                            listener.onJokeApprovedFailed(databaseError.getMessage());
+                                        } else {
+                                            listener.onJokeApprovedSuccess();
+                                        }
+                                    }
+                                });
+                            }
                         }
                     }
                 });
