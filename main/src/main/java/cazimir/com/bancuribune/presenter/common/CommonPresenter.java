@@ -196,7 +196,7 @@ public class CommonPresenter implements ICommonPresenter {
             public void onUpdateRankPointsSuccess() {
                 Log.d(TAG, "Rank points updated");
             }
-        }, rankName, points, rankId);
+        }, rankName, points, authPresenter.getCurrentUserID());
     }
 
     @Override
