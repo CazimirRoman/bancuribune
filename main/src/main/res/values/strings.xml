@@ -67,4 +67,5 @@
     <string name="forgot_password_resend">* Parola este necesară numai pentru retrimiterea emailului de confirmare</string>
     <string name="channel_name">general_notification_channel</string>
     <string name="nothing" />
+    <string name="switchDB">Switch DB</string>
 </resources>

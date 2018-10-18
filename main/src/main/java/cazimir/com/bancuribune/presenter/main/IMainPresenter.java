@@ -8,7 +8,6 @@ import cazimir.com.models.Joke;
  * TODO: Add a class header comment!
  */
 public interface IMainPresenter {
-
     boolean isAdmin();
     void showAdminButtonsIfAdmin();
     void checkNumberOfAddsLastWeek(Date lastCheckDate);

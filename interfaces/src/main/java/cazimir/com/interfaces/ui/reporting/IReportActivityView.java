@@ -1,4 +1,4 @@
-package cazimir.com.interfaces.reporting;
+package cazimir.com.interfaces.ui.reporting;
 
 import java.util.ArrayList;
 

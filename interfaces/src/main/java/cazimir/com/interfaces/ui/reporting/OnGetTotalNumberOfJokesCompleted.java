@@ -1,4 +1,4 @@
-package cazimir.com.interfaces.reporting;
+package cazimir.com.interfaces.ui.reporting;
 
 public interface OnGetTotalNumberOfJokesCompleted {
     void onSuccess(int size);

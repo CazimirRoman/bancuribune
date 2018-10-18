@@ -23,6 +23,9 @@ import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
@@ -110,6 +113,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     private SoundPool soundPool;
     private int soundID;
     boolean loaded = false;
+    private boolean mDebug = false;
 
     @BindView(R.id.jokesList)
     RecyclerView jokesListRecyclerView;
@@ -137,7 +141,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mMainPresenter = new MainPresenter(this, new AuthPresenter(this), new JokesRepository());
+        mMainPresenter = new MainPresenter(this, new AuthPresenter(this), new JokesRepository(false));
         setSwipeRefreshListener();
         onboardingNeeded();
         initializeRatingReminder();
@@ -593,6 +597,32 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     public void showAdminButtons() {
         admin.setVisibility(View.VISIBLE);
         reports.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        if(mMainPresenter.isAdmin()){
+            inflater.inflate(R.menu.db_switcher, menu);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.switchDB:
+                setDebugMode(!useDevDB());
+                mMainPresenter = new MainPresenter(this, new AuthPresenter(this), new JokesRepository(mDebug));
+                mMainPresenter.getAllJokesData(false, true);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override

@@ -24,6 +24,7 @@ import cazimir.com.bancuribune.presenter.common.CommonPresenter;
 import cazimir.com.bancuribune.ui.login.AuthenticationBrand;
 import cazimir.com.bancuribune.utils.MySweetAlertDialog;
 import cazimir.com.interfaces.base.IGeneralView;
+import cazimir.com.interfaces.common.ICommonPresenter;
 import cazimir.com.repository.JokesRepository;
 import cazimir.com.utils.UtilHelper;
 
@@ -31,16 +32,18 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
 
     private static final String TAG = BaseActivity.class.getSimpleName();
     private MySweetAlertDialog mAlertDialog;
-    private CommonPresenter mPresenter;
+    private ICommonPresenter mPresenter;
     private FirebaseAnalytics mFirebaseAnalytics;
-    AuthenticationBrand loginRegisterBrand;
+    private AuthenticationBrand loginRegisterBrand;
+    private boolean mDebug;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         mAlertDialog = new MySweetAlertDialog(this);
-        mPresenter = new CommonPresenter(this, new AuthPresenter(this), new JokesRepository());
+        mPresenter = new CommonPresenter(this, new AuthPresenter(this), new JokesRepository(mDebug));
         loginRegisterBrand = new AuthenticationBrand(this);
         ButterKnife.bind(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -75,7 +78,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
         return mToast;
     }
 
-    protected CommonPresenter getPresenter() {
+    protected ICommonPresenter getPresenter() {
         return mPresenter;
     }
 
@@ -103,5 +106,13 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
 
     protected void logEvent(String event, Bundle bundle) {
         getFirebaseAnalytics().logEvent(event, bundle);
+    }
+
+    public void setDebugMode(boolean debug) {
+        this.mDebug = debug;
+    }
+
+    public boolean useDevDB() {
+        return mDebug;
     }
 }

@@ -3,10 +3,10 @@ package cazimir.com.reports;
 import java.util.ArrayList;
 
 import cazimir.com.interfaces.base.IGeneralView;
-import cazimir.com.interfaces.reporting.IReportActivityView;
-import cazimir.com.interfaces.reporting.IReportPresenter;
-import cazimir.com.interfaces.reporting.OnGetTotalNumberOfJokesCompleted;
-import cazimir.com.interfaces.reporting.OnGetUsersWithMostPointsCompleted;
+import cazimir.com.interfaces.ui.reporting.IReportActivityView;
+import cazimir.com.interfaces.ui.reporting.IReportPresenter;
+import cazimir.com.interfaces.ui.reporting.OnGetTotalNumberOfJokesCompleted;
+import cazimir.com.interfaces.ui.reporting.OnGetUsersWithMostPointsCompleted;
 import cazimir.com.models.Rank;
 import cazimir.com.repository.JokesRepository;
 
@@ -19,7 +19,7 @@ public class ReportPresenter implements IReportPresenter {
 
     public ReportPresenter(IGeneralView view) {
         mView = view;
-        mRepository = new JokesRepository();
+        mRepository = new JokesRepository(false);
     }
 
     @Override

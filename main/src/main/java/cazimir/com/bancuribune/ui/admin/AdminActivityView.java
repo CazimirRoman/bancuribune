@@ -18,12 +18,16 @@ import cazimir.com.models.Joke;
 
 public class AdminActivityView extends BaseBackActivity implements IAdminActivityView {
 
-    private AdminJokesAdapter adapter;
+    private AdminJokesAdapter mAdapter;
+    private AdminPresenter mPresenter;
+
+
     @BindView(R.id.jokesList)
     RecyclerView adminJokesListRecyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mPresenter = new AdminPresenter();
         initRecycleView();
         getAllPendingJokes();
     }
@@ -43,13 +47,13 @@ public class AdminActivityView extends BaseBackActivity implements IAdminActivit
     private void initRecycleView() {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         adminJokesListRecyclerView.setLayoutManager(layoutManager);
-        adapter = new AdminJokesAdapter(new OnAdminJokeItemClickListener() {
+        mAdapter = new AdminJokesAdapter(new OnAdminJokeItemClickListener() {
             @Override
             public void onItemApproved(String uid, String jokeText) {
-                    getPresenter().approveJoke(uid, jokeText);
+                    mPresenter.approveJoke(uid, jokeText);
                 }
         });
-        adminJokesListRecyclerView.setAdapter(adapter);
+        adminJokesListRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -64,25 +68,25 @@ public class AdminActivityView extends BaseBackActivity implements IAdminActivit
 
     @Override
     public void getAllPendingJokes() {
-        getPresenter().getAllPendingJokesData();
+        mPresenter.getAllPendingJokesData();
     }
 
     @Override
     public void refreshJokes(List<Joke> jokes) {
 
-        adapter = new AdminJokesAdapter(new OnAdminJokeItemClickListener() {
+        mAdapter = new AdminJokesAdapter(new OnAdminJokeItemClickListener() {
             @Override
             public void onItemApproved(String uid, String jokeText) {
-                getPresenter().approveJoke(uid, jokeText);
+                mPresenter.approveJoke(uid, jokeText);
             }
         });
 
-        adminJokesListRecyclerView.setAdapter(adapter);
+        adminJokesListRecyclerView.setAdapter(mAdapter);
         for (Joke joke : jokes) {
-            adapter.add(joke);
+            mAdapter.add(joke);
         }
 
-        adapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override

@@ -40,7 +40,7 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = new AddJokePresenter(this, new AuthPresenter(this), new JokesRepository());
+        mPresenter = new AddJokePresenter(this, new AuthPresenter(this), new JokesRepository(false));
         intent = this.getIntent();
     }
 

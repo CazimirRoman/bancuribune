@@ -2,8 +2,8 @@ package cazimir.com.interfaces.repository;
 
 import java.util.Date;
 
-import cazimir.com.interfaces.reporting.OnGetTotalNumberOfJokesCompleted;
-import cazimir.com.interfaces.reporting.OnGetUsersWithMostPointsCompleted;
+import cazimir.com.interfaces.ui.reporting.OnGetTotalNumberOfJokesCompleted;
+import cazimir.com.interfaces.ui.reporting.OnGetUsersWithMostPointsCompleted;
 import cazimir.com.interfaces.ui.admin.OnGetAllPendingJokesListener;
 import cazimir.com.interfaces.ui.admin.OnJokeApprovedListener;
 import cazimir.com.interfaces.ui.likedJokes.OnGetLikedJokesListener;

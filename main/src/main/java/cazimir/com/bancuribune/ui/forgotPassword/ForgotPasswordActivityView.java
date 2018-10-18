@@ -15,11 +15,14 @@ import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 import butterknife.BindView;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
+import cazimir.com.bancuribune.presenter.authentication.AuthPresenter;
 import cazimir.com.interfaces.base.IGeneralView;
 import cazimir.com.interfaces.ui.forgotPassword.IForgotPasswordActivityView;
 import cazimir.com.utils.UtilHelper;
 
 public class ForgotPasswordActivityView extends BaseBackActivity implements IForgotPasswordActivityView {
+
+    private ForgotPasswordPresenter mPresenter;
 
     @BindView(R.id.etEmail)
     EditText etEmail;
@@ -36,13 +39,15 @@ public class ForgotPasswordActivityView extends BaseBackActivity implements IFor
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mPresenter = new ForgotPasswordPresenter(this, new AuthPresenter(this));
+
         btnForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 hideKeyboard();
                 if (isFormDataValid(false)) {
                     if (isInternetAvailable()) {
-                        getPresenter().sendResetInstructions(etEmail.getText().toString());
+                        mPresenter.sendResetInstructions(etEmail.getText().toString());
                     } else {
                         getAlertDialog().show(getString(R.string.no_internet), SweetAlertDialog.ERROR_TYPE);
                     }
@@ -56,7 +61,7 @@ public class ForgotPasswordActivityView extends BaseBackActivity implements IFor
                 hideKeyboard();
                 if (isFormDataValid(true)) {
                     if (isInternetAvailable()) {
-                        getPresenter().resendVerificationEmail(etEmail.getText().toString(), etPassword.getText().toString());
+                        mPresenter.resendVerificationEmail(etEmail.getText().toString(), etPassword.getText().toString());
                     } else {
                         getAlertDialog().show(getString(R.string.no_internet), SweetAlertDialog.ERROR_TYPE);
                     }

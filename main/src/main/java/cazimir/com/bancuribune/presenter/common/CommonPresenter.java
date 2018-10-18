@@ -12,8 +12,6 @@ import java.util.List;
 import cazimir.com.interfaces.authentication.IAuthPresenter;
 import cazimir.com.interfaces.authentication.OnLoginWithEmailFinishedListener;
 import cazimir.com.interfaces.authentication.OnRegistrationFinishedListener;
-import cazimir.com.interfaces.authentication.OnResendVerificationEmailListener;
-import cazimir.com.interfaces.authentication.OnResetPasswordListener;
 import cazimir.com.interfaces.base.IGeneralView;
 import cazimir.com.interfaces.common.ICommonPresenter;
 import cazimir.com.interfaces.common.OnGetProfilePictureListener;
@@ -21,8 +19,6 @@ import cazimir.com.interfaces.repository.IJokesRepository;
 import cazimir.com.interfaces.repository.OnUpdateRankPointsSuccess;
 import cazimir.com.interfaces.ui.add.IAddJokeActivityView;
 import cazimir.com.interfaces.ui.admin.IAdminActivityView;
-import cazimir.com.interfaces.ui.admin.OnGetAllPendingJokesListener;
-import cazimir.com.interfaces.ui.admin.OnJokeApprovedListener;
 import cazimir.com.interfaces.ui.forgotPassword.IForgotPasswordActivityView;
 import cazimir.com.interfaces.ui.likedJokes.ILikedJokesActivityView;
 import cazimir.com.interfaces.ui.likedJokes.OnGetLikedJokesListener;
@@ -41,11 +37,6 @@ public class CommonPresenter implements ICommonPresenter {
     private IGeneralView view;
     private IJokesRepository repository;
     private IAuthPresenter authPresenter;
-
-    public String getCurrentUserID() {
-        return currentUserID;
-    }
-
     private String currentUserID;
 
     public CommonPresenter(IGeneralView view, IAuthPresenter authPresenter, IJokesRepository jokesRepository) {
@@ -53,6 +44,10 @@ public class CommonPresenter implements ICommonPresenter {
         this.authPresenter = authPresenter;
         repository = jokesRepository;
         setCurrentLoggedInUserId();
+    }
+
+    public String getCurrentUserID() {
+        return currentUserID;
     }
 
     private void setCurrentLoggedInUserId() {
@@ -76,21 +71,6 @@ public class CommonPresenter implements ICommonPresenter {
                 getRegisterActivityView().hideProgress();
             }
         }, email, password);
-    }
-
-    @Override
-    public void getAllPendingJokesData() {
-        repository.getAllPendingJokes(new OnGetAllPendingJokesListener() {
-            @Override
-            public void onGetAllPendingJokesSuccess(List<Joke> jokes) {
-                getAdminActivityView().refreshJokes(jokes);
-            }
-
-            @Override
-            public void onGetAllPendingJokesFailed(String message) {
-                getAdminActivityView().showToast(message);
-            }
-        });
     }
 
     @Override
@@ -131,22 +111,6 @@ public class CommonPresenter implements ICommonPresenter {
     @Override
     public void logOutUser() {
         authPresenter.logUserOut(getMyJokesActivityView());
-    }
-
-    @Override
-    public void approveJoke(String uid, String jokeText) {
-        repository.approveJoke(new OnJokeApprovedListener() {
-            @Override
-            public void onJokeApprovedSuccess() {
-                getAdminActivityView().showToast("Approved!");
-                getAdminActivityView().getAllPendingJokes();
-            }
-
-            @Override
-            public void onJokeApprovedFailed(String error) {
-                getAdminActivityView().showToast(error);
-            }
-        }, uid, jokeText);
     }
 
     @Override
@@ -197,45 +161,6 @@ public class CommonPresenter implements ICommonPresenter {
                 Log.d(TAG, "Rank points updated");
             }
         }, rankName, points, authPresenter.getCurrentUserID());
-    }
-
-    @Override
-    public void resendVerificationEmail(String email, String password) {
-        getForgotPasswordActivityView().showProgress();
-        authPresenter.performResendVerificationEmail(new OnResendVerificationEmailListener() {
-
-            @Override
-            public void onResendEmailSuccess(String message) {
-                getForgotPasswordActivityView().showToast(message);
-                getForgotPasswordActivityView().redirectToLogin();
-                getForgotPasswordActivityView().hideProgress();
-            }
-
-            @Override
-            public void onResendEmailFailed(String error) {
-                getForgotPasswordActivityView().hideProgress();
-                getForgotPasswordActivityView().showToast(error);
-            }
-        }, email, password);
-    }
-
-    @Override
-    public void sendResetInstructions(String email) {
-        getForgotPasswordActivityView().showProgress();
-        authPresenter.performPasswordReset(new OnResetPasswordListener() {
-            @Override
-            public void onResetPasswordSuccess(String message) {
-                getForgotPasswordActivityView().showToast(message);
-                getForgotPasswordActivityView().redirectToLogin();
-                getForgotPasswordActivityView().hideProgress();
-            }
-
-            @Override
-            public void onResetPasswordFailed(String error) {
-                getForgotPasswordActivityView().showToast(error);
-                getForgotPasswordActivityView().hideProgress();
-            }
-        }, email);
     }
 
     @Override

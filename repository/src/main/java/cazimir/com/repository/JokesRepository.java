@@ -15,8 +15,8 @@ import java.util.Date;
 import java.util.List;
 
 import cazimir.com.constants.Constants;
-import cazimir.com.interfaces.reporting.OnGetTotalNumberOfJokesCompleted;
-import cazimir.com.interfaces.reporting.OnGetUsersWithMostPointsCompleted;
+import cazimir.com.interfaces.ui.reporting.OnGetTotalNumberOfJokesCompleted;
+import cazimir.com.interfaces.ui.reporting.OnGetUsersWithMostPointsCompleted;
 import cazimir.com.interfaces.repository.IJokesRepository;
 import cazimir.com.interfaces.repository.OnAddRankFinishedListener;
 import cazimir.com.interfaces.repository.OnAddUserListener;
@@ -53,9 +53,17 @@ public class JokesRepository implements IJokesRepository {
     private String keyNewest;
     private String keyStep;
 
-    public JokesRepository() {
+    private Boolean debugDB;
+
+    public JokesRepository(Boolean debugDB) {
+        this.debugDB = debugDB;
         database = FirebaseDatabase.getInstance();
-        //initializeDebugDB();
+
+        if(debugDB){
+            initializeDebugDB();
+            return;
+        }
+
         initializeProdDB();
     }
 

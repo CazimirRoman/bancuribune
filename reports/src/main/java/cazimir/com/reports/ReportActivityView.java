@@ -8,7 +8,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import cazimir.com.interfaces.base.IGeneralView;
-import cazimir.com.interfaces.reporting.IReportActivityView;
+import cazimir.com.interfaces.ui.reporting.IReportActivityView;
 import cazimir.com.models.Rank;
 
 public class ReportActivityView extends AppCompatActivity implements IReportActivityView {
