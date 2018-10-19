@@ -9,12 +9,12 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import cazimir.com.bancuribune.presenter.authentication.AuthPresenter;
+import cazimir.com.bancuribune.presenter.auth.AuthPresenter;
 import cazimir.com.bancuribune.presenter.main.MainPresenter;
-import cazimir.com.bancuribune.ui.list.MainActivityView;
+import cazimir.com.bancuribune.view.list.MainActivityView;
 import cazimir.com.constants.Constants;
-import cazimir.com.interfaces.repository.OnAdminCheckCallback;
-import cazimir.com.repository.JokesRepository;
+import cazimir.com.bancuribune.repository.OnAdminCheckCallback;
+import cazimir.com.bancuribune.repository.JokesRepository;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;

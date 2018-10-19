@@ -2,11 +2,8 @@ package cazimir.com.bancuribune.presenter.main;
 
 import java.util.Date;
 
-import cazimir.com.models.Joke;
+import cazimir.com.bancuribune.model.Joke;
 
-/**
- * TODO: Add a class header comment!
- */
 public interface IMainPresenter {
     boolean isAdmin();
     void showAdminButtonsIfAdmin();

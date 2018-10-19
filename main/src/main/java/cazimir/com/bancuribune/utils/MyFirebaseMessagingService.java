@@ -16,9 +16,8 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import cazimir.com.bancuribune.R;
-import cazimir.com.bancuribune.ui.login.LoginActivityView;
-import cazimir.com.constants.Constants;
-
+import cazimir.com.bancuribune.constant.Constants;
+import cazimir.com.bancuribune.view.login.LoginActivityView;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "FCM Service";

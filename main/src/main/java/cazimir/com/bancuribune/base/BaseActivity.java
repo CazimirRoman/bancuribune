@@ -19,23 +19,17 @@ import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 import butterknife.ButterKnife;
 import cazimir.com.bancuribune.BuildConfig;
 import cazimir.com.bancuribune.R;
-import cazimir.com.bancuribune.presenter.authentication.AuthPresenter;
-import cazimir.com.bancuribune.presenter.common.CommonPresenter;
-import cazimir.com.bancuribune.ui.login.AuthenticationBrand;
 import cazimir.com.bancuribune.utils.MySweetAlertDialog;
-import cazimir.com.interfaces.base.IGeneralView;
-import cazimir.com.interfaces.common.ICommonPresenter;
-import cazimir.com.repository.JokesRepository;
-import cazimir.com.utils.UtilHelper;
+import cazimir.com.bancuribune.utils.UtilHelper;
+import cazimir.com.bancuribune.view.login.AuthenticationBrand;
 
 public abstract class BaseActivity extends AppCompatActivity implements IGeneralView {
 
     private static final String TAG = BaseActivity.class.getSimpleName();
     private MySweetAlertDialog mAlertDialog;
-    private ICommonPresenter mPresenter;
     private FirebaseAnalytics mFirebaseAnalytics;
     private AuthenticationBrand loginRegisterBrand;
-    private boolean mDebug;
+    private boolean mUseDebugDatabase;
 
 
     @Override
@@ -43,7 +37,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         mAlertDialog = new MySweetAlertDialog(this);
-        mPresenter = new CommonPresenter(this, new AuthPresenter(this), new JokesRepository(mDebug));
         loginRegisterBrand = new AuthenticationBrand(this);
         ButterKnife.bind(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -78,10 +71,6 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
         return mToast;
     }
 
-    protected ICommonPresenter getPresenter() {
-        return mPresenter;
-    }
-
     protected boolean isInternetAvailable() {
         if (!UtilHelper.isInternetAvailable(this)) {
             getAlertDialog().show(getString(R.string.no_internet), SweetAlertDialog.ERROR_TYPE);
@@ -106,13 +95,5 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
 
     protected void logEvent(String event, Bundle bundle) {
         getFirebaseAnalytics().logEvent(event, bundle);
-    }
-
-    public void setDebugMode(boolean debug) {
-        this.mDebug = debug;
-    }
-
-    public boolean useDevDB() {
-        return mDebug;
     }
 }

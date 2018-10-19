@@ -68,4 +68,11 @@
     <string name="channel_name">general_notification_channel</string>
     <string name="nothing" />
     <string name="switchDB">Switch DB</string>
+
+    <!--Pagina de rapoarte-->
+
+    <string name="number_of_jokes">Numar total de bancuri: %s</string>
+    <string name="report_app_name">Reports</string>
+    <string name="number_of_points">%1$s se afla %2$s cu un numar total de %3$s puncte.</string>
+
 </resources>
