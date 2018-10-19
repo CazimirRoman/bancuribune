@@ -67,7 +67,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         mPresenter = new LoginPresenter(this, new AuthPresenter(this));
         mCallbackManager = CallbackManager.Factory.create();
         mAuthPresenter = new AuthPresenter(this);
-        mAuthPresenter.checkIfUserLoggedIn();
+        mPresenter.checkIfUserLoggedIn();
         setFacebookButtonClickListener();
         initUI();
     }

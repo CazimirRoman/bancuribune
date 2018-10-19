@@ -35,4 +35,14 @@ public class LoginPresenter implements ILoginPresenter {
             }
         }, email, password);
     }
+
+    @Override
+    public void checkIfUserLoggedIn() {
+        mAuthPresenter.checkIfUserLoggedIn(new OnCheckIfLoggedInCallback() {
+            @Override
+            public void isLoggedIn() {
+                mView.launchMainActivity();
+            }
+        });
+    }
 }

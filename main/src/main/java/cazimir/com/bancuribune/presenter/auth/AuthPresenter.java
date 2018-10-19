@@ -18,24 +18,23 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import cazimir.com.bancuribune.view.login.OnLoginWithEmailFinishedListener;
-import cazimir.com.bancuribune.view.register.OnRegistrationFinishedListener;
-import cazimir.com.bancuribune.view.forgotPassword.OnResendVerificationEmailListener;
-import cazimir.com.bancuribune.view.forgotPassword.OnResetPasswordListener;
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.callbacks.login.ILoginActivityView;
 import cazimir.com.bancuribune.callbacks.myJokes.IMyJokesActivityView;
+import cazimir.com.bancuribune.presenter.login.OnCheckIfLoggedInCallback;
+import cazimir.com.bancuribune.view.forgotPassword.OnResendVerificationEmailListener;
+import cazimir.com.bancuribune.view.forgotPassword.OnResetPasswordListener;
+import cazimir.com.bancuribune.view.login.OnLoginWithEmailFinishedListener;
+import cazimir.com.bancuribune.view.register.OnRegistrationFinishedListener;
 
 public class AuthPresenter implements IAuthPresenter {
 
     private static final String TAG = AuthPresenter.class.getSimpleName();
     private FirebaseAuth mAuth;
-    private IGeneralView mView;
     private FirebaseUser currentUser;
 
     public AuthPresenter(IGeneralView view) {
         mAuth = FirebaseAuth.getInstance();
-        this.mView = view;
     }
 
     @Override
@@ -109,10 +108,9 @@ public class AuthPresenter implements IAuthPresenter {
     }
 
     @Override
-    public void checkIfUserLoggedIn() {
+    public void checkIfUserLoggedIn(OnCheckIfLoggedInCallback callback) {
         if (isLoggedInViaEmail() || isLoggedInViaFacebook()) {
-            ILoginActivityView view = (ILoginActivityView) this.mView.getInstance();
-            view.launchMainActivity();
+            callback.isLoggedIn();
         }
     }
 
