@@ -14,7 +14,7 @@ import cazimir.com.bancuribune.view.register.OnRegistrationFinishedListener;
 public interface IAuthPresenter {
     void login (OnLoginWithEmailFinishedListener listener, String email, String password);
     void registerUser(OnRegistrationFinishedListener listener, String email, String password);
-    FacebookCallback<LoginResult> loginWithFacebook();
+    FacebookCallback<LoginResult> loginWithFacebook(OnLoginWithFacebookCallback callback);
     void checkIfUserLoggedIn(OnCheckIfLoggedInCallback callback);
     boolean isLoggedInViaFacebook();
     String getCurrentUserID();
