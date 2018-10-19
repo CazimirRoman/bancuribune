@@ -5,8 +5,8 @@ import android.content.Context;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
 import cazimir.com.bancuribune.R;
-import cazimir.com.bancuribune.ui.list.MainActivityView;
-import cazimir.com.constants.Constants;
+import cazimir.com.bancuribune.constant.Constants;
+import cazimir.com.bancuribune.view.list.MainActivityView;
 
 public class MySweetAlertDialog {
 

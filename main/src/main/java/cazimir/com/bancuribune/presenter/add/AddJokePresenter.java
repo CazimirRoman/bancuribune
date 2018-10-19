@@ -1,14 +1,11 @@
 package cazimir.com.bancuribune.presenter.add;
 
-import cazimir.com.interfaces.authentication.IAuthPresenter;
-import cazimir.com.interfaces.repository.IJokesRepository;
-import cazimir.com.interfaces.ui.add.IAddJokeActivityView;
-import cazimir.com.interfaces.ui.add.OnAddJokeFinishedListener;
-import cazimir.com.models.Joke;
+import cazimir.com.bancuribune.callbacks.add.OnAddJokeFinishedListener;
+import cazimir.com.bancuribune.model.Joke;
+import cazimir.com.bancuribune.presenter.auth.IAuthPresenter;
+import cazimir.com.bancuribune.repository.IJokesRepository;
+import cazimir.com.bancuribune.view.add.IAddJokeActivityView;
 
-/**
- * TODO: Add a class header comment!
- */
 public class AddJokePresenter implements IAddJokePresenter {
     private IAddJokeActivityView mView;
     private IAuthPresenter mAuthPresenter;

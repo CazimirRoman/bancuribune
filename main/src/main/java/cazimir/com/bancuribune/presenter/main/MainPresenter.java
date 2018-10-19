@@ -6,25 +6,22 @@ import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 import java.util.Date;
 import java.util.List;
 
-import cazimir.com.constants.Constants;
-import cazimir.com.interfaces.authentication.IAuthPresenter;
-import cazimir.com.interfaces.repository.IJokesRepository;
-import cazimir.com.interfaces.repository.OnAddRankFinishedListener;
-import cazimir.com.interfaces.repository.OnAddUserListener;
-import cazimir.com.interfaces.repository.OnShowReminderToAddListener;
-import cazimir.com.interfaces.ui.list.IMainActivityView;
-import cazimir.com.interfaces.ui.list.OnAddJokeVoteFinishedListener;
-import cazimir.com.interfaces.ui.list.OnAllowedToAddFinishedListener;
-import cazimir.com.interfaces.ui.list.OnCheckIfVotedFinishedListener;
-import cazimir.com.interfaces.ui.list.OnGetJokesListener;
-import cazimir.com.interfaces.ui.list.OnUpdatePointsFinishedListener;
-import cazimir.com.models.Joke;
-import cazimir.com.models.Rank;
-import cazimir.com.models.Vote;
+import cazimir.com.bancuribune.callbacks.list.IMainActivityView;
+import cazimir.com.bancuribune.callbacks.list.OnAddJokeVoteFinishedListener;
+import cazimir.com.bancuribune.callbacks.list.OnAllowedToAddFinishedListener;
+import cazimir.com.bancuribune.callbacks.list.OnCheckIfVotedFinishedListener;
+import cazimir.com.bancuribune.callbacks.list.OnGetJokesListener;
+import cazimir.com.bancuribune.callbacks.list.OnUpdatePointsFinishedListener;
+import cazimir.com.bancuribune.constant.Constants;
+import cazimir.com.bancuribune.model.Joke;
+import cazimir.com.bancuribune.model.Rank;
+import cazimir.com.bancuribune.model.Vote;
+import cazimir.com.bancuribune.presenter.auth.IAuthPresenter;
+import cazimir.com.bancuribune.repository.IJokesRepository;
+import cazimir.com.bancuribune.repository.OnAddRankFinishedListener;
+import cazimir.com.bancuribune.repository.OnAddUserListener;
+import cazimir.com.bancuribune.repository.OnShowReminderToAddListener;
 
-/**
- * TODO: Add a class header comment!
- */
 public class MainPresenter implements IMainPresenter {
 
     private IMainActivityView mMainActivityView;
