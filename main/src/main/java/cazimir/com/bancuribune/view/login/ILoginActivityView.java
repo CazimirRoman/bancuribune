@@ -1,4 +1,4 @@
-package cazimir.com.bancuribune.callbacks.login;
+package cazimir.com.bancuribune.view.login;
 
 
 import android.app.Activity;

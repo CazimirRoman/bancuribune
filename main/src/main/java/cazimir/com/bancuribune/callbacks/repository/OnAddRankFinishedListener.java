@@ -1,4 +1,4 @@
-package cazimir.com.bancuribune.repository;
+package cazimir.com.bancuribune.callbacks.repository;
 
 import cazimir.com.bancuribune.model.Rank;
 

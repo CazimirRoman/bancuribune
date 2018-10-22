@@ -7,6 +7,7 @@ import cazimir.com.bancuribune.repository.IJokesRepository;
 import cazimir.com.bancuribune.view.add.IAddJokeActivityView;
 
 public class AddJokePresenter implements IAddJokePresenter {
+
     private IAddJokeActivityView mView;
     private IAuthPresenter mAuthPresenter;
     private IJokesRepository mRepository;

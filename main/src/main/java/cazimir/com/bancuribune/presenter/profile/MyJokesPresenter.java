@@ -8,14 +8,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
-import cazimir.com.bancuribune.callbacks.myJokes.IMyJokesActivityView;
+import cazimir.com.bancuribune.view.profile.IMyJokesActivityView;
 import cazimir.com.bancuribune.callbacks.myJokes.OnCalculatePointsListener;
 import cazimir.com.bancuribune.callbacks.myJokes.OnGetFacebookNameListener;
 import cazimir.com.bancuribune.callbacks.myJokes.OnGetMyJokesListener;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.presenter.auth.IAuthPresenter;
 import cazimir.com.bancuribune.repository.IJokesRepository;
-import cazimir.com.bancuribune.repository.OnUpdateRankPointsSuccess;
+import cazimir.com.bancuribune.callbacks.repository.OnUpdateRankPointsSuccess;
 import cazimir.com.bancuribune.view.profile.OnGetProfilePictureListener;
 
 public class MyJokesPresenter implements IMyJokesPresenter {

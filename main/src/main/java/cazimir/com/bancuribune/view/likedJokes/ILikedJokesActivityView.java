@@ -1,4 +1,4 @@
-package cazimir.com.bancuribune.callbacks.likedJokes;
+package cazimir.com.bancuribune.view.likedJokes;
 
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.model.Joke;

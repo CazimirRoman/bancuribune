@@ -3,7 +3,7 @@ package cazimir.com.bancuribune.presenter.forgot;
 import cazimir.com.bancuribune.presenter.auth.IAuthPresenter;
 import cazimir.com.bancuribune.view.forgotPassword.OnResendVerificationEmailListener;
 import cazimir.com.bancuribune.view.forgotPassword.OnResetPasswordListener;
-import cazimir.com.bancuribune.callbacks.forgotPassword.IForgotPasswordActivityView;
+import cazimir.com.bancuribune.view.forgotPassword.IForgotPasswordActivityView;
 
 public class ForgotPasswordPresenter implements IForgotPasswordPresenter {
 

@@ -2,9 +2,10 @@ package cazimir.com.bancuribune.presenter.login;
 
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
+import cazimir.com.bancuribune.callbacks.login.OnCheckIfLoggedInCallback;
 import cazimir.com.bancuribune.presenter.auth.IAuthPresenter;
 import cazimir.com.bancuribune.view.login.OnLoginWithEmailFinishedListener;
-import cazimir.com.bancuribune.callbacks.login.ILoginActivityView;
+import cazimir.com.bancuribune.view.login.ILoginActivityView;
 
 /**
  * This class handles login logic

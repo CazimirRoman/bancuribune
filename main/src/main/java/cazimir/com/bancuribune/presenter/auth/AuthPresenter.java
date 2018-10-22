@@ -18,14 +18,15 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import cazimir.com.bancuribune.presenter.login.OnCheckIfLoggedInCallback;
+import cazimir.com.bancuribune.callbacks.login.OnLoginWithFacebookCallback;
+import cazimir.com.bancuribune.callbacks.login.OnCheckIfLoggedInCallback;
 import cazimir.com.bancuribune.view.login.OnLoginWithEmailFinishedListener;
-import cazimir.com.bancuribune.view.register.OnRegistrationFinishedListener;
+import cazimir.com.bancuribune.callbacks.register.OnRegistrationFinishedListener;
 import cazimir.com.bancuribune.view.forgotPassword.OnResendVerificationEmailListener;
 import cazimir.com.bancuribune.view.forgotPassword.OnResetPasswordListener;
 import cazimir.com.bancuribune.base.IGeneralView;
-import cazimir.com.bancuribune.callbacks.login.ILoginActivityView;
-import cazimir.com.bancuribune.callbacks.myJokes.IMyJokesActivityView;
+import cazimir.com.bancuribune.view.login.ILoginActivityView;
+import cazimir.com.bancuribune.view.profile.IMyJokesActivityView;
 
 public class AuthPresenter implements IAuthPresenter {
 

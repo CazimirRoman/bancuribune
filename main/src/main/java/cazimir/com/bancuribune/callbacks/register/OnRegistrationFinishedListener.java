@@ -1,4 +1,4 @@
-package cazimir.com.bancuribune.view.register;
+package cazimir.com.bancuribune.callbacks.register;
 
 /**
  * TODO: Add a class header comment!

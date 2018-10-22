@@ -1,4 +1,4 @@
-package cazimir.com.bancuribune.callbacks.forgotPassword;
+package cazimir.com.bancuribune.view.forgotPassword;
 
 import cazimir.com.bancuribune.base.IGeneralView;
 

@@ -53,7 +53,6 @@ import cazimir.com.bancuribune.BuildConfig;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
-import cazimir.com.bancuribune.callbacks.list.IMainActivityView;
 import cazimir.com.bancuribune.callbacks.list.OnJokeClickListener;
 import cazimir.com.bancuribune.callbacks.list.OnUpdateListFinished;
 import cazimir.com.bancuribune.constant.Constants;
