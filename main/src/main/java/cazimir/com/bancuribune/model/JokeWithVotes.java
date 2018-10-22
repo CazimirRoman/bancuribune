@@ -1,6 +1,9 @@
 package cazimir.com.bancuribune.model;
 
-public class Joke {
+import java.util.ArrayList;
+import java.util.List;
+
+public class JokeWithVotes {
 
     private String uid;
     private String jokeText;
@@ -9,15 +12,16 @@ public class Joke {
     private String createdBy;
     private String userName;
     private int points;
+    private List<Vote> votes = new ArrayList<>();
 
-    public Joke() {
+    public JokeWithVotes() {
     }
 
     public void setApproved(boolean approved) {
         this.approved = approved;
     }
 
-    public Joke(String text) {
+    public JokeWithVotes(String text) {
         this.jokeText = text;
         this.approved = false;
         this.createdAt = System.currentTimeMillis();
@@ -68,6 +72,14 @@ public class Joke {
         this.uid = uid;
     }
 
+    public List<Vote> getVotes() {
+        return votes;
+    }
+
+    public void setVotes(List<Vote> votes) {
+        this.votes = votes;
+    }
+
     @Override
     public boolean equals(Object o){
         if(o == this) return true;
@@ -78,5 +90,9 @@ public class Joke {
         Joke joke = (Joke) o;
 
         return joke.getUid().equals(uid);
+    }
+
+    public void addVoteToList(Vote vote) {
+        this.votes.add(vote);
     }
 }

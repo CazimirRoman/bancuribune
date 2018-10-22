@@ -1,5 +1,8 @@
 package cazimir.com.bancuribune.repository;
 
+import android.support.annotation.NonNull;
+import android.util.Log;
+
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,6 +36,7 @@ import cazimir.com.bancuribune.callbacks.repository.OnShowReminderToAddListener;
 import cazimir.com.bancuribune.callbacks.repository.OnUpdateRankPointsSuccess;
 import cazimir.com.bancuribune.constant.Constants;
 import cazimir.com.bancuribune.model.Joke;
+import cazimir.com.bancuribune.model.JokeWithVotes;
 import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.model.User;
 import cazimir.com.bancuribune.model.Vote;
@@ -41,6 +45,8 @@ import cazimir.com.bancuribune.utils.UtilHelper;
 import static cazimir.com.bancuribune.constant.Constants.NO_MODIFICATIONS;
 
 public class JokesRepository implements IJokesRepository {
+
+    private static final String TAG = JokesRepository.class.getSimpleName();
 
     private FirebaseDatabase database;
 
@@ -53,6 +59,7 @@ public class JokesRepository implements IJokesRepository {
     private String keyStep;
 
     private Boolean debugDB;
+    private boolean changeRunning;
 
     public JokesRepository(Boolean debugDB) {
         this.debugDB = debugDB;
@@ -821,4 +828,81 @@ public class JokesRepository implements IJokesRepository {
         });
     }
 
+    @Override
+    public void getAllVotes() {
+        votesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                ArrayList<Vote> votes = new ArrayList<>();
+
+                for (DataSnapshot voteSnapshot : dataSnapshot.getChildren()) {
+
+                    final Vote vote = voteSnapshot.getValue(Vote.class);
+
+                    votes.add(vote);
+
+
+                }
+
+                moveVotesToJoke(votes);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d(TAG, "Could not get values: " + databaseError);
+            }
+        });
+    }
+
+    private void moveVotesToJoke(ArrayList<Vote> votes) {
+        for (final Vote vote : votes) {
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    Query query = jokesRef.orderByChild("uid").equalTo(vote.getJokeId());
+
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                            JokeWithVotes joke = new JokeWithVotes();
+
+                            for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                                joke = childSnapshot.getValue(JokeWithVotes.class);
+                            }
+
+                            joke.addVoteToList(vote);
+
+                            jokesRef.child(joke.getUid()).child("votes").setValue(vote, new DatabaseReference.CompletionListener() {
+
+                                @Override
+                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                    if (databaseError != null) {
+                                        changeRunning = false;
+                                        Log.d(TAG, "Something went wrong: " + databaseError.getMessage());
+                                    } else {
+                                        changeRunning = false;
+                                        Log.d(TAG, "Moved vote to joke object");
+
+
+                                    }
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+
+                }
+            }).start();
+
+        }
+    }
 }

@@ -116,9 +116,9 @@ public class MainPresenter implements IMainPresenter {
             @Override
             public void OnUpdatePointsSuccess(Joke joke) {
                 mMainActivityView.refreshAdapter(joke);
+                writeVoteLogToDB(joke.getUid());
             }
         }, joke);
-        writeVoteLogToDB(joke.getUid());
     }
 
     @Override
@@ -212,5 +212,10 @@ public class MainPresenter implements IMainPresenter {
                 FirebaseCrash.log("User added successfully!");
             }
         }, currentUserID, userName);
+    }
+
+    @Override
+    public void migrateAllVotesToJoke() {
+        mJokesRepository.getAllVotes();
     }
 }

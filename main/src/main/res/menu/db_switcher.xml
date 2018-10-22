@@ -3,4 +3,8 @@
     <item
         android:id="@+id/switchDB"
         android:title="@string/switchDB" />
+
+    <item
+        android:id="@+id/migrate"
+        android:title="@string/migrate" />
 </menu>

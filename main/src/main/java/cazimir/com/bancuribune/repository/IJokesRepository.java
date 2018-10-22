@@ -42,4 +42,5 @@ public interface IJokesRepository {
     void addUserToDatabase(OnAddUserListener listener, String userId, String userName);
     void checkIfAdmin(OnAdminCheckCallback listener, String userId);
     void getUsersWithMostPoints(OnGetUsersWithMostPointsCompleted listener);
+    void getAllVotes();
 }

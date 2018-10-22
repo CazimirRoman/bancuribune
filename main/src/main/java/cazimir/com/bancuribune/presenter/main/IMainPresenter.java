@@ -15,4 +15,5 @@ public interface IMainPresenter {
     void writeVoteLogToDB(String uid);
     void addRankToDatabase();
     void addUserToDatabase(String currentUserID, String userName);
+    void migrateAllVotesToJoke();
 }
