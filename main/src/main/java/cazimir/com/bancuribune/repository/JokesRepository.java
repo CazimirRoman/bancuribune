@@ -61,6 +61,8 @@ public class JokesRepository implements IJokesRepository {
     private Boolean debugDB;
     private boolean changeRunning;
 
+    private JokeWithVotes mJokeToBePopulatedWithVotes = new JokeWithVotes();
+
     public JokesRepository(Boolean debugDB) {
         this.debugDB = debugDB;
         database = FirebaseDatabase.getInstance();
@@ -841,8 +843,6 @@ public class JokesRepository implements IJokesRepository {
                     final Vote vote = voteSnapshot.getValue(Vote.class);
 
                     votes.add(vote);
-
-
                 }
 
                 moveVotesToJoke(votes);
@@ -856,7 +856,10 @@ public class JokesRepository implements IJokesRepository {
     }
 
     private void moveVotesToJoke(ArrayList<Vote> votes) {
+
         for (final Vote vote : votes) {
+
+            mJokeToBePopulatedWithVotes = null;
 
             new Thread(new Runnable() {
                 @Override
@@ -868,15 +871,14 @@ public class JokesRepository implements IJokesRepository {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                            JokeWithVotes joke = new JokeWithVotes();
-
+                        //I need to call getChildren before I can get value, otherwise it will be null.
                             for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                                joke = childSnapshot.getValue(JokeWithVotes.class);
+                                mJokeToBePopulatedWithVotes = childSnapshot.getValue(JokeWithVotes.class);
                             }
 
-                            joke.addVoteToList(vote);
+                            mJokeToBePopulatedWithVotes.addVoteToList(vote);
 
-                            jokesRef.child(joke.getUid()).child("votes").setValue(vote, new DatabaseReference.CompletionListener() {
+                            jokesRef.child(mJokeToBePopulatedWithVotes.getUid()).child("votes").push().setValue(vote, new DatabaseReference.CompletionListener() {
 
                                 @Override
                                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {

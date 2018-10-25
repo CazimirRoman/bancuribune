@@ -104,8 +104,8 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
                     hideKeyboard();
 
                     if (isInternetAvailable()) {
-                        String email = etEmail.getText().toString();
-                        String password = etPassword.getText().toString();
+                        String email = etEmail.getText().toString().trim();
+                        String password = etPassword.getText().toString().trim();
                         UtilHelper.validateFormData(new OnFormValidatedListener() {
                             @Override
                             public void onValidateSuccess(String email, String password) {
