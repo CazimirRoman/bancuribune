@@ -5,4 +5,5 @@ package cazimir.com.bancuribune.presenter.login;
  */
 public interface ILoginPresenter {
     void performLogin(String email, String password);
+    void checkIfUserLoggedIn();
 }

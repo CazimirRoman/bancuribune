@@ -1,4 +1,4 @@
-package cazimir.com.bancuribune.repository;
+package cazimir.com.bancuribune.callbacks.repository;
 
 /**
  * TODO: Add a class header comment!

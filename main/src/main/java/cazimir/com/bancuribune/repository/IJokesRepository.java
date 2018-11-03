@@ -13,6 +13,12 @@ import cazimir.com.bancuribune.callbacks.list.OnUpdatePointsFinishedListener;
 import cazimir.com.bancuribune.callbacks.myJokes.OnGetMyJokesListener;
 import cazimir.com.bancuribune.callbacks.reporting.OnGetTotalNumberOfJokesCompleted;
 import cazimir.com.bancuribune.callbacks.reporting.OnGetUsersWithMostPointsCompleted;
+import cazimir.com.bancuribune.callbacks.repository.OnAddRankFinishedListener;
+import cazimir.com.bancuribune.callbacks.repository.OnAddUserListener;
+import cazimir.com.bancuribune.callbacks.repository.OnAdminCheckCallback;
+import cazimir.com.bancuribune.callbacks.repository.OnCheckIfRankDataInDBListener;
+import cazimir.com.bancuribune.callbacks.repository.OnShowReminderToAddListener;
+import cazimir.com.bancuribune.callbacks.repository.OnUpdateRankPointsSuccess;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.model.Vote;
@@ -36,4 +42,5 @@ public interface IJokesRepository {
     void addUserToDatabase(OnAddUserListener listener, String userId, String userName);
     void checkIfAdmin(OnAdminCheckCallback listener, String userId);
     void getUsersWithMostPoints(OnGetUsersWithMostPointsCompleted listener);
+    void getAllVotes();
 }

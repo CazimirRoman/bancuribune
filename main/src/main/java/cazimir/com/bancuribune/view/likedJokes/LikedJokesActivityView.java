@@ -22,7 +22,6 @@ import butterknife.BindView;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
-import cazimir.com.bancuribune.callbacks.likedJokes.ILikedJokesActivityView;
 import cazimir.com.bancuribune.callbacks.list.OnJokeClickListener;
 import cazimir.com.bancuribune.constant.Constants;
 import cazimir.com.bancuribune.model.Joke;

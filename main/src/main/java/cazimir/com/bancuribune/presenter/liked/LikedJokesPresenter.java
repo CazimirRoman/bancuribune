@@ -3,7 +3,7 @@ package cazimir.com.bancuribune.presenter.liked;
 import java.util.Arrays;
 import java.util.List;
 
-import cazimir.com.bancuribune.callbacks.likedJokes.ILikedJokesActivityView;
+import cazimir.com.bancuribune.view.likedJokes.ILikedJokesActivityView;
 import cazimir.com.bancuribune.callbacks.likedJokes.OnGetLikedJokesListener;
 import cazimir.com.bancuribune.constant.Constants;
 import cazimir.com.bancuribune.model.Joke;

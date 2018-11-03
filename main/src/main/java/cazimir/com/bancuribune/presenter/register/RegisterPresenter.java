@@ -3,8 +3,8 @@ package cazimir.com.bancuribune.presenter.register;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
 import cazimir.com.bancuribune.presenter.auth.IAuthPresenter;
-import cazimir.com.bancuribune.view.register.OnRegistrationFinishedListener;
-import cazimir.com.bancuribune.callbacks.register.IRegisterActivityView;
+import cazimir.com.bancuribune.callbacks.register.OnRegistrationFinishedListener;
+import cazimir.com.bancuribune.view.register.IRegisterActivityView;
 
 public class RegisterPresenter implements IRegisterPresenter {
 

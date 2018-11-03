@@ -1,4 +1,4 @@
-package cazimir.com.bancuribune.callbacks.register;
+package cazimir.com.bancuribune.view.register;
 
 import cazimir.com.bancuribune.base.IGeneralView;
 

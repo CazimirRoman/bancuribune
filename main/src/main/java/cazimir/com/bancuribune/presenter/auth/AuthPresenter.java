@@ -18,13 +18,15 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import cazimir.com.bancuribune.callbacks.login.OnLoginWithFacebookCallback;
+import cazimir.com.bancuribune.callbacks.login.OnCheckIfLoggedInCallback;
 import cazimir.com.bancuribune.view.login.OnLoginWithEmailFinishedListener;
-import cazimir.com.bancuribune.view.register.OnRegistrationFinishedListener;
+import cazimir.com.bancuribune.callbacks.register.OnRegistrationFinishedListener;
 import cazimir.com.bancuribune.view.forgotPassword.OnResendVerificationEmailListener;
 import cazimir.com.bancuribune.view.forgotPassword.OnResetPasswordListener;
 import cazimir.com.bancuribune.base.IGeneralView;
-import cazimir.com.bancuribune.callbacks.login.ILoginActivityView;
-import cazimir.com.bancuribune.callbacks.myJokes.IMyJokesActivityView;
+import cazimir.com.bancuribune.view.login.ILoginActivityView;
+import cazimir.com.bancuribune.view.profile.IMyJokesActivityView;
 
 public class AuthPresenter implements IAuthPresenter {
 
@@ -87,13 +89,13 @@ public class AuthPresenter implements IAuthPresenter {
     }
 
     @Override
-    public FacebookCallback<LoginResult> loginWithFacebook() {
+    public FacebookCallback<LoginResult> loginWithFacebook(final OnLoginWithFacebookCallback callback) {
 
         return new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
 
-                handleFacebookAccessToken(loginResult.getAccessToken());
+                handleFacebookAccessToken(loginResult.getAccessToken(), callback);
             }
 
             @Override
@@ -109,10 +111,9 @@ public class AuthPresenter implements IAuthPresenter {
     }
 
     @Override
-    public void checkIfUserLoggedIn() {
+    public void checkIfUserLoggedIn(OnCheckIfLoggedInCallback callback) {
         if (isLoggedInViaEmail() || isLoggedInViaFacebook()) {
-            ILoginActivityView view = (ILoginActivityView) this.mView.getInstance();
-            view.launchMainActivity();
+            callback.isLoggedIn();
         }
     }
 
@@ -162,7 +163,7 @@ public class AuthPresenter implements IAuthPresenter {
         view.clearSharedPreferences();
     }
 
-    private void handleFacebookAccessToken(AccessToken accessToken) {
+    private void handleFacebookAccessToken(AccessToken accessToken, final OnLoginWithFacebookCallback callback) {
 
         final ILoginActivityView login = (ILoginActivityView) this.mView.getInstance();
         Activity context = login.getContext();
@@ -173,16 +174,13 @@ public class AuthPresenter implements IAuthPresenter {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            callback.onSuccess();
                             // Sign in success, update UI with the signed-in user's information
-                            login.loginSuccess();
-                            login.hideProgress();
 
                         } else {
+                            callback.onFailed(task.getException().toString());
                             // If sign in fails, display a message to the user.
-                            login.loginFailed(task.getException().toString());
-                            login.hideProgress();
                         }
-
                     }
                 });
     }

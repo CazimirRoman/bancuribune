@@ -1,4 +1,4 @@
-package cazimir.com.bancuribune.callbacks.myJokes;
+package cazimir.com.bancuribune.view.profile;
 
 
 import java.util.List;

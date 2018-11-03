@@ -24,7 +24,6 @@ import butterknife.BindView;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
-import cazimir.com.bancuribune.callbacks.myJokes.IMyJokesActivityView;
 import cazimir.com.bancuribune.callbacks.myJokes.OnCalculatePointsListener;
 import cazimir.com.bancuribune.callbacks.myJokes.OnGetFacebookNameListener;
 import cazimir.com.bancuribune.constant.Constants;

@@ -1,5 +1,4 @@
-package cazimir.com.bancuribune.repository;
-
+package cazimir.com.bancuribune.callbacks.repository;
 
 public interface OnUpdateRankPointsSuccess {
     void onUpdateRankPointsSuccess();

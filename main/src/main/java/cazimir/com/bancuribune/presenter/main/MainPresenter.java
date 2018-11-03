@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import cazimir.com.bancuribune.callbacks.list.IMainActivityView;
+import cazimir.com.bancuribune.view.list.IMainActivityView;
 import cazimir.com.bancuribune.callbacks.list.OnAddJokeVoteFinishedListener;
 import cazimir.com.bancuribune.callbacks.list.OnAllowedToAddFinishedListener;
 import cazimir.com.bancuribune.callbacks.list.OnCheckIfVotedFinishedListener;
@@ -19,9 +19,9 @@ import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.model.Vote;
 import cazimir.com.bancuribune.presenter.auth.IAuthPresenter;
 import cazimir.com.bancuribune.repository.IJokesRepository;
-import cazimir.com.bancuribune.repository.OnAddRankFinishedListener;
-import cazimir.com.bancuribune.repository.OnAddUserListener;
-import cazimir.com.bancuribune.repository.OnShowReminderToAddListener;
+import cazimir.com.bancuribune.callbacks.repository.OnAddRankFinishedListener;
+import cazimir.com.bancuribune.callbacks.repository.OnAddUserListener;
+import cazimir.com.bancuribune.callbacks.repository.OnShowReminderToAddListener;
 
 public class MainPresenter implements IMainPresenter {
 
@@ -114,9 +114,9 @@ public class MainPresenter implements IMainPresenter {
             @Override
             public void OnUpdatePointsSuccess(Joke joke) {
                 mMainActivityView.refreshAdapter(joke);
+                writeVoteLogToDB(joke.getUid());
             }
         }, joke);
-        writeVoteLogToDB(joke.getUid());
     }
 
     @Override
@@ -210,5 +210,10 @@ public class MainPresenter implements IMainPresenter {
                 FirebaseCrash.log("User added successfully!");
             }
         }, currentUserID, userName);
+    }
+
+    @Override
+    public void migrateAllVotesToJoke() {
+        mJokesRepository.getAllVotes();
     }
 }

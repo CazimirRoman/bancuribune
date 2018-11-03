@@ -19,9 +19,9 @@ import butterknife.OnClick;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
-import cazimir.com.bancuribune.callbacks.login.ILoginActivityView;
 import cazimir.com.bancuribune.callbacks.login.OnFormValidatedListener;
 import cazimir.com.bancuribune.presenter.auth.AuthPresenter;
+import cazimir.com.bancuribune.callbacks.login.OnLoginWithFacebookCallback;
 import cazimir.com.bancuribune.presenter.login.ILoginPresenter;
 import cazimir.com.bancuribune.presenter.login.LoginPresenter;
 import cazimir.com.bancuribune.utils.UtilHelper;
@@ -67,7 +67,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         mPresenter = new LoginPresenter(this, new AuthPresenter(this));
         mCallbackManager = CallbackManager.Factory.create();
         mAuthPresenter = new AuthPresenter(this);
-        mAuthPresenter.checkIfUserLoggedIn();
+        mPresenter.checkIfUserLoggedIn();
         setFacebookButtonClickListener();
         initUI();
     }
@@ -104,8 +104,8 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
                     hideKeyboard();
 
                     if (isInternetAvailable()) {
-                        String email = etEmail.getText().toString();
-                        String password = etPassword.getText().toString();
+                        String email = etEmail.getText().toString().trim();
+                        String password = etPassword.getText().toString().trim();
                         UtilHelper.validateFormData(new OnFormValidatedListener() {
                             @Override
                             public void onValidateSuccess(String email, String password) {
@@ -164,7 +164,19 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
             @Override
             public void onClick(View view) {
                 facebookButton.setReadPermissions("email", "public_profile");
-                facebookButton.registerCallback(mCallbackManager, mAuthPresenter.loginWithFacebook());
+                facebookButton.registerCallback(mCallbackManager, mAuthPresenter.loginWithFacebook(new OnLoginWithFacebookCallback() {
+                    @Override
+                    public void onSuccess() {
+                        loginSuccess();
+                        hideProgress();
+                    }
+
+                    @Override
+                    public void onFailed(String error) {
+                        loginFailed(error);
+                        hideProgress();
+                    }
+                }));
                 facebookButton.setVisibility(View.GONE);
             }
         });

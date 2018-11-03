@@ -16,7 +16,6 @@ import butterknife.BindView;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
-import cazimir.com.bancuribune.callbacks.forgotPassword.IForgotPasswordActivityView;
 import cazimir.com.bancuribune.presenter.auth.AuthPresenter;
 import cazimir.com.bancuribune.presenter.forgot.ForgotPasswordPresenter;
 import cazimir.com.bancuribune.utils.UtilHelper;

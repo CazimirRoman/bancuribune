@@ -1,4 +1,4 @@
-package cazimir.com.bancuribune.callbacks.list;
+package cazimir.com.bancuribune.view.list;
 
 import java.util.Date;
 import java.util.List;

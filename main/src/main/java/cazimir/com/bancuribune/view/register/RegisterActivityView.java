@@ -18,7 +18,6 @@ import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.callbacks.login.OnFormValidatedListener;
-import cazimir.com.bancuribune.callbacks.register.IRegisterActivityView;
 import cazimir.com.bancuribune.constant.Constants;
 import cazimir.com.bancuribune.presenter.auth.AuthPresenter;
 import cazimir.com.bancuribune.presenter.register.IRegisterPresenter;
