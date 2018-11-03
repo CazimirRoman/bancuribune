@@ -57,7 +57,7 @@ public class Constants {
     public static final int REGISTER_ACTIVITY_REQ_CODE = 745;
     public static final int LEVEL_UP = 6;
     public static final int ADD_JOKE_REMINDER = 7;
-    public static final String ANA_MARIA = "IINgcJQYhrar9QBi2qcojfRqely2";
-    public static final String CAZIMIR = "eXDuTHO9UPZAS02HctjQHI2hsRv2";
+    int[] intArray = new int[]{ 1,2,3,4,5,6,7,8,9,10 };
+    public static final String[] ADMINS = new String[]{"IINgcJQYhrar9QBi2qcojfRqely2", "eXDuTHO9UPZAS02HctjQHI2hsRv2", "ry6AK3WcFdNgEXhbNXqZEThtCFj2"};
     public static final String NO_MODIFICATIONS = "no modifications";
 }

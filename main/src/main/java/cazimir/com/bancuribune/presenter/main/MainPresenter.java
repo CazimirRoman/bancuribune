@@ -3,6 +3,7 @@ package cazimir.com.bancuribune.presenter.main;
 import com.google.firebase.crash.FirebaseCrash;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -40,11 +41,8 @@ public class MainPresenter implements IMainPresenter {
 
     @Override
     public boolean isAdmin() {
-        if(mAuthPresenter.getCurrentUserID().equals(Constants.CAZIMIR) ||
-                mAuthPresenter.getCurrentUserID().equals(Constants.ANA_MARIA)){
-            return true;
-        }
-        return false;
+        List<String> list = Arrays.asList(Constants.ADMINS);
+        return list.contains(mAuthPresenter.getCurrentUserID());
     }
 
     @Override

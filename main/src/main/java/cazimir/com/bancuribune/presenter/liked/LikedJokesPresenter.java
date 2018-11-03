@@ -1,5 +1,8 @@
 package cazimir.com.bancuribune.presenter.liked;
 
+import java.util.Arrays;
+import java.util.List;
+
 import cazimir.com.bancuribune.callbacks.likedJokes.ILikedJokesActivityView;
 import cazimir.com.bancuribune.callbacks.likedJokes.OnGetLikedJokesListener;
 import cazimir.com.bancuribune.constant.Constants;
@@ -41,11 +44,8 @@ public class LikedJokesPresenter implements ILikedJokesPresenter {
 
     @Override
     public boolean isAdmin() {
-        if(mAuthPresenter.getCurrentUserID().equals(Constants.CAZIMIR) ||
-                mAuthPresenter.getCurrentUserID().equals(Constants.ANA_MARIA)){
-            return true;
-        }
-        return false;
+        List<String> list = Arrays.asList(Constants.ADMINS);
+        return list.contains(mAuthPresenter.getCurrentUserID());
     }
 
     @Override
