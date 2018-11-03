@@ -1,5 +1,6 @@
 package cazimir.com.bancuribune.view.tutorial;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.utils.CustomPaperOnboardingEngine;
+import cazimir.com.bancuribune.view.list.MainActivityView;
 
 /**
  * Class that handles the tutorial activity launch
@@ -28,7 +30,7 @@ public class TutorialActivityView extends AppCompatActivity {
             @Override
             public void onRightOut() {
                 // Probably here will be your exit action
-                finish();
+                handleTutorialClosing();
             }
         });
 
@@ -57,5 +59,16 @@ public class TutorialActivityView extends AppCompatActivity {
         elements.add(scr4);
         elements.add(scr5);
         return elements;
+    }
+
+    @Override
+    public void onBackPressed() {
+        handleTutorialClosing();
+    }
+
+    private void handleTutorialClosing() {
+        Intent i = new Intent(TutorialActivityView.this, MainActivityView.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
     }
 }

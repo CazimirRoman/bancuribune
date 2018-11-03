@@ -144,8 +144,8 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         super.onCreate(savedInstanceState);
         DatabaseTypeSingleton type = DatabaseTypeSingleton.getInstance();
         mPresenter = new MainPresenter(this, new AuthPresenter(this), new JokesRepository(type.isDebug()));
-        setSwipeRefreshListener();
         onboardingNeeded();
+        setSwipeRefreshListener();
         initializeRatingReminder();
         checkIfReminderToAddShouldBeShown();
         updateUIForAdmin();
