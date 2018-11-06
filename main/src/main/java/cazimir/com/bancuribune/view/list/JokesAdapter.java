@@ -20,7 +20,6 @@ import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.callbacks.list.OnJokeClickListener;
 import cazimir.com.bancuribune.callbacks.list.OnUpdateListFinished;
 import cazimir.com.bancuribune.model.Joke;
-import cazimir.com.bancuribune.utils.UtilHelper;
 
 public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder> {
 
@@ -43,7 +42,6 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
         TextView share;
         TextView vote;
         TextView points;
-        TextView date;
         TextView heart;
 
 
@@ -54,7 +52,6 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
             share = view.findViewById(R.id.share);
             vote = view.findViewById(R.id.vote);
             points = view.findViewById(R.id.points);
-            date = view.findViewById(R.id.date);
             heart = view.findViewById(R.id.heart_icon);
         }
     }
@@ -82,15 +79,14 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
             }
         });
 
-        holder.vote.setOnClickListener(new OnClickListener() {
+        holder.heart.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onJokeVoted(jokes.get(position));
+                listener.onJokeVoted(jokes.get(position), position);
             }
         });
 
         holder.points.setText(String.valueOf(joke.getPoints()));
-        holder.date.setText(UtilHelper.convertEpochToDate(joke.getCreatedAt()));
 
         holder.expandableTextView.setOnExpandStateChangeListener(new ExpandableTextView.OnExpandStateChangeListener() {
             @Override

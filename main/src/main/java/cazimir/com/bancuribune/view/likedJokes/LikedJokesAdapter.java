@@ -27,13 +27,17 @@ public class LikedJokesAdapter extends EmptyRecyclerView.Adapter<LikedJokesAdapt
         this.listener = listener;
     }
 
+    public void resetLikedJokesList() {
+        myLikedJokes = new ArrayList<>();
+    }
+
     class MyViewHolder extends EmptyRecyclerView.ViewHolder{
 
         ExpandableTextView expandableTextView;
         TextView approved;
         TextView points;
-        TextView date;
         TextView share;
+        TextView remove;
         View pointsLayout;
 
         MyViewHolder(View view){
@@ -41,9 +45,9 @@ public class LikedJokesAdapter extends EmptyRecyclerView.Adapter<LikedJokesAdapt
             expandableTextView = view.findViewById(R.id.expand_joke_text_view);
             approved = view.findViewById(R.id.approved);
             points = view.findViewById(R.id.points);
-            date = view.findViewById(R.id.date);
             pointsLayout = view.findViewById(R.id.my_points);
             share = view.findViewById(R.id.share);
+            remove = view.findViewById(R.id.heart_icon);
         }
     }
 
@@ -51,23 +55,32 @@ public class LikedJokesAdapter extends EmptyRecyclerView.Adapter<LikedJokesAdapt
         myLikedJokes.add(joke);
     }
 
+    public void remove(Joke joke){
+        myLikedJokes.remove(myLikedJokes.get(myLikedJokes.indexOf(joke)));
+    }
+
     @Override
     public LikedJokesAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.my_joke_list_row, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.liked_joke_row, parent, false);
         return new LikedJokesAdapter.MyViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(final LikedJokesAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(final LikedJokesAdapter.MyViewHolder holder, final int position) {
         SparseBooleanArray mTogglePositions = new SparseBooleanArray();
         final Joke joke = myLikedJokes.get(position);
         holder.expandableTextView.setText(joke.getJokeText(), mTogglePositions, position);
         holder.points.setText(String.valueOf(joke.getPoints()));
-        holder.date.setVisibility(View.GONE);
         holder.share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 listener.onJokeShared(joke);
+            }
+        });
+        holder.remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onJokeUnlike(myLikedJokes.get(position), position);
             }
         });
     }

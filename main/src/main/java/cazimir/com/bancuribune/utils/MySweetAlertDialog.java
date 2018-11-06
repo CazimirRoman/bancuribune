@@ -6,6 +6,7 @@ import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.constant.Constants;
+import cazimir.com.bancuribune.view.likedJokes.LikedJokesActivityView;
 import cazimir.com.bancuribune.view.list.MainActivityView;
 
 public class MySweetAlertDialog {
@@ -63,6 +64,21 @@ public class MySweetAlertDialog {
                         .setTitleText("Bloop!")
                         .setCustomImage(R.drawable.ic_add_joke_reminder)
                         .setContentText(message)
+                        .show();
+                break;
+
+            case Constants.REMOVE_FROM_FAVORITES:
+                new SweetAlertDialog(mContext, SweetAlertDialog.WARNING_TYPE)
+                        .setTitleText("Șterge de la favorite")
+                        .setContentText(message)
+                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                            @Override
+                            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                LikedJokesActivityView likedJokesActivityView = (LikedJokesActivityView) mContext;
+                                sweetAlertDialog.dismissWithAnimation();
+                                likedJokesActivityView.removeJokeFromFavorites();
+                            }
+                        })
                         .show();
                 break;
         }

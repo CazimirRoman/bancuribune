@@ -30,4 +30,5 @@ public interface IMainActivityView extends IGeneralView {
     void playOnVotedAudio();
     void sendJokeToTrello(String joke);
     void goToMyJokesActivity();
+    void writeToLog(String message);
 }

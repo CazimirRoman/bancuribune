@@ -3,6 +3,7 @@ package cazimir.com.bancuribune.presenter.main;
 import com.google.firebase.crash.FirebaseCrash;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -40,11 +41,8 @@ public class MainPresenter implements IMainPresenter {
 
     @Override
     public boolean isAdmin() {
-        if(mAuthPresenter.getCurrentUserID().equals(Constants.CAZIMIR) ||
-                mAuthPresenter.getCurrentUserID().equals(Constants.ANA_MARIA)){
-            return true;
-        }
-        return false;
+        List<String> list = Arrays.asList(Constants.ADMINS);
+        return list.contains(mAuthPresenter.getCurrentUserID());
     }
 
     @Override
@@ -53,13 +51,6 @@ public class MainPresenter implements IMainPresenter {
         if(isAdmin()){
             mMainActivityView.showAdminButtons();
         }
-
-//        mJokesRepository.checkIfAdmin(new OnAdminCheckCallback() {
-//            @Override
-//            public void onIsAdmin() {
-//                mMainActivityView.showAdminButtons();
-//            }
-//        }, mAuthPresenter.getCurrentUserID());
     }
 
     @Override
@@ -118,6 +109,7 @@ public class MainPresenter implements IMainPresenter {
                 mMainActivityView.refreshAdapter(joke);
             }
         }, joke);
+
         writeVoteLogToDB(joke.getUid());
     }
 
@@ -129,7 +121,7 @@ public class MainPresenter implements IMainPresenter {
         mJokesRepository.writeJokeVote(new OnAddJokeVoteFinishedListener() {
             @Override
             public void onAddJokeVoteSuccess() {
-                mMainActivityView.playOnVotedAudio();
+                mMainActivityView.writeToLog("Vote successfully written to DB");
             }
 
             @Override

@@ -85,6 +85,7 @@ import static cazimir.com.bancuribune.constant.Constants.EVENT_SHARED;
 import static cazimir.com.bancuribune.constant.Constants.EVENT_VOTED;
 import static cazimir.com.bancuribune.constant.Constants.HAMSIE;
 import static cazimir.com.bancuribune.constant.Constants.HERING;
+import static cazimir.com.bancuribune.constant.Constants.LIKED_JOKES_REQ_CODE;
 import static cazimir.com.bancuribune.constant.Constants.MY_STORAGE_REQ_CODE;
 import static cazimir.com.bancuribune.constant.Constants.RANK;
 import static cazimir.com.bancuribune.constant.Constants.RANK_NAME;
@@ -385,7 +386,9 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
             }
 
             @Override
-            public void onJokeVoted(Joke joke) {
+            public void onJokeVoted(Joke joke, int position) {
+                animateHeartIcon(position);
+                playOnVotedAudio();
                 logEvent(EVENT_VOTED, null);
                 mPresenter.checkIfAlreadyVoted(joke);
             }
@@ -393,6 +396,11 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
             @Override
             public void onJokeExpanded() {
                 logEvent(Constants.EVENT_JOKE_EXPANDED, null);
+            }
+
+            @Override
+            public void onJokeUnlike(Joke joke, int position) {
+
             }
         });
         jokesListRecyclerView.setAdapter(adapter);
@@ -511,6 +519,11 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         startActivityForResult(new Intent(new Intent(this, MyJokesActivityView.class)), USER_LOGOUT_REQ);
     }
 
+    @Override
+    public void writeToLog(String message) {
+        Log.d(TAG, message);
+    }
+
     @OnClick(R.id.adminFAB)
     public void startAdminJokesActivity() {
         if (isInternetAvailable()) {
@@ -530,7 +543,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     @OnClick(R.id.myLikedJokesButtonFAB)
     public void startMyLikedJokesActivity() {
         if (isInternetAvailable()) {
-            startActivity(new Intent(this, LikedJokesActivityView.class));
+            startActivityForResult(new Intent(this, LikedJokesActivityView.class), LIKED_JOKES_REQ_CODE);
         }
     }
 
@@ -568,6 +581,10 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
             if (resultCode == RESULT_OK) {
                 this.finish();
             }
+
+        } else if(requestCode == LIKED_JOKES_REQ_CODE) {
+
+                getAllJokesData(true, false);
 
         }
     }
@@ -653,7 +670,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         adapter.updatePoints(new OnUpdateListFinished() {
             @Override
             public void onUpdateSuccess(int index) {
-                animateHeartIcon(index);
+                Log.d(TAG, "Points on joke updated");
             }
         }, joke);
     }
@@ -691,7 +708,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
                 });
                 heart.startAnimation(animationEnlarge);
             }
-        }, 5);
+        }, 1);
 
     }
 
