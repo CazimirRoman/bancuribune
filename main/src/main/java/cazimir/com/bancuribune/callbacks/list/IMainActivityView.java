@@ -23,6 +23,9 @@ public interface IMainActivityView extends IGeneralView {
     void updateRemainingAdds(int remaining);
     void hideSwipeRefresh();
     void refreshAdapter(Joke joke);
+
+    void addUserToDatabase();
+
     void refreshJokesListAdapter();
 
     void enableHeartIcon(int position);

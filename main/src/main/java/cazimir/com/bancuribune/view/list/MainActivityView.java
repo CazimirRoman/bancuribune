@@ -320,18 +320,18 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     private void onboardingNeeded() {
         if (isFirstRun()) {
             startTutorialActivity();
-            addRankToDatabase();
-            addUserToDatabase();
+            addRankAndUserToDB();
         }
     }
 
-    private void addUserToDatabase() {
+    @Override
+    public void addUserToDatabase() {
         mPresenter.addUserToDatabase(mPresenter.getAuthPresenter().getCurrentUserID(),
                 mPresenter.getAuthPresenter().getCurrentUserName());
     }
 
-    private void addRankToDatabase() {
-        mPresenter.addRankToDatabase();
+    private void addRankAndUserToDB() {
+        mPresenter.checkAndAddRankToDB();
     }
 
     private void startTutorialActivity() {
