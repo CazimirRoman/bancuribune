@@ -80,9 +80,9 @@ import static cazimir.com.bancuribune.constant.Constants.ADD_JOKE_LIMIT_SOMON;
 import static cazimir.com.bancuribune.constant.Constants.ADD_JOKE_LIMIT_STIUCA;
 import static cazimir.com.bancuribune.constant.Constants.ADD_JOKE_REQUEST;
 import static cazimir.com.bancuribune.constant.Constants.ADMIN;
+import static cazimir.com.bancuribune.constant.Constants.EVENT_JOKE_EXPANDED;
 import static cazimir.com.bancuribune.constant.Constants.EVENT_LEVEL_UP;
 import static cazimir.com.bancuribune.constant.Constants.EVENT_SHARED;
-import static cazimir.com.bancuribune.constant.Constants.EVENT_VOTED;
 import static cazimir.com.bancuribune.constant.Constants.HAMSIE;
 import static cazimir.com.bancuribune.constant.Constants.HERING;
 import static cazimir.com.bancuribune.constant.Constants.LIKED_JOKES_REQ_CODE;
@@ -387,15 +387,15 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
 
             @Override
             public void onJokeVoted(Joke joke, int position) {
+                disableHeartIcon(position);
                 animateHeartIcon(position);
                 playOnVotedAudio();
-                logEvent(EVENT_VOTED, null);
-                mPresenter.checkIfAlreadyVoted(joke);
+                mPresenter.checkIfAlreadyVoted(joke, position);
             }
 
             @Override
             public void onJokeExpanded() {
-                logEvent(Constants.EVENT_JOKE_EXPANDED, null);
+                logEvent(EVENT_JOKE_EXPANDED);
             }
 
             @Override
@@ -404,6 +404,15 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
             }
         });
         jokesListRecyclerView.setAdapter(adapter);
+    }
+
+    private void disableHeartIcon(int position) {
+        getViewHolder(position).heart.setEnabled(false);
+    }
+
+    @Override
+    public void enableHeartIcon(int position) {
+        getViewHolder(position).heart.setEnabled(true);
     }
 
     @Override
@@ -522,6 +531,12 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     @Override
     public void writeToLog(String message) {
         Log.d(TAG, message);
+    }
+
+    @Override
+    public void logEvent(String event) {
+        //from base class
+        logEvent(event, null);
     }
 
     @OnClick(R.id.adminFAB)
@@ -680,9 +695,9 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                JokesAdapter.MyViewHolder holder = (JokesAdapter.MyViewHolder) jokesListRecyclerView.findViewHolderForAdapterPosition(index);
-
+                JokesAdapter.MyViewHolder holder = getViewHolder(index);
                 final TextView heart = holder.heart;
+                heart.setEnabled(false);
 
                 final Animation animationEnlarge, animationShrink;
                 animationEnlarge = AnimationUtils.loadAnimation(MainActivityView.this,
@@ -710,6 +725,10 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
             }
         }, 1);
 
+    }
+
+    private JokesAdapter.MyViewHolder getViewHolder(int index) {
+        return (JokesAdapter.MyViewHolder) jokesListRecyclerView.findViewHolderForAdapterPosition(index);
     }
 
     @Override

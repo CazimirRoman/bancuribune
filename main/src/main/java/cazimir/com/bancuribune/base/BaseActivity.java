@@ -59,6 +59,10 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
         return mAlertDialog;
     }
 
+    protected boolean isAlertDialogShowing() throws Exception {
+        return mAlertDialog.isShowing();
+    }
+
     protected Toast buildToast(String message) {
 
         Toast mToast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
@@ -93,7 +97,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
         return FirebaseAnalytics.getInstance(this);
     }
 
-    protected void logEvent(String event, Bundle bundle) {
+    public void logEvent(String event, Bundle bundle) {
         getFirebaseAnalytics().logEvent(event, bundle);
     }
 }

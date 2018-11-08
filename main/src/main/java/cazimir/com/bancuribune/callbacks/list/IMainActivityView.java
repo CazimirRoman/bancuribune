@@ -24,6 +24,9 @@ public interface IMainActivityView extends IGeneralView {
     void hideSwipeRefresh();
     void refreshAdapter(Joke joke);
     void refreshJokesListAdapter();
+
+    void enableHeartIcon(int position);
+
     void showAlertDialog(String message, int type);
     Date addLastCheckDateToSharedPreferences();
     void checkIfNewRank(String rank);
@@ -31,4 +34,5 @@ public interface IMainActivityView extends IGeneralView {
     void sendJokeToTrello(String joke);
     void goToMyJokesActivity();
     void writeToLog(String message);
+    void logEvent(String event);
 }

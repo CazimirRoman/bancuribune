@@ -23,6 +23,8 @@ import cazimir.com.bancuribune.repository.OnAddRankFinishedListener;
 import cazimir.com.bancuribune.repository.OnAddUserListener;
 import cazimir.com.bancuribune.repository.OnShowReminderToAddListener;
 
+import static cazimir.com.bancuribune.constant.Constants.EVENT_VOTED;
+
 public class MainPresenter implements IMainPresenter {
 
     private IMainActivityView mMainActivityView;
@@ -65,16 +67,18 @@ public class MainPresenter implements IMainPresenter {
     }
 
     @Override
-    public void checkIfAlreadyVoted(Joke joke) {
+    public void checkIfAlreadyVoted(Joke joke, final int position) {
         mJokesRepository.checkIfVoted(new OnCheckIfVotedFinishedListener() {
             @Override
             public void onHasVotedTrue() {
                 mMainActivityView.showToast("Ai votat deja!");
+                mMainActivityView.enableHeartIcon(position);
             }
 
             @Override
             public void onHasVotedFalse(Joke joke) {
-                increaseJokePointByOne(joke);
+                mMainActivityView.logEvent(EVENT_VOTED);
+                increaseJokePointByOne(joke, position);
             }
         }, joke, mAuthPresenter.getCurrentUserID());
     }
@@ -97,16 +101,18 @@ public class MainPresenter implements IMainPresenter {
     }
 
     @Override
-    public void increaseJokePointByOne(Joke joke) {
+    public void increaseJokePointByOne(Joke joke, final int position) {
         mJokesRepository.updateJokePoints(new OnUpdatePointsFinishedListener() {
             @Override
             public void OnUpdatePointsFailed(String error) {
                 mMainActivityView.showAlertDialog(error, SweetAlertDialog.ERROR_TYPE);
+                mMainActivityView.enableHeartIcon(position);
             }
 
             @Override
             public void OnUpdatePointsSuccess(Joke joke) {
                 mMainActivityView.refreshAdapter(joke);
+                mMainActivityView.enableHeartIcon(position);
             }
         }, joke);
 

@@ -123,7 +123,14 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
     }
 
     private void showAlertDialog() {
-        getAlertDialog().show("Ești sigur că dorești să scoți bancul de la favorite?", Constants.REMOVE_FROM_FAVORITES);
+
+        try {
+            if(!isAlertDialogShowing()){
+                getAlertDialog().show("Ești sigur că dorești să scoți bancul de la favorite?", Constants.REMOVE_FROM_FAVORITES);
+            }
+        } catch (Exception e) {
+            getAlertDialog().show("Ești sigur că dorești să scoți bancul de la favorite?", Constants.REMOVE_FROM_FAVORITES);
+        }
     }
 
     private void shareJoke(String text) {
