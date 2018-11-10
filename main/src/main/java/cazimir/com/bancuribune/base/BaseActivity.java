@@ -71,7 +71,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
         TextView text = view.findViewById(android.R.id.message);
         text.setGravity(Gravity.CENTER_HORIZONTAL);
         text.setTextColor(Color.WHITE);
-        mToast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 10, 230);
+        mToast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 10, 300);
         return mToast;
     }
 

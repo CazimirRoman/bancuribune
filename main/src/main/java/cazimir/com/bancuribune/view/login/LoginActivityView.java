@@ -71,6 +71,11 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         mAuthPresenter.checkIfUserLoggedIn();
         setFacebookButtonClickListener();
         initUI();
+        //startWithDebugDB();
+
+    }
+
+    private void startWithDebugDB() {
         DatabaseTypeSingleton type = DatabaseTypeSingleton.getInstance();
         type.setType(true);
     }

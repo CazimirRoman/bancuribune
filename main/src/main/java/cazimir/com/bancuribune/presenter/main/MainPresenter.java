@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import cazimir.com.bancuribune.callbacks.admin.OnJokeApprovedListener;
 import cazimir.com.bancuribune.callbacks.list.IMainActivityView;
 import cazimir.com.bancuribune.callbacks.list.OnAddJokeVoteFinishedListener;
 import cazimir.com.bancuribune.callbacks.list.OnAllowedToAddFinishedListener;
@@ -58,6 +59,22 @@ public class MainPresenter implements IMainPresenter {
         if(isAdmin()){
             mMainActivityView.showAdminButtons();
         }
+    }
+
+    @Override
+    public void approveJoke(String uid, String jokeText) {
+        mJokesRepository.approveJoke(new OnJokeApprovedListener() {
+            @Override
+            public void onJokeApprovedSuccess(String message) {
+                mMainActivityView.showToast(message);
+                mMainActivityView.getAllJokesData(true, false);
+            }
+
+            @Override
+            public void onJokeApprovedFailed(String error) {
+                mMainActivityView.showToast(error);
+            }
+        }, uid, jokeText);
     }
 
     @Override

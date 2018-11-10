@@ -23,8 +23,8 @@ public class AdminPresenter implements IAdminPresenter {
     public void approveJoke(String uid, String jokeText) {
         mRepository.approveJoke(new OnJokeApprovedListener() {
             @Override
-            public void onJokeApprovedSuccess() {
-                mView.showToast("Approved!");
+            public void onJokeApprovedSuccess(String message) {
+                mView.showToast(message);
                 mView.getAllPendingJokes();
             }
 

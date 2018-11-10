@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -21,14 +23,19 @@ import cazimir.com.bancuribune.callbacks.list.OnJokeClickListener;
 import cazimir.com.bancuribune.callbacks.list.OnUpdateListFinished;
 import cazimir.com.bancuribune.model.Joke;
 
+import static cazimir.com.bancuribune.constant.Constants.NO_MODIFICATIONS;
+
 public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder> {
 
     private static final String TAG = JokesAdapter.class.getSimpleName();
     private List<Joke> jokes;
     private final OnJokeClickListener listener;
+    private boolean mAdmin;
+    private boolean editStarted = false;
 
-    public JokesAdapter(@NonNull OnJokeClickListener listener) {
+    public JokesAdapter(@NonNull OnJokeClickListener listener ,boolean admin) {
         this.listener = listener;
+        mAdmin = admin;
         jokes = new ArrayList<>();
     }
 
@@ -38,21 +45,27 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         ExpandableTextView expandableTextView;
+        TextView expandableText;
         TextView author;
         TextView share;
         TextView vote;
         TextView points;
         TextView heart;
-
+        EditText edit;
+        TextView approve;
 
         MyViewHolder(View view) {
             super(view);
             expandableTextView = view.findViewById(R.id.expand_joke_text_view);
+            expandableText = view.findViewById(R.id.expandable_text);
             author = view.findViewById(R.id.authorText);
             share = view.findViewById(R.id.share);
             vote = view.findViewById(R.id.vote);
             points = view.findViewById(R.id.points);
             heart = view.findViewById(R.id.heart_icon);
+            edit = view.findViewById(R.id.expandable_text_edit);
+            approve = view.findViewById(R.id.approve);
+
         }
     }
 
@@ -96,6 +109,35 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
                 }
             }
         });
+
+        holder.approve.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(editStarted){
+                    listener.onJokeModified(joke.getUid(), holder.edit.getText().toString());
+                    holder.approve.setVisibility(View.GONE);
+                    holder.edit.onEditorAction(EditorInfo.IME_ACTION_DONE);
+                    return;
+                }
+
+                listener.onJokeModified(joke.getUid(), NO_MODIFICATIONS);
+
+            }
+        });
+
+        if(mAdmin){
+            holder.expandableText.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    editStarted = true;
+                    holder.expandableTextView.setVisibility(View.GONE);
+                    holder.edit.setText(joke.getJokeText());
+                    holder.edit.setVisibility(View.VISIBLE);
+                    holder.approve.setVisibility(View.VISIBLE);
+                    return true;
+                }
+            });
+        }
     }
 
     @Override

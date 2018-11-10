@@ -11,10 +11,9 @@ import org.mockito.MockitoAnnotations;
 
 import cazimir.com.bancuribune.presenter.auth.AuthPresenter;
 import cazimir.com.bancuribune.presenter.main.MainPresenter;
-import cazimir.com.bancuribune.view.list.MainActivityView;
-import cazimir.com.constants.Constants;
-import cazimir.com.bancuribune.repository.OnAdminCheckCallback;
 import cazimir.com.bancuribune.repository.JokesRepository;
+import cazimir.com.bancuribune.repository.OnAdminCheckCallback;
+import cazimir.com.bancuribune.view.list.MainActivityView;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -25,7 +24,8 @@ import static org.mockito.Mockito.when;
  */
 public class MainPresenterTest {
 
-    private static final String USER_ID = "userId";
+    private static final String NO_ADMIN_ID = "123456";
+    private static final String ADMIN_ID = "IINgcJQYhrar9QBi2qcojfRqely2";
     String userId = "userId";
 
     private MainPresenter mMainPresenter;
@@ -53,7 +53,7 @@ public class MainPresenterTest {
     @Test
     public void shouldReturnTrueIfUserAdmin() {
 
-        when(mAuthPresenter.getCurrentUserID()).thenReturn(Constants.CAZIMIR);
+        when(mAuthPresenter.getCurrentUserID()).thenReturn(ADMIN_ID);
         Boolean isAdmin = mMainPresenter.isAdmin();
         Assert.assertTrue(isAdmin);
     }
@@ -61,7 +61,7 @@ public class MainPresenterTest {
     @Test
     public void shouldReturnFalseIfUserNotAdmin() {
 
-        when(mAuthPresenter.getCurrentUserID()).thenReturn(USER_ID);
+        when(mAuthPresenter.getCurrentUserID()).thenReturn(NO_ADMIN_ID);
         Boolean isAdmin = mMainPresenter.isAdmin();
         Assert.assertFalse(isAdmin);
     }
@@ -69,9 +69,9 @@ public class MainPresenterTest {
     @Test
     public void shouldShowAdminButtonsIfAdmin(){
 
-        when(mAuthPresenter.getCurrentUserID()).thenReturn(USER_ID);
+        when(mAuthPresenter.getCurrentUserID()).thenReturn(ADMIN_ID);
         mMainPresenter.showAdminButtonsIfAdmin();
-        verify(mJokesRepository).checkIfAdmin(mOnAdminCheckCallbackArgumentCaptor.capture(), eq(USER_ID));
+        verify(mJokesRepository).checkIfAdmin(mOnAdminCheckCallbackArgumentCaptor.capture(), eq(ADMIN_ID));
         mOnAdminCheckCallbackArgumentCaptor.getValue().onIsAdmin();
         verify(mMainActivityView).showAdminButtons();
     }

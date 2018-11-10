@@ -8,6 +8,8 @@ import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
 
 public interface IMainActivityView extends IGeneralView {
+    void getAllJokesData(boolean reset, boolean swipe);
+
     void displayJokes(List<Joke> jokes);
     void requestFailed(String error);
     void navigateToAddJokeActivity();

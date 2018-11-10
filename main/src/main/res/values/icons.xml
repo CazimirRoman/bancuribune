@@ -4,4 +4,5 @@
     <string name="fa_icon_share" translatable="false">&#xf064;</string>
     <string name="fa_icon_smile_o" translatable="false">&#xf118;</string>
     <string name="fa_icon_thumbs_up" translatable="false">&#xf164;</string>
+    <string name="fa_icon_ok" translatable="false">&#xf00c;</string>
 </resources>

@@ -116,6 +116,8 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     private int soundID;
     boolean loaded = false;
     private boolean mDebug = false;
+    private int mCurrentPosition = 0;
+    private RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
 
     @BindView(R.id.jokesList)
     RecyclerView jokesListRecyclerView;
@@ -402,7 +404,12 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
             public void onJokeUnlike(Joke joke, int position) {
 
             }
-        });
+
+            @Override
+            public void onJokeModified(String uid, String jokeText) {
+                mPresenter.approveJoke(uid, jokeText);
+            }
+        }, mPresenter.isAdmin());
         jokesListRecyclerView.setAdapter(adapter);
     }
 
@@ -420,18 +427,23 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         getAlertDialog().show(message, type);
     }
 
-    private void getAllJokesData(boolean reset, boolean swipe) {
+    @Override
+    public void getAllJokesData(boolean reset, boolean swipe) {
         mPresenter.getAllJokesData(reset, swipe);
     }
 
     private RecyclerView.LayoutManager initRecycleView() {
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         jokesListRecyclerView.setLayoutManager(layoutManager);
         return layoutManager;
     }
 
     private void setOnScrollListener(final LinearLayoutManager layoutManager) {
         jokesListRecyclerView.addOnScrollListener(new ScrollListenerRecycleView(layoutManager) {
+
+            @Override
+            public void onScrollFinished() {
+                mCurrentPosition = layoutManager.findFirstVisibleItemPosition();
+            }
 
             @Override
             public void show() {
@@ -472,6 +484,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
 
         adapter.notifyDataSetChanged();
         hideProgressBar();
+        jokesListRecyclerView.scrollToPosition(mCurrentPosition);
     }
 
     @Override
@@ -542,7 +555,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     @OnClick(R.id.adminFAB)
     public void startAdminJokesActivity() {
         if (isInternetAvailable()) {
-            startActivity(new Intent(this, AdminActivityView.class));
+            startActivityForResult(new Intent(this, AdminActivityView.class), LIKED_JOKES_REQ_CODE);
         }
     }
 
@@ -598,7 +611,6 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
             }
 
         } else if(requestCode == LIKED_JOKES_REQ_CODE) {
-
                 getAllJokesData(true, false);
 
         }

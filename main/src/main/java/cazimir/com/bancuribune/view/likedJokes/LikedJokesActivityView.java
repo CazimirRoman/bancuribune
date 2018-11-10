@@ -98,6 +98,11 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
             }
 
             @Override
+            public void onJokeModified(String uid, String jokeText) {
+
+            }
+
+            @Override
             public void onJokeUnlike(Joke joke, int position) {
                 showAlertDialog();
                 saveJokeAndPosition(joke, position);

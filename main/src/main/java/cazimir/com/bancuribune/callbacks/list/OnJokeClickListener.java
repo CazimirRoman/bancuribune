@@ -7,4 +7,5 @@ public interface OnJokeClickListener {
     void onJokeVoted(Joke joke, int position);
     void onJokeExpanded();
     void onJokeUnlike(Joke joke, int position);
+    void onJokeModified(String uid, String jokeText);
 }

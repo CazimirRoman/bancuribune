@@ -101,8 +101,6 @@ public class JokesRepository implements IJokesRepository {
                         listener.onEndOfListReached();
                     }
                 }
-
-
             }
 
             @Override
@@ -534,10 +532,9 @@ public class JokesRepository implements IJokesRepository {
     public void approveJoke(final OnJokeApprovedListener listener, final String uid, final String text) {
         Query query = jokesRef.orderByChild("uid").equalTo(uid);
 
-        query.addChildEventListener(new ChildEventListener() {
-
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Joke joke = dataSnapshot.getValue(Joke.class);
                 assert joke != null;
 
@@ -546,7 +543,6 @@ public class JokesRepository implements IJokesRepository {
                     @Override
                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                         if (databaseError != null) {
-
                             listener.onJokeApprovedFailed(databaseError.getMessage());
                         } else {
                             //was the joke tet modified by the admin? Change that as well after approving the joke.
@@ -558,10 +554,12 @@ public class JokesRepository implements IJokesRepository {
                                         if (databaseError != null) {
                                             listener.onJokeApprovedFailed(databaseError.getMessage());
                                         } else {
-                                            listener.onJokeApprovedSuccess();
+                                            listener.onJokeApprovedSuccess("Aprobat!");
                                         }
                                     }
                                 });
+                            }else{
+                                listener.onJokeApprovedSuccess("Aprobat");
                             }
                         }
                     }
@@ -569,22 +567,7 @@ public class JokesRepository implements IJokesRepository {
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
