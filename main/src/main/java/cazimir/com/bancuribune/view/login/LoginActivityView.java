@@ -66,9 +66,10 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPresenter = new LoginPresenter(this, new AuthPresenter(this));
-        mCallbackManager = CallbackManager.Factory.create();
         mAuthPresenter = new AuthPresenter(this);
         mAuthPresenter.checkIfUserLoggedIn();
+
+        mCallbackManager = CallbackManager.Factory.create();
         setFacebookButtonClickListener();
         initUI();
         //startWithDebugDB();
