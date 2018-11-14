@@ -1,6 +1,10 @@
 package cazimir.com.bancuribune.presenter.liked;
 
+import java.util.Arrays;
+import java.util.List;
+
 import cazimir.com.bancuribune.callbacks.likedJokes.ILikedJokesActivityView;
+import cazimir.com.bancuribune.callbacks.likedJokes.OnDeleteJokeVoteCallback;
 import cazimir.com.bancuribune.callbacks.likedJokes.OnGetLikedJokesListener;
 import cazimir.com.bancuribune.constant.Constants;
 import cazimir.com.bancuribune.model.Joke;
@@ -30,26 +34,46 @@ public class LikedJokesPresenter implements ILikedJokesPresenter {
             @Override
             public void onGetLikedJokesFailed(String error) {
                 mView.showToast(error);
+                mView.hideProgressBar();
             }
 
             @Override
             public void onNoLikedJokes() {
                 mView.showNoLikedJokesText();
+                mView.hideProgressBar();
+            }
+
+            @Override
+            public void done() {
+                mView.hideProgressBar();
             }
         }, mAuthPresenter.getCurrentUserID());
     }
 
     @Override
     public boolean isAdmin() {
-        if(mAuthPresenter.getCurrentUserID().equals(Constants.CAZIMIR) ||
-                mAuthPresenter.getCurrentUserID().equals(Constants.ANA_MARIA)){
-            return true;
-        }
-        return false;
+        List<String> list = Arrays.asList(Constants.ADMINS);
+        return list.contains(mAuthPresenter.getCurrentUserID());
     }
 
     @Override
     public IAuthPresenter getAuthPresenter() {
         return mAuthPresenter;
+    }
+
+    @Override
+    public void removeJokeFromFavorites(final Joke mJokeToBeRemoved) {
+        mRepository.deleteJokeVote(new OnDeleteJokeVoteCallback(){
+
+            @Override
+            public void onSuccess() {
+                mView.deleteLikedJokeFromAdapter(mJokeToBeRemoved);
+            }
+
+            @Override
+            public void onFailed(String error) {
+                mView.showToast(error);
+            }
+        }, mJokeToBeRemoved, mAuthPresenter.getCurrentUserID());
     }
 }

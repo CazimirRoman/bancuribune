@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     buildToolsVersion "27.0.3"
     defaultConfig {
         applicationId "cazimir.com.bancuribune"
         minSdkVersion 19
-        targetSdkVersion 27
-        versionCode 21
-        versionName "3.4.3"
+        targetSdkVersion 28
+        versionCode 24
+        versionName "3.4.6"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true

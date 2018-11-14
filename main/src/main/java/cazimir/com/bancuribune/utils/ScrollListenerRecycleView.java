@@ -31,8 +31,7 @@ public abstract class ScrollListenerRecycleView extends RecyclerView.OnScrollLis
             hide();
             scrollDist = 0;
             isVisible = false;
-        }
-        else if (!isVisible && scrollDist < -MINIMUM) {
+        } else if (!isVisible && scrollDist < -MINIMUM) {
             show();
             scrollDist = 0;
             isVisible = true;
@@ -64,9 +63,15 @@ public abstract class ScrollListenerRecycleView extends RecyclerView.OnScrollLis
 
             loading = true;
         }
+
+        onScrollFinished();
     }
 
+    public abstract void onScrollFinished();
+
     public abstract void show();
+
     public abstract void hide();
+
     public abstract void onLoadMore(int current_page);
 }

@@ -16,6 +16,7 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import butterknife.BindView;
@@ -44,7 +45,11 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
 
     @BindView(R.id.myLikedJokeList)
     EmptyRecyclerView likedJokesListRecyclerView;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressMain;
     private String sharedText;
+    private Joke mJokeToBeRemoved;
+    private int mPositionToBeRemoved;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +88,7 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
             }
 
             @Override
-            public void onJokeVoted(Joke joke) {
+            public void onJokeVoted(Joke joke, int position) {
 
             }
 
@@ -91,9 +96,46 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
             public void onJokeExpanded() {
                 //do nothing - it is just for reporting for the main jokes screen
             }
+
+            @Override
+            public void onJokeModified(String uid, String jokeText) {
+
+            }
+
+            @Override
+            public void onJokeUnlike(Joke joke, int position) {
+                showAlertDialog();
+                saveJokeAndPosition(joke, position);
+            }
         });
         likedJokesListRecyclerView.setAdapter(adapter);
         likedJokesListRecyclerView.setEmptyView(findViewById(R.id.empty_view));
+    }
+
+    @Override
+    public void showProgressBar() {
+        progressMain.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        progressMain.setVisibility(View.GONE);
+    }
+
+    private void saveJokeAndPosition(Joke joke, int position) {
+        mJokeToBeRemoved = joke;
+        mPositionToBeRemoved = position;
+    }
+
+    private void showAlertDialog() {
+
+        try {
+            if(!isAlertDialogShowing()){
+                getAlertDialog().show("Ești sigur că dorești să scoți bancul de la favorite?", Constants.REMOVE_FROM_FAVORITES);
+            }
+        } catch (Exception e) {
+            getAlertDialog().show("Ești sigur că dorești să scoți bancul de la favorite?", Constants.REMOVE_FROM_FAVORITES);
+        }
     }
 
     private void shareJoke(String text) {
@@ -169,6 +211,13 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
     }
 
     @Override
+    public void deleteLikedJokeFromAdapter(Joke joke) {
+        initRecycleView();
+        getLikedJokes();
+
+    }
+
+    @Override
     public void showToast(String message) {
         buildToast(message).show();
     }
@@ -181,5 +230,11 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
     @Override
     public void showNoLikedJokesText() {
         findViewById(R.id.no_jokes_liked).setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void removeJokeFromFavorites() {
+        showProgressBar();
+        mPresenter.removeJokeFromFavorites(mJokeToBeRemoved);
     }
 }

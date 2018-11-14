@@ -53,11 +53,13 @@ public class Constants {
     public static final int MAX_JOKE_SIZE_PER_PAGE = 35;
     public static final int TOTAL_ITEM_EACH_LOAD = 50;
     public static final int MY_STORAGE_REQ_CODE = 523;
+    public static final int LIKED_JOKES_REQ_CODE = 524;
+    public static final int ADMIN_JOKES_REQ_CODE = 525;
     public static final int USER_LOGOUT_REQ = 887;
     public static final int REGISTER_ACTIVITY_REQ_CODE = 745;
     public static final int LEVEL_UP = 6;
     public static final int ADD_JOKE_REMINDER = 7;
-    public static final String ANA_MARIA = "IINgcJQYhrar9QBi2qcojfRqely2";
-    public static final String CAZIMIR = "eXDuTHO9UPZAS02HctjQHI2hsRv2";
     public static final String NO_MODIFICATIONS = "no modifications";
+    public static final String[] ADMINS = new String[]{"IINgcJQYhrar9QBi2qcojfRqely2", "eXDuTHO9UPZAS02HctjQHI2hsRv2", "ry6AK3WcFdNgEXhbNXqZEThtCFj2"};
+    public static final int REMOVE_FROM_FAVORITES = 8;
 }

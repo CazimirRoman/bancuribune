@@ -55,16 +55,6 @@
                         android:padding="10dp" />
                 </com.ms.square.android.expandabletextview.ExpandableTextView>
 
-                <EditText
-                    android:layout_width="match_parent"
-                    android:visibility="gone"
-                    android:layout_gravity="center_vertical"
-                    android:gravity="start"
-                    tools:visibility="visible"
-                    android:requiresFadingEdge="horizontal"
-                    android:id="@+id/expandable_text_edit"
-                    android:layout_height="wrap_content" />
-
             </LinearLayout>
 
             <LinearLayout
@@ -140,22 +130,6 @@
                             android:layout_height="wrap_content"
                             android:elevation="20dp"
                             android:text="@string/fa_icon_share"
-                            app:elevation="20dp" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                        <cazimir.com.bancuribune.utils.FontAwesomeTextView
-                            android:id="@+id/approve"
-                            android:visibility="gone"
-                            style="@style/fontAwesome.iconSizeJoke"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:elevation="20dp"
-                            android:text="@string/fa_icon_ok"
                             app:elevation="20dp" />
 
                     </LinearLayout>

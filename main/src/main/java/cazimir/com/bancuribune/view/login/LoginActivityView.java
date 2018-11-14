@@ -24,6 +24,7 @@ import cazimir.com.bancuribune.callbacks.login.OnFormValidatedListener;
 import cazimir.com.bancuribune.presenter.auth.AuthPresenter;
 import cazimir.com.bancuribune.presenter.login.ILoginPresenter;
 import cazimir.com.bancuribune.presenter.login.LoginPresenter;
+import cazimir.com.bancuribune.repository.DatabaseTypeSingleton;
 import cazimir.com.bancuribune.utils.UtilHelper;
 import cazimir.com.bancuribune.view.forgotPassword.ForgotPasswordActivityView;
 import cazimir.com.bancuribune.view.list.MainActivityView;
@@ -65,11 +66,19 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPresenter = new LoginPresenter(this, new AuthPresenter(this));
-        mCallbackManager = CallbackManager.Factory.create();
         mAuthPresenter = new AuthPresenter(this);
         mAuthPresenter.checkIfUserLoggedIn();
+
+        mCallbackManager = CallbackManager.Factory.create();
         setFacebookButtonClickListener();
         initUI();
+        //startWithDebugDB();
+
+    }
+
+    private void startWithDebugDB() {
+        DatabaseTypeSingleton type = DatabaseTypeSingleton.getInstance();
+        type.setType(true);
     }
 
     private void initUI() {

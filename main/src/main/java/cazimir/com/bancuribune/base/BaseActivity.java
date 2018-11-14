@@ -59,6 +59,10 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
         return mAlertDialog;
     }
 
+    protected boolean isAlertDialogShowing() throws Exception {
+        return mAlertDialog.isShowing();
+    }
+
     protected Toast buildToast(String message) {
 
         Toast mToast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
@@ -67,7 +71,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
         TextView text = view.findViewById(android.R.id.message);
         text.setGravity(Gravity.CENTER_HORIZONTAL);
         text.setTextColor(Color.WHITE);
-        mToast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 10, 230);
+        mToast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 10, 300);
         return mToast;
     }
 
@@ -93,7 +97,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
         return FirebaseAnalytics.getInstance(this);
     }
 
-    protected void logEvent(String event, Bundle bundle) {
+    public void logEvent(String event, Bundle bundle) {
         getFirebaseAnalytics().logEvent(event, bundle);
     }
 }

@@ -61,6 +61,12 @@ public class ReportActivityView extends BaseActivity implements IReportActivityV
         TextView appVersion = findViewById(R.id.txt_application_version);
         appVersion.setText("Versiunea aplicației este: " + getIntent().getStringExtra("app_version"));
 
+
+        for (Rank rank : ranks
+                ) {
+
+        }
+
         TextView firstPlace = findViewById(R.id.txt_points_1);
         firstPlace.setText(String.format(getString(R.string.number_of_points), "Pe primul loc",
                 ranks.get(4).getUserName(), String.valueOf(ranks.get(4).getTotalPoints())));

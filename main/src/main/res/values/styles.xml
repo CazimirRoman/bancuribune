@@ -40,6 +40,10 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+    <style name="text.heart">
+        <item name="android:textSize">20sp</item>
+    </style>
+
     <style name="fontAwesome">
         <item name="android:textSize">30sp</item>
     </style>

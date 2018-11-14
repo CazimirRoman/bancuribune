@@ -1,11 +1,15 @@
 package cazimir.com.bancuribune.presenter.main;
 
+import android.util.Log;
+
 import com.google.firebase.crash.FirebaseCrash;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import cazimir.com.bancuribune.callbacks.admin.OnJokeApprovedListener;
 import cazimir.com.bancuribune.callbacks.list.IMainActivityView;
 import cazimir.com.bancuribune.callbacks.list.OnAddJokeVoteFinishedListener;
 import cazimir.com.bancuribune.callbacks.list.OnAllowedToAddFinishedListener;
@@ -20,9 +24,14 @@ import cazimir.com.bancuribune.presenter.auth.IAuthPresenter;
 import cazimir.com.bancuribune.repository.IJokesRepository;
 import cazimir.com.bancuribune.repository.OnAddRankFinishedListener;
 import cazimir.com.bancuribune.repository.OnAddUserListener;
+import cazimir.com.bancuribune.repository.OnCheckIfRankDataInDBListener;
 import cazimir.com.bancuribune.repository.OnShowReminderToAddListener;
 
+import static cazimir.com.bancuribune.constant.Constants.EVENT_VOTED;
+
 public class MainPresenter implements IMainPresenter {
+
+    private static final String TAG = MainPresenter.class.getSimpleName();
 
     private IMainActivityView mMainActivityView;
     private IAuthPresenter mAuthPresenter;
@@ -40,11 +49,8 @@ public class MainPresenter implements IMainPresenter {
 
     @Override
     public boolean isAdmin() {
-        if(mAuthPresenter.getCurrentUserID().equals(Constants.CAZIMIR) ||
-                mAuthPresenter.getCurrentUserID().equals(Constants.ANA_MARIA)){
-            return true;
-        }
-        return false;
+        List<String> list = Arrays.asList(Constants.ADMINS);
+        return list.contains(mAuthPresenter.getCurrentUserID());
     }
 
     @Override
@@ -53,13 +59,22 @@ public class MainPresenter implements IMainPresenter {
         if(isAdmin()){
             mMainActivityView.showAdminButtons();
         }
+    }
 
-//        mJokesRepository.checkIfAdmin(new OnAdminCheckCallback() {
-//            @Override
-//            public void onIsAdmin() {
-//                mMainActivityView.showAdminButtons();
-//            }
-//        }, mAuthPresenter.getCurrentUserID());
+    @Override
+    public void approveJoke(String uid, String jokeText) {
+        mJokesRepository.approveJoke(new OnJokeApprovedListener() {
+            @Override
+            public void onJokeApprovedSuccess(String message) {
+                mMainActivityView.showToast(message);
+                mMainActivityView.getAllJokesData(true, false);
+            }
+
+            @Override
+            public void onJokeApprovedFailed(String error) {
+                mMainActivityView.showToast(error);
+            }
+        }, uid, jokeText);
     }
 
     @Override
@@ -74,16 +89,18 @@ public class MainPresenter implements IMainPresenter {
     }
 
     @Override
-    public void checkIfAlreadyVoted(Joke joke) {
+    public void checkIfAlreadyVoted(Joke joke, final int position) {
         mJokesRepository.checkIfVoted(new OnCheckIfVotedFinishedListener() {
             @Override
             public void onHasVotedTrue() {
                 mMainActivityView.showToast("Ai votat deja!");
+                mMainActivityView.enableHeartIcon(position);
             }
 
             @Override
             public void onHasVotedFalse(Joke joke) {
-                increaseJokePointByOne(joke);
+                mMainActivityView.logEvent(EVENT_VOTED);
+                increaseJokePointByOne(joke, position);
             }
         }, joke, mAuthPresenter.getCurrentUserID());
     }
@@ -106,18 +123,21 @@ public class MainPresenter implements IMainPresenter {
     }
 
     @Override
-    public void increaseJokePointByOne(Joke joke) {
+    public void increaseJokePointByOne(Joke joke, final int position) {
         mJokesRepository.updateJokePoints(new OnUpdatePointsFinishedListener() {
             @Override
             public void OnUpdatePointsFailed(String error) {
                 mMainActivityView.showAlertDialog(error, SweetAlertDialog.ERROR_TYPE);
+                mMainActivityView.enableHeartIcon(position);
             }
 
             @Override
             public void OnUpdatePointsSuccess(Joke joke) {
                 mMainActivityView.refreshAdapter(joke);
+                mMainActivityView.enableHeartIcon(position);
             }
         }, joke);
+
         writeVoteLogToDB(joke.getUid());
     }
 
@@ -129,7 +149,7 @@ public class MainPresenter implements IMainPresenter {
         mJokesRepository.writeJokeVote(new OnAddJokeVoteFinishedListener() {
             @Override
             public void onAddJokeVoteSuccess() {
-                mMainActivityView.playOnVotedAudio();
+                mMainActivityView.writeToLog("Vote successfully written to DB");
             }
 
             @Override
@@ -140,20 +160,32 @@ public class MainPresenter implements IMainPresenter {
     }
 
     @Override
-    public void addRankToDatabase() {
+    public void checkAndAddRankToDB() {
 
-        mJokesRepository.addRankToDB(new OnAddRankFinishedListener() {
+        mJokesRepository.checkIfRankDataInDB(new OnCheckIfRankDataInDBListener() {
             @Override
-            public void onAddRankSuccess(Rank rank) {
+            public void rankDataIsInDB(Rank rank) {
+                Log.d(TAG, "Rank already in DB");
                 mMainActivityView.saveRankDataToSharedPreferences(rank);
-                mMainActivityView.showAlertDialog("În momentul de față ai rangul de Hamsie. Poți adăuga 2 bancuri pe zi", Constants.LEVEL_UP);
             }
 
             @Override
-            public void onAddRankFailed(String error) {
-                mMainActivityView.showAlertDialog(error, SweetAlertDialog.ERROR_TYPE);
+            public void rankDataNotInDB() {
+                mJokesRepository.addRankToDB(new OnAddRankFinishedListener() {
+                    @Override
+                    public void onAddRankSuccess(Rank rank) {
+                        mMainActivityView.addUserToDatabase();
+                        mMainActivityView.saveRankDataToSharedPreferences(rank);
+                        mMainActivityView.showAlertDialog("În momentul de față ai rangul de Hamsie. Poți adăuga 2 bancuri pe zi", Constants.LEVEL_UP);
+                    }
+
+                    @Override
+                    public void onAddRankFailed(String error) {
+                        mMainActivityView.showAlertDialog(error, SweetAlertDialog.ERROR_TYPE);
+                    }
+                }, constructRankObject());
             }
-        }, constructRankObject());
+        }, mAuthPresenter.getCurrentUserID());
     }
 
     private Rank constructRankObject() {

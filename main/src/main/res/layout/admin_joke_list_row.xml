@@ -92,7 +92,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:elevation="20dp"
-                            android:text="@string/fa_icon_smile_o"
+                            android:text="@string/fa_icon_ok"
                             app:elevation="20dp" />
 
                     </FrameLayout>

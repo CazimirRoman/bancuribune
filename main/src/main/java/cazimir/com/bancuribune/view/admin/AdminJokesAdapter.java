@@ -76,6 +76,7 @@ public class AdminJokesAdapter extends RecyclerView.Adapter<AdminJokesAdapter.My
             public void onClick(View view) {
                 if(editStarted){
                     listener.onItemApproved(joke.getUid(), holder.edit.getText().toString());
+                    return;
                 }
 
                 listener.onItemApproved(joke.getUid(), NO_MODIFICATIONS);

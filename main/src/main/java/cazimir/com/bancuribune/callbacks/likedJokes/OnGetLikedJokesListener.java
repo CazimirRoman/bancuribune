@@ -6,4 +6,5 @@ public interface OnGetLikedJokesListener {
     void onGetLikedJokesSuccess(Joke joke);
     void onGetLikedJokesFailed(String error);
     void onNoLikedJokes();
+    void done();
 }

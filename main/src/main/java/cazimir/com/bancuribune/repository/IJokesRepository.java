@@ -4,6 +4,7 @@ import java.util.Date;
 
 import cazimir.com.bancuribune.callbacks.admin.OnGetAllPendingJokesListener;
 import cazimir.com.bancuribune.callbacks.admin.OnJokeApprovedListener;
+import cazimir.com.bancuribune.callbacks.likedJokes.OnDeleteJokeVoteCallback;
 import cazimir.com.bancuribune.callbacks.likedJokes.OnGetLikedJokesListener;
 import cazimir.com.bancuribune.callbacks.list.OnAddJokeVoteFinishedListener;
 import cazimir.com.bancuribune.callbacks.list.OnAllowedToAddFinishedListener;
@@ -36,4 +37,5 @@ public interface IJokesRepository {
     void addUserToDatabase(OnAddUserListener listener, String userId, String userName);
     void checkIfAdmin(OnAdminCheckCallback listener, String userId);
     void getUsersWithMostPoints(OnGetUsersWithMostPointsCompleted listener);
+    void deleteJokeVote(OnDeleteJokeVoteCallback onDeleteJokeVoteCallback, Joke mJokeToBeRemoved, String userId);
 }
