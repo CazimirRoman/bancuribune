@@ -116,7 +116,6 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
                 if(editStarted){
                     listener.onJokeModified(joke.getUid(), holder.edit.getText().toString());
                     holder.approve.setVisibility(View.GONE);
-                    holder.edit.onEditorAction(EditorInfo.IME_ACTION_DONE);
                     return;
                 }
 

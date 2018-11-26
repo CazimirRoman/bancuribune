@@ -68,6 +68,7 @@ public class MainPresenter implements IMainPresenter {
             public void onJokeApprovedSuccess(String message) {
                 mMainActivityView.showToast(message);
                 mMainActivityView.getAllJokesData(true, false);
+                mMainActivityView.hideKeyboard();
             }
 
             @Override
