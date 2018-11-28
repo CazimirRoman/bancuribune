@@ -131,7 +131,7 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
         mPresenter.getFacebookProfilePicture(new OnGetProfilePictureListener() {
             @Override
             public void onGetProfilePictureSuccess(URL url) {
-                Picasso.with(MyJokesActivityView.this).load(String.valueOf(url)).into(profileImage);
+                Picasso.get().load(String.valueOf(url)).into(profileImage);
             }
 
             @Override
