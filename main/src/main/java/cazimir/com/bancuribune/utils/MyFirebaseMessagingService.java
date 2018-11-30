@@ -57,6 +57,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     "Channel human readable title",
                     NotificationManager.IMPORTANCE_HIGH);
             notificationManager.createNotificationChannel(channel);
+            notificationBuilder.setChannelId("my_channel_01");
         }
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());

@@ -40,6 +40,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.Profile;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.julienvey.trello.Trello;
 import com.julienvey.trello.domain.Card;
 import com.julienvey.trello.impl.TrelloImpl;
@@ -156,6 +160,11 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         updateUIForAdmin();
         getAllJokesData(true, false);
         initializeLikeSound();
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_main_view;
     }
 
     @Override
@@ -465,11 +474,6 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
 
             }
         });
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_main_view;
     }
 
     @Override

@@ -67,11 +67,11 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         super.onCreate(savedInstanceState);
         mPresenter = new LoginPresenter(this, new AuthPresenter(this));
         mAuthPresenter = new AuthPresenter(this);
-        mAuthPresenter.checkIfUserLoggedIn();
 
         mCallbackManager = CallbackManager.Factory.create();
         setFacebookButtonClickListener();
         initUI();
+        mAuthPresenter.checkIfUserLoggedIn();
         //startWithDebugDB();
 
     }
@@ -187,7 +187,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
 
     @Override
     public void loginSuccess() {
-        this.launchMainActivity();
+        launchMainActivity();
     }
 
     @Override
