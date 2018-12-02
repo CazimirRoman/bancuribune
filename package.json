@@ -15,5 +15,9 @@
     "url": "https://github.com/CazimirRoman/bancuribune/issues"
   },
   "homepage": "https://github.com/CazimirRoman/bancuribune#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "firebase-admin": "^6.3.0",
+    "firebase-functions": "^2.1.0"
+  }
 }
