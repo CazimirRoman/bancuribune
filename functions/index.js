@@ -11,32 +11,46 @@ exports.newJokeAdded = functions.database.ref('/_dev/jokes_dev/{pushId}')
         const message = event.after.child("jokeText").val();
         const createdBy = event.after.child("createdBy").val();
 
-		console.log('The joke ' + message + ' was created by: ' + createdBy)
+        console.log('The joke ' + message + ' was created by: ' + createdBy)
 
-        //get user entry associated with the added joke - this user entry contains the instanceId to use
-        // HOW do i get the id of the user entry?
-		const promise = admin.database().ref("/_dev/users_dev/-LQndI3n2Qos0LjxXpDG/instanceId").once('value');
+        //first of all get user object based on uid for the created joke
+        const getUser = admin.database().ref("/_dev/users_dev").orderByChild('userId').equalTo(createdBy).once('value')
 
-        return Promise.all([promise]).then(results =>{
+        //return this promise first
+        return Promise.all([getUser]).then(results => {
 
-        const instanceId = results[0].val();
-        console.log("The instance id is: " + instanceId)
+            var userUid;
+
+            results[0].forEach(function(childSnapshot) {
+                var value = childSnapshot.val();
+                userUid = value.uid;
+                console.log("The key for the user is: " + value.uid)
+            });
+
+            //using the key of the user get access to the instanceId property in the user object
+            var getInstanceId = admin.database().ref(`/_dev/users_dev/${userUid}/instanceId`).once('value');
+
+            //then return this promise
+            return Promise.all([getInstanceId]).then(results => {
+
+                const instanceId = results[0].val();
+
+                console.log("The instance id is: " + instanceId)
 
                 const payload = {
-                        notification: {
-                            title: "Un banc nou asteapta aprobarea ta",
-                            body: "Test message",
-                        }
-                    };
+                    notification: {
+                        title: "Un banc nou asteapta aprobarea ta",
+                        body: "Test message",
+                    }
+                };
 
-        return admin.messaging().sendToDevice(instanceId, payload)
-        .then(function (response) {
-            console.log("Successfully sent message:", response);
+                admin.messaging().sendToDevice(instanceId, payload)
+                    .then(function(response) {
+                        console.log("Successfully sent message:", response);
+                    })
+                    .catch(function(error) {
+                        console.log("Error sending message:", error);
+                    });
+            })
         })
-        .catch(function (error) {
-            console.log("Error sending message:", error);
-        });
-
-});
-
     });
