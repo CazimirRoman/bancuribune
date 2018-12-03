@@ -50,6 +50,29 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/adBannerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <com.google.android.gms.ads.AdView
+            android:layout_marginBottom="5dp"
+            xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/production_add_id">
+        </com.google.android.gms.ads.AdView>
+
+    </LinearLayout>
+
+
+    <LinearLayout
         android:id="@+id/fabActionButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -67,6 +90,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
+                android:clickable="true"
                 android:scaleType="center"
                 android:src="@drawable/ic_add" />
 
@@ -101,7 +125,7 @@
                 android:scaleType="center"
                 android:src="@drawable/ic_profile" />
         </FrameLayout>
-
+s
         <FrameLayout
             android:id="@+id/admin"
             android:layout_width="wrap_content"
