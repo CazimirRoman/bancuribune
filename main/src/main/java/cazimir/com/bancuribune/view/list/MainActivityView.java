@@ -42,6 +42,7 @@ import android.widget.Toast;
 import com.facebook.Profile;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.julienvey.trello.Trello;
 import com.julienvey.trello.domain.Card;
 import com.julienvey.trello.impl.TrelloImpl;
@@ -165,6 +166,8 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         initializeLikeSound();
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
+
+        Log.d("Firebase", "token "+ FirebaseInstanceId.getInstance().getToken());
     }
 
     @Override
