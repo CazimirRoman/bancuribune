@@ -721,6 +721,10 @@ public class JokesRepository implements IJokesRepository {
         user.setUserId(userId);
         user.setName(userName);
         user.setRole(Constants.ROLE_USER);
+
+
+
+
         usersRef.child(uid).setValue(user);
 
         usersRef.child(uid).setValue(user, new DatabaseReference.CompletionListener() {

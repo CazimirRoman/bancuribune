@@ -55,8 +55,8 @@ public class AuthPresenter implements IAuthPresenter {
                         if (task.isSuccessful()) {
                             currentUser = mAuth.getCurrentUser();
                             if (mAuth.getCurrentUser().isEmailVerified()) {
-                                listener.onLoginWithEmailSuccess();
                                 saveInstanceIdToUserObject();
+                                listener.onLoginWithEmailSuccess();
                             } else {
                                 listener.onLoginWithEmailFailed("Te rog să îți verifici mailul. Ți-am trimis un link de confirmare.");
                             }
@@ -126,7 +126,8 @@ public class AuthPresenter implements IAuthPresenter {
         }
     }
 
-    private void saveInstanceIdToUserObject() {
+    @Override
+    public void saveInstanceIdToUserObject() {
         final String instanceId = FirebaseInstanceId.getInstance().getToken();
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         final DatabaseReference usersRef = mDatabase.getReference("_dev/users_dev");

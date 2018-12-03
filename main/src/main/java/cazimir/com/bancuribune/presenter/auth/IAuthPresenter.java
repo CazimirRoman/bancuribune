@@ -15,6 +15,9 @@ public interface IAuthPresenter {
     void registerUser(OnRegistrationFinishedListener listener, String email, String password);
     FacebookCallback<LoginResult> loginWithFacebook();
     void checkIfUserLoggedIn();
+
+    void saveInstanceIdToUserObject();
+
     boolean isLoggedInViaFacebook();
     String getCurrentUserID();
     String getCurrentUserName();

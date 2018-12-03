@@ -349,6 +349,8 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     public void addUserToDatabase() {
         mPresenter.addUserToDatabase(mPresenter.getAuthPresenter().getCurrentUserID(),
                 mPresenter.getAuthPresenter().getCurrentUserName());
+
+        mPresenter.getAuthPresenter().saveInstanceIdToUserObject();
     }
 
     private void addRankAndUserToDB() {
