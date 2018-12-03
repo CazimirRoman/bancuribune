@@ -341,8 +341,10 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     private void onboardingNeeded() {
         if (isFirstRun()) {
             startTutorialActivity();
-            addRankAndUserToDB();
         }
+
+        //because when you logout the shared preferences containing the current rank is also deleted
+        addRankAndUserToDB();
     }
 
     @Override

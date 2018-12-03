@@ -5,7 +5,7 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 
-exports.newJokeAdded = functions.database.ref('/_dev/jokes_dev/{pushId}')
+exports.onJokeApproved = functions.database.ref('/_dev/jokes_dev/{pushId}')
     .onWrite(event => {
 
         if((!event.before.child("approved").val()) && event.after.child("approved").val()){
@@ -40,8 +40,8 @@ exports.newJokeAdded = functions.database.ref('/_dev/jokes_dev/{pushId}')
 
                         const payload = {
                             notification: {
-                                title: "Bancul tau a fost aprobat",
-                                body: message,
+                                title: "Bancul tău a fost aprobat.",
+                                body: "Trimite-l prietenilor tăi și crește în rang.",
                             }
                         };
 
