@@ -30,7 +30,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
     private FirebaseAnalytics mFirebaseAnalytics;
     private AuthenticationBrand loginRegisterBrand;
     private boolean mUseDebugDatabase;
-
+    //private String test;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

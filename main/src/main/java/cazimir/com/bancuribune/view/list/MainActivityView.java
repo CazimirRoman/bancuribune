@@ -40,10 +40,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.Profile;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.julienvey.trello.Trello;
 import com.julienvey.trello.domain.Card;
 import com.julienvey.trello.impl.TrelloImpl;
@@ -113,6 +111,10 @@ import static java.lang.Math.abs;
 public class MainActivityView extends BaseBackActivity implements IMainActivityView {
 
     private static final String TAG = MainActivityView.class.getSimpleName();
+    @BindView(R.id.adBannerLayout)
+    LinearLayout adBannerLayout;
+    @BindView(R.id.adView)
+    AdView adView;
 
     private MainPresenter mPresenter;
     private JokesAdapter adapter;
@@ -147,6 +149,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     FrameLayout fabScrollToTop;
     @BindView(R.id.scrollToTop)
     FloatingActionButton scrollToTop;
+    private boolean mFirstRunShowBanner = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,6 +163,8 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         updateUIForAdmin();
         getAllJokesData(true, false);
         initializeLikeSound();
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
     }
 
     @Override
@@ -460,12 +465,15 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
             public void show() {
                 fabActionButtons.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
                 fabScrollToTop.animate().translationX(0).setInterpolator(new DecelerateInterpolator(2)).start();
+                hideAdBanner();
+
             }
 
             @Override
             public void hide() {
                 fabActionButtons.animate().translationY(fabActionButtons.getHeight()).setInterpolator(new AccelerateInterpolator(2)).start();
                 fabScrollToTop.animate().translationX(fabActionButtons.getWidth()).setInterpolator(new AccelerateInterpolator(2)).start();
+                showAdBanner();
             }
 
             @Override
@@ -474,6 +482,19 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
 
             }
         });
+    }
+
+    private void showAdBanner() {
+        if(mFirstRunShowBanner){
+            adBannerLayout.setVisibility(View.VISIBLE);
+            mFirstRunShowBanner = false;
+        }
+
+        adBannerLayout.animate().translationY(0).setInterpolator(new DecelerateInterpolator(2)).start();
+    }
+
+    private void hideAdBanner() {
+        adBannerLayout.animate().translationY(adBannerLayout.getHeight()).setInterpolator(new AccelerateInterpolator(2)).start();
     }
 
     @Override
@@ -628,8 +649,8 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
                 this.finish();
             }
 
-        } else if(requestCode == LIKED_JOKES_REQ_CODE) {
-                getAllJokesData(true, false);
+        } else if (requestCode == LIKED_JOKES_REQ_CODE) {
+            getAllJokesData(true, false);
 
         }
     }
@@ -667,7 +688,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        if(mPresenter.isAdmin()){
+        if (mPresenter.isAdmin()) {
             inflater.inflate(R.menu.db_switcher, menu);
             return true;
         }
