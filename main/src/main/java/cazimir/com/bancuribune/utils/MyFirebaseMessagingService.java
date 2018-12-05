@@ -23,11 +23,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "FCM Service";
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-
-        sendNotification(remoteMessage.getNotification().getBody(), remoteMessage.getNotification().getTitle());
-
-        Log.d(TAG, "From: " + remoteMessage.getFrom());
-        Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
+        sendNotification(remoteMessage.getData().get("body"), remoteMessage.getData().get("title"));
     }
 
     private void sendNotification(String body, String title) {
@@ -44,6 +40,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentTitle(title)
                 .setContentText(body)
                 .setAutoCancel(true)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);
 
