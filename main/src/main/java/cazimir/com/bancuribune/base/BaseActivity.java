@@ -61,7 +61,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
         return mAlertDialog;
     }
 
-    protected boolean isAlertDialogShowing() throws Exception {
+    protected boolean isAlertDialogShowing() {
         return mAlertDialog.isShowing();
     }
 

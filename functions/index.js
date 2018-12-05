@@ -8,11 +8,15 @@ admin.initializeApp();
 exports.onJokeApproved_test = functions.database.ref('/_dev/jokes_dev/{pushId}')
     .onWrite(event => {
 
+        var jokeId = -1;
+
         if((!event.before.child("approved").val()) && event.after.child("approved").val()){
 
         const message = event.after.child("jokeText").val();
                 const createdBy = event.after.child("createdBy").val();
-                console.log('The joke ' + message + ' was created by: ' + createdBy)
+                jokeId = event.after.child("uid").val();
+
+                console.log('The joke ' + message + ' was created by: ' + createdBy + ' and has the id: ' + jokeId);
 
                 //first of all get user object based on uid for the created joke
                 const getUser = admin.database().ref("/_dev/users_dev").orderByChild('userId').equalTo(createdBy).once('value')
@@ -42,7 +46,8 @@ exports.onJokeApproved_test = functions.database.ref('/_dev/jokes_dev/{pushId}')
 
                             data: {
                                 title: "Bancul tău a fost aprobat!",
-                                body: "Trimite-l prietenilor și adună voturi, astfel crești în rang."
+                                body: "Trimite-l prietenilor și adună voturi; astfel crești în rang.",
+                                jokeId: jokeId
                             }
                         };
 
@@ -60,56 +65,64 @@ exports.onJokeApproved_test = functions.database.ref('/_dev/jokes_dev/{pushId}')
 
     });
 
-//    exports.onJokeApproved = functions.database.ref('/_dev/jokes_dev/{pushId}')
-//        .onWrite(event => {
+//deploy this to production after most of the users got the new version
+
+//exports.onJokeApproved_prod = functions.database.ref('/jokes/{pushId}')
+//    .onWrite(event => {
 //
-//            if((!event.before.child("approved").val()) && event.after.child("approved").val()){
+//        var jokeId = -1;
 //
-//            const message = event.after.child("jokeText").val();
-//                    const createdBy = event.after.child("createdBy").val();
-//                    console.log('The joke ' + message + ' was created by: ' + createdBy)
+//        if((!event.before.child("approved").val()) && event.after.child("approved").val()){
 //
-//                    //first of all get user object based on uid for the created joke
-//                    const getUser = admin.database().ref("/_dev/users_dev").orderByChild('userId').equalTo(createdBy).once('value')
+//        const message = event.after.child("jokeText").val();
+//                const createdBy = event.after.child("createdBy").val();
+//                jokeId = event.after.child("uid").val();
 //
-//                    //return this promise first
-//                    return Promise.all([getUser]).then(results => {
+//                console.log('The joke ' + message + ' was created by: ' + createdBy + ' and has the id: ' + jokeId);
 //
-//                        var userUid;
+//                //first of all get user object based on uid for the created joke
+//                const getUser = admin.database().ref("/users").orderByChild('userId').equalTo(createdBy).once('value')
 //
-//                        results[0].forEach(function(childSnapshot) {
-//                            var value = childSnapshot.val();
-//                            userUid = value.uid;
-//                            console.log("The key for the user is: " + value.uid)
-//                        });
+//                //return this promise first
+//                return Promise.all([getUser]).then(results => {
 //
-//                        //using the key of the user get access to the instanceId property in the user object
-//                        var getInstanceId = admin.database().ref(`/_dev/users_dev/${userUid}/instanceId`).once('value');
+//                    var userUid;
 //
-//                        //then return this promise
-//                        return Promise.all([getInstanceId]).then(results => {
+//                    results[0].forEach(function(childSnapshot) {
+//                        var value = childSnapshot.val();
+//                        userUid = value.uid;
+//                        console.log("The key for the user is: " + value.uid)
+//                    });
 //
-//                            const instanceId = results[0].val();
+//                    //using the key of the user get access to the instanceId property in the user object
+//                    var getInstanceId = admin.database().ref(`/users/${userUid}/instanceId`).once('value');
 //
-//                            console.log("The instance id is: " + instanceId)
+//                    //then return this promise
+//                    return Promise.all([getInstanceId]).then(results => {
 //
-//                            const payload = {
-//                                notification: {
-//                                    title: "Bancul tău a fost aprobat.",
-//                                    body: "Trimite-l prietenilor tai si creste in rang",
-//                                }
-//                            };
+//                        const instanceId = results[0].val();
 //
-//                            admin.messaging().sendToDevice(instanceId, payload)
-//                                .then(function(response) {
-//                                    console.log("Successfully sent message:", response);
-//                                })
-//                                .catch(function(error) {
-//                                    console.log("Error sending message:", error);
-//                                });
-//                        })
+//                        console.log("The instance id is: " + instanceId)
+//
+//                        const payload = {
+//
+//                            data: {
+//                                title: "Bancul tău a fost aprobat!",
+//                                body: "Trimite-l prietenilor și adună voturi; astfel crești în rang.",
+//                                jokeId: jokeId
+//                            }
+//                        };
+//
+//                        admin.messaging().sendToDevice(instanceId, payload)
+//                            .then(function(response) {
+//                                console.log("Successfully sent message:", response);
+//                            })
+//                            .catch(function(error) {
+//                                console.log("Error sending message:", error);
+//                            });
 //                    })
-//            }
+//                })
+//        }
 //
 //
-//        });
+//    });

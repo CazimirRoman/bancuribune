@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,6 +14,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 import com.squareup.picasso.Picasso;
 
@@ -39,6 +42,8 @@ import cazimir.com.bancuribune.view.login.LoginActivityView;
 
 public class MyJokesActivityView extends BaseBackActivity implements IMyJokesActivityView {
 
+    @BindView(R.id.adView)
+    AdView adView;
     private IMyJokesPresenter mPresenter;
     private MyJokesAdapter adapter;
 
@@ -65,6 +70,13 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
         initRecycleView();
         getProfilePictureAndName();
         getMyJokes();
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_my_jokes_view;
     }
 
     @Override
@@ -151,11 +163,6 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
         adapter = new MyJokesAdapter();
         myJokesListRecyclerView.setAdapter(adapter);
         myJokesListRecyclerView.setEmptyView(findViewById(R.id.empty_view));
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_my_jokes_view;
     }
 
     @Override

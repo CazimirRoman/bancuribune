@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import cazimir.com.bancuribune.BuildConfig;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
@@ -59,13 +60,7 @@ public class ReportActivityView extends BaseActivity implements IReportActivityV
     public void populateHighestPointsView(ArrayList<Rank> ranks) {
 
         TextView appVersion = findViewById(R.id.txt_application_version);
-        appVersion.setText("Versiunea aplicației este: " + getIntent().getStringExtra("app_version"));
-
-
-        for (Rank rank : ranks
-                ) {
-
-        }
+        appVersion.setText("Versiunea aplicației este: " + getIntent().getStringExtra("app_version") + " " + BuildConfig.BUILD_TYPE);
 
         TextView firstPlace = findViewById(R.id.txt_points_1);
         firstPlace.setText(String.format(getString(R.string.number_of_points), "Pe primul loc",

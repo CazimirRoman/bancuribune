@@ -74,7 +74,8 @@
     <string name="number_of_jokes">Numar total de bancuri: %s</string>
     <string name="report_app_name">Reports</string>
     <string name="number_of_points">%1$s se afla %2$s cu un numar total de %3$s puncte.</string>
-    <string name="test_add_id">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="production_add_id">ca-app-pub-7748272108558557/6099098244</string>
+    <string name="test_ad_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="production_ad_id">ca-app-pub-7748272108558557/6099098244</string>
+    <string name="share">Trimite</string>
 
 </resources>

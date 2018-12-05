@@ -63,7 +63,9 @@
         <activity android:name=".view.profile.MyJokesActivityView" />
         <activity android:name=".view.admin.AdminActivityView" />
         <activity android:name=".view.add.AddJokeActivityView" />
-        <activity android:name=".view.list.MainActivityView" />
+        <activity
+            android:name=".view.list.MainActivityView"
+            android:launchMode="singleTop" />
         <activity android:name=".report.ReportActivityView" />
 
         <activity
@@ -90,7 +92,10 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-7748272108558557~2846248942"/>
+            android:value="ca-app-pub-7748272108558557~2846248942" />
+
+        <meta-data android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_stat_bancuri_bune_notif" />
 
     </application>
 

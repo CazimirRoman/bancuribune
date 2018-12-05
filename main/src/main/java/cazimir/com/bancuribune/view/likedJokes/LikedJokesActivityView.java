@@ -14,10 +14,14 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import butterknife.BindView;
 import cazimir.com.bancuribune.R;
@@ -42,14 +46,16 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
     private static final String TAG = LikedJokesActivityView.class.getSimpleName();
     private ILikedJokesPresenter mPresenter;
     private LikedJokesAdapter adapter;
+    private String sharedText;
+    private Joke mJokeToBeRemoved;
+    private int mPositionToBeRemoved;
 
     @BindView(R.id.myLikedJokeList)
     EmptyRecyclerView likedJokesListRecyclerView;
     @BindView(R.id.progress_bar)
     ProgressBar progressMain;
-    private String sharedText;
-    private Joke mJokeToBeRemoved;
-    private int mPositionToBeRemoved;
+    @BindView(R.id.adView)
+    AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +64,13 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
         mPresenter = new LikedJokesPresenter(this, new AuthPresenter(this), new JokesRepository(type.isDebug()));
         initRecycleView();
         getLikedJokes();
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_liked_jokes_view;
     }
 
     @Override
@@ -130,7 +143,7 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
     private void showAlertDialog() {
 
         try {
-            if(!isAlertDialogShowing()){
+            if (!isAlertDialogShowing()) {
                 getAlertDialog().show("Ești sigur că dorești să scoți bancul de la favorite?", Constants.REMOVE_FROM_FAVORITES);
             }
         } catch (Exception e) {
@@ -190,11 +203,6 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
     }
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_liked_jokes_view;
-    }
-
-    @Override
     protected int setActionBarTitle() {
         return R.string.liked_jokes_title;
     }
@@ -214,7 +222,6 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
     public void deleteLikedJokeFromAdapter(Joke joke) {
         initRecycleView();
         getLikedJokes();
-
     }
 
     @Override

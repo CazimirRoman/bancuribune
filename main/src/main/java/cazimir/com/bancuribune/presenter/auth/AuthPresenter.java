@@ -25,6 +25,10 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.util.Arrays;
+import java.util.List;
+
+import cazimir.com.bancuribune.constant.Constants;
 import cazimir.com.bancuribune.model.User;
 import cazimir.com.bancuribune.view.login.OnLoginWithEmailFinishedListener;
 import cazimir.com.bancuribune.view.register.OnRegistrationFinishedListener;
@@ -265,5 +269,11 @@ public class AuthPresenter implements IAuthPresenter {
                         }
                     }
                 });
+    }
+
+    @Override
+    public boolean isAdmin() {
+        List<String> list = Arrays.asList(Constants.ADMINS);
+        return list.contains(getCurrentUserID());
     }
 }

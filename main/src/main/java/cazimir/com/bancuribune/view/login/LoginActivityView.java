@@ -16,6 +16,7 @@ import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cazimir.com.bancuribune.BuildConfig;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
@@ -61,19 +62,20 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     FrameLayout progress;
     @BindView(R.id.expandableLayout)
     ExpandableRelativeLayout expandableLayout;
+    private String mJokeIdExtra;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPresenter = new LoginPresenter(this, new AuthPresenter(this));
         mAuthPresenter = new AuthPresenter(this);
-
         mCallbackManager = CallbackManager.Factory.create();
         setFacebookButtonClickListener();
         initUI();
         mAuthPresenter.checkIfUserLoggedIn();
-        //startWithDebugDB();
-
+        if (BuildConfig.DEBUG) {
+            startWithDebugDB();
+        }
     }
 
     private void startWithDebugDB() {
@@ -180,8 +182,26 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            if (extras.containsKey("jokeId")) {
+                String extra = getIntent().getStringExtra("jokeId");
+                //extra coming from push notification after joke approved
+                if (extra != null) {
+                    mJokeIdExtra = extra;
+
+                }
+            }
+        }
+    }
+
+    @Override
     public void launchMainActivity() {
-        startActivity(new Intent(this, MainActivityView.class));
+        onNewIntent(getIntent());
+        Intent i = new Intent(this, MainActivityView.class);
+        i.putExtra("jokeId", mJokeIdExtra);
+        startActivity(i);
         this.finish();
     }
 

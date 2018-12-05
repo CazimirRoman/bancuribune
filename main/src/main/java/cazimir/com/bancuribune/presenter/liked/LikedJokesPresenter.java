@@ -52,8 +52,7 @@ public class LikedJokesPresenter implements ILikedJokesPresenter {
 
     @Override
     public boolean isAdmin() {
-        List<String> list = Arrays.asList(Constants.ADMINS);
-        return list.contains(mAuthPresenter.getCurrentUserID());
+        return mAuthPresenter.isAdmin();
     }
 
     @Override

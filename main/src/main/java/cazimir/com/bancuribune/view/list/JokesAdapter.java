@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ms.square.android.expandabletextview.ExpandableTextView;
@@ -41,6 +42,16 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
 
     @BindView(R.id.share)
     ImageButton share;
+
+    public int getPositionBasedOnJokeId(String jokeId) {
+
+        for (Joke joke: jokes){
+            if(joke.getUid().equals(jokeId))
+            return jokes.indexOf(joke);
+        }
+
+        return 0;
+    }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
@@ -80,7 +91,7 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
     }
 
     @Override
-    public void onBindViewHolder(final JokesAdapter.MyViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final JokesAdapter.MyViewHolder holder, final int position) {
         SparseBooleanArray mTogglePositions = new SparseBooleanArray();
         final Joke joke = jokes.get(position);
         holder.expandableTextView.setText(joke.getJokeText(), mTogglePositions, position);
