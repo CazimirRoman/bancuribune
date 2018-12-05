@@ -23,27 +23,25 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "FCM Service";
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-
-        sendNotification(remoteMessage.getNotification().getBody());
-
-        Log.d(TAG, "From: " + remoteMessage.getFrom());
-        Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
+        sendNotification(remoteMessage.getData().get("body"), remoteMessage.getData().get("title"), remoteMessage.getData().get("jokeId"));
     }
 
-    private void sendNotification(String body) {
+    private void sendNotification(String body, String title, String jokeId) {
         Intent intent = new Intent(this, LoginActivityView.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("jokeId", jokeId);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+                PendingIntent.FLAG_UPDATE_CURRENT);
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, Constants.CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notification_icon)
+                .setSmallIcon(R.drawable.ic_stat_bancuri_bune_notif)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),
                         R.mipmap.ic_launcher))
-                .setContentTitle("Au aparut bancuri noi!")
+                .setContentTitle(title)
                 .setContentText(body)
                 .setAutoCancel(true)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);
 

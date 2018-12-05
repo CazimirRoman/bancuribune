@@ -111,10 +111,6 @@ import static java.lang.Math.abs;
 public class MainActivityView extends BaseBackActivity implements IMainActivityView {
 
     private static final String TAG = MainActivityView.class.getSimpleName();
-    @BindView(R.id.adBannerLayout)
-    LinearLayout adBannerLayout;
-    @BindView(R.id.adView)
-    AdView adView;
 
     private MainPresenter mPresenter;
     private JokesAdapter adapter;
@@ -126,6 +122,8 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     private boolean mDebug = false;
     private int mCurrentPosition = 0;
     private RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+    private boolean mFirstRunShowBanner = true;
+    private Menu mMenu;
 
     @BindView(R.id.jokesList)
     RecyclerView jokesListRecyclerView;
@@ -149,7 +147,10 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     FrameLayout fabScrollToTop;
     @BindView(R.id.scrollToTop)
     FloatingActionButton scrollToTop;
-    private boolean mFirstRunShowBanner = true;
+    @BindView(R.id.adBannerLayout)
+    LinearLayout adBannerLayout;
+    @BindView(R.id.adView)
+    AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +164,12 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         updateUIForAdmin();
         getAllJokesData(true, false);
         initializeLikeSound();
+        if(checkIfJokeIdFromPushIsAvailable() != null){
+            Log.d(TAG + " getJokeId", getIntent().getStringExtra("jokeId"));
+            startMyJokesActivity();
+        } else {
+            Log.d(TAG + " getJokeId", "JokeId not received");
+        }
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
     }
@@ -170,6 +177,10 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     @Override
     protected int getLayoutId() {
         return R.layout.activity_main_view;
+    }
+
+    private String checkIfJokeIdFromPushIsAvailable() {
+        return getIntent().getStringExtra("jokeId");
     }
 
     @Override
@@ -338,14 +349,18 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     private void onboardingNeeded() {
         if (isFirstRun()) {
             startTutorialActivity();
-            addRankAndUserToDB();
         }
+
+        //because when you logout the shared preferences containing the current rank is also deleted
+        addRankAndUserToDB();
     }
 
     @Override
     public void addUserToDatabase() {
         mPresenter.addUserToDatabase(mPresenter.getAuthPresenter().getCurrentUserID(),
                 mPresenter.getAuthPresenter().getCurrentUserName());
+
+        mPresenter.getAuthPresenter().saveInstanceIdToUserObject();
     }
 
     private void addRankAndUserToDB() {
@@ -688,8 +703,15 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
+        mMenu = menu;
         if (mPresenter.isAdmin()) {
             inflater.inflate(R.menu.db_switcher, menu);
+            if(DatabaseTypeSingleton.getInstance().isDebug()){
+                mMenu.findItem(R.id.switchDB).setTitle("Switch to prod DB");
+            }else{
+                mMenu.findItem(R.id.switchDB).setTitle("Switch to test DB");
+
+            }
             return true;
         }
 
@@ -705,10 +727,29 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
                 type.setType(!type.isDebug());
                 mPresenter = new MainPresenter(this, new AuthPresenter(this), new JokesRepository(type.isDebug()));
                 mPresenter.getAllJokesData(true, true);
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateMenuTitles();
+                    }
+                }, 500);
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void updateMenuTitles() {
+
+        Boolean isDebug = DatabaseTypeSingleton.getInstance().isDebug();
+
+        MenuItem switchDBItem = mMenu.findItem(R.id.switchDB);
+        if (isDebug) {
+            switchDBItem.setTitle("Switch to prod DB");
+        } else {
+            switchDBItem.setTitle("Switch to test DB");
         }
     }
 

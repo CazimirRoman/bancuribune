@@ -4,11 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
 import butterknife.BindView;
@@ -33,9 +36,10 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
 
     @BindView(R.id.editNewJoke)
     EditText addJokeEdit;
-
     @BindView(R.id.addNewJokeButtonFAB)
-    android.support.design.widget.FloatingActionButton addJokeButton;
+    FloatingActionButton addJokeButton;
+    @BindView(R.id.adView)
+    AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +47,8 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
         DatabaseTypeSingleton type = DatabaseTypeSingleton.getInstance();
         mPresenter = new AddJokePresenter(this, new AuthPresenter(this), new JokesRepository(type.isDebug()));
         intent = this.getIntent();
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
     }
 
     @Override
@@ -69,10 +75,10 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
 
     @Override
     public boolean dataValid() {
-        if(addJokeEdit.getText().toString().isEmpty()){
+        if (addJokeEdit.getText().toString().isEmpty()) {
             onError();
             return false;
-        }else{
+        } else {
             return true;
         }
     }
@@ -97,26 +103,26 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
 
     @Override
     public void populateIntent(String jokeText) {
-        if(jokeText != null){
+        if (jokeText != null) {
             intent.putExtra(Constants.JOKE_TEXT, jokeText);
         }
     }
 
     @OnClick(R.id.addNewJokeButtonFAB)
-    public void addJoke(View view){
-        if(dataValid()){
-            if(UtilHelper.isInternetAvailable(this)){
+    public void addJoke(View view) {
+        if (dataValid()) {
+            if (UtilHelper.isInternetAvailable(this)) {
                 addJokeButton.setEnabled(false);
                 sendDataToDatabase(constructJokeObject());
                 hideSoftInput(addJokeEdit);
-            }else{
+            } else {
                 getAlertDialog().show(getString(R.string.no_internet), SweetAlertDialog.ERROR_TYPE);
             }
         }
     }
 
     private void hideSoftInput(View view) {
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 

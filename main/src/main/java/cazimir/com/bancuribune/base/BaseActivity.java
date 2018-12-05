@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
@@ -30,7 +31,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
     private FirebaseAnalytics mFirebaseAnalytics;
     private AuthenticationBrand loginRegisterBrand;
     private boolean mUseDebugDatabase;
-    private String test;
+    //private String test;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,6 +46,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
         toolbar.setOverflowIcon(ContextCompat.getDrawable(this, R.drawable.ic_overflow_icon));
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         getFirebaseAnalytics().setAnalyticsCollectionEnabled(!BuildConfig.DEBUG);
+        initializeAds();
     }
 
     public AuthenticationBrand getAuthenticationBrand() {
@@ -59,7 +61,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
         return mAlertDialog;
     }
 
-    protected boolean isAlertDialogShowing() throws Exception {
+    protected boolean isAlertDialogShowing() {
         return mAlertDialog.isShowing();
     }
 
@@ -73,6 +75,10 @@ public abstract class BaseActivity extends AppCompatActivity implements IGeneral
         text.setTextColor(Color.WHITE);
         mToast.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM, 10, 300);
         return mToast;
+    }
+
+    private void initializeAds() {
+        MobileAds.initialize(this, "ca-app-pub-7748272108558557~2846248942");
     }
 
     protected boolean isInternetAvailable() {

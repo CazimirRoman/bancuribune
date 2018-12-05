@@ -17,7 +17,19 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.util.Arrays;
+import java.util.List;
+
+import cazimir.com.bancuribune.constant.Constants;
+import cazimir.com.bancuribune.model.User;
 import cazimir.com.bancuribune.view.login.OnLoginWithEmailFinishedListener;
 import cazimir.com.bancuribune.view.register.OnRegistrationFinishedListener;
 import cazimir.com.bancuribune.view.forgotPassword.OnResendVerificationEmailListener;
@@ -47,6 +59,7 @@ public class AuthPresenter implements IAuthPresenter {
                         if (task.isSuccessful()) {
                             currentUser = mAuth.getCurrentUser();
                             if (mAuth.getCurrentUser().isEmailVerified()) {
+                                saveInstanceIdToUserObject();
                                 listener.onLoginWithEmailSuccess();
                             } else {
                                 listener.onLoginWithEmailFailed("Te rog să îți verifici mailul. Ți-am trimis un link de confirmare.");
@@ -111,8 +124,36 @@ public class AuthPresenter implements IAuthPresenter {
     @Override
     public void checkIfUserLoggedIn() {
         if (isLoggedInViaEmail() || isLoggedInViaFacebook()) {
+            saveInstanceIdToUserObject();
             ILoginActivityView view = (ILoginActivityView) this.mView.getInstance();
             view.launchMainActivity();
+        }
+    }
+
+    @Override
+    public void saveInstanceIdToUserObject() {
+        final String instanceId = FirebaseInstanceId.getInstance().getToken();
+        FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+        final DatabaseReference usersRef = mDatabase.getReference("_dev/users_dev");
+
+        if (instanceId != null) {
+
+            Query query = usersRef.orderByChild("userId").equalTo(mAuth.getCurrentUser().getUid());
+
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot usersSnapshot : dataSnapshot.getChildren()) {
+                        User user = usersSnapshot.getValue(User.class);
+                        usersRef.child(usersSnapshot.getKey()).child("instanceId").setValue(instanceId);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         }
     }
 
@@ -176,6 +217,7 @@ public class AuthPresenter implements IAuthPresenter {
                             // Sign in success, update UI with the signed-in user's information
                             login.loginSuccess();
                             login.hideProgress();
+                            saveInstanceIdToUserObject();
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -227,5 +269,11 @@ public class AuthPresenter implements IAuthPresenter {
                         }
                     }
                 });
+    }
+
+    @Override
+    public boolean isAdmin() {
+        List<String> list = Arrays.asList(Constants.ADMINS);
+        return list.contains(getCurrentUserID());
     }
 }

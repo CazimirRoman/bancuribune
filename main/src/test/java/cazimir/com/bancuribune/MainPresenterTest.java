@@ -44,7 +44,7 @@ public class MainPresenterTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
 
         MockitoAnnotations.initMocks(this);
         mMainPresenter = new MainPresenter(mMainActivityView, mAuthPresenter, mJokesRepository);
