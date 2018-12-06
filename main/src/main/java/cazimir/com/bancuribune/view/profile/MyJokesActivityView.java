@@ -184,6 +184,7 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
             adapter.add(joke);
         }
 
+        //add all points for each joke the user has
         mPresenter.calculateTotalPoints(new OnCalculatePointsListener() {
             @Override
             public void onCalculateSuccess(int points) {

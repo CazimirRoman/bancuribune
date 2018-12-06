@@ -52,6 +52,21 @@ public class ReportPresenter implements IReportPresenter {
         });
     }
 
+    @Override
+    public void getAllRanks() {
+        mRepository.getAllRanks(new OnGetAllRanksListener() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onFailed() {
+
+            }
+        });
+    }
+
     private IReportActivityView getMainReportActivityView() {
         return (IReportActivityView) this.mView.getInstance();
     }
