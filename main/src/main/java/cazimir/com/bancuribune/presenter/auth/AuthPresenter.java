@@ -134,7 +134,7 @@ public class AuthPresenter implements IAuthPresenter {
     public void saveInstanceIdToUserObject() {
         final String instanceId = FirebaseInstanceId.getInstance().getToken();
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        final DatabaseReference usersRef = mDatabase.getReference("_dev/users_dev");
+        final DatabaseReference usersRef = mDatabase.getReference("/users");
 
         if (instanceId != null) {
 
