@@ -17,6 +17,7 @@ import cazimir.com.bancuribune.callbacks.reporting.OnGetUsersWithMostPointsCompl
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.model.Vote;
+import cazimir.com.bancuribune.report.OnGetAllRanksListener;
 
 public interface IJokesRepository {
     void getAllJokes(OnGetJokesListener listener, boolean reset);
@@ -38,4 +39,5 @@ public interface IJokesRepository {
     void checkIfAdmin(OnAdminCheckCallback listener, String userId);
     void getUsersWithMostPoints(OnGetUsersWithMostPointsCompleted listener);
     void deleteJokeVote(OnDeleteJokeVoteCallback onDeleteJokeVoteCallback, Joke mJokeToBeRemoved, String userId);
+    void getAllRanks(OnGetAllRanksListener onGetAllRanksListener);
 }

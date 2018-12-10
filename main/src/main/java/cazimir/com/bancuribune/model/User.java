@@ -5,6 +5,10 @@ public class User {
     private String userId;
     private String role;
     private String name;
+    private String instanceId;
+
+    public User() {
+    }
 
     public String getName() {
         return name;
@@ -38,6 +42,11 @@ public class User {
         this.role = role;
     }
 
-    public User() {
+    public String getInstanceId() {
+        return instanceId;
+    }
+
+    public void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
     }
 }

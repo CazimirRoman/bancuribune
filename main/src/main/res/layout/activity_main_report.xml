@@ -4,7 +4,7 @@
     android:id="@+id/container"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context="cazimir.com.bancuribune.report.ReportActivityView">
 
     <include
@@ -58,6 +58,13 @@
         android:layout_width="wrap_content"
         android:id="@+id/txt_points_5"
         android:text="@string/number_of_points"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:visibility="gone"
+        android:text="Check duplicate rank"
+        android:id="@+id/check_duplicate_rank"
         android:layout_height="wrap_content" />
 
 </LinearLayout>

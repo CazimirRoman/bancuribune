@@ -168,6 +168,7 @@ public class MainPresenter implements IMainPresenter {
             public void rankDataIsInDB(Rank rank) {
                 Log.d(TAG, "Rank already in DB");
                 mMainActivityView.saveRankDataToSharedPreferences(rank);
+                getAuthPresenter().saveInstanceIdToUserObject();
             }
 
             @Override

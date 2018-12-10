@@ -1,7 +1,11 @@
 package cazimir.com.bancuribune.repository;
 
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,12 +37,14 @@ import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.model.User;
 import cazimir.com.bancuribune.model.Vote;
+import cazimir.com.bancuribune.report.OnGetAllRanksListener;
 import cazimir.com.bancuribune.utils.UtilHelper;
 
 import static cazimir.com.bancuribune.constant.Constants.NO_MODIFICATIONS;
 
 public class JokesRepository implements IJokesRepository {
 
+    private static final String TAG = JokesRepository.class.getSimpleName();
     private FirebaseDatabase database;
 
     private DatabaseReference jokesRef;
@@ -55,7 +61,7 @@ public class JokesRepository implements IJokesRepository {
         this.debugDB = debugDB;
         database = FirebaseDatabase.getInstance();
 
-        if(debugDB){
+        if (debugDB) {
             initializeDebugDB();
             return;
         }
@@ -558,7 +564,7 @@ public class JokesRepository implements IJokesRepository {
                                         }
                                     }
                                 });
-                            }else{
+                            } else {
                                 listener.onJokeApprovedSuccess("Aprobat");
                             }
                         }
@@ -625,7 +631,6 @@ public class JokesRepository implements IJokesRepository {
 
             }
         });
-
     }
 
     @Override
@@ -723,8 +728,6 @@ public class JokesRepository implements IJokesRepository {
         user.setRole(Constants.ROLE_USER);
 
 
-
-
         usersRef.child(uid).setValue(user);
 
         usersRef.child(uid).setValue(user, new DatabaseReference.CompletionListener() {
@@ -805,12 +808,12 @@ public class JokesRepository implements IJokesRepository {
                 for (DataSnapshot voteSnapshot : dataSnapshot.getChildren()) {
                     try {
                         Vote vote = voteSnapshot.getValue(Vote.class);
-                        if(vote.getVotedBy().equals(userId)){
+                        if (vote.getVotedBy().equals(userId)) {
                             votesRef.child(voteSnapshot.getKey()).removeValue();
                             decreaseJokePoints(callback, mJokeToBeRemoved);
                         }
 
-                    }catch (NullPointerException e){
+                    } catch (NullPointerException e) {
                         callback.onFailed("Vote not found");
                     }
 
@@ -819,7 +822,46 @@ public class JokesRepository implements IJokesRepository {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                    callback.onFailed(databaseError.getMessage());
+                callback.onFailed(databaseError.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void getAllRanks(OnGetAllRanksListener onGetAllRanksListener) {
+
+        final List<Rank> ranks = new ArrayList<>();
+        final List<Rank> duplicateRanks = new ArrayList<>();
+
+        ranksRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot rankSnapshot : dataSnapshot.getChildren()) {
+
+                    final Rank rank = rankSnapshot.getValue(Rank.class);
+
+                    if (ranks.contains(rank)) {
+
+                        duplicateRanks.add(rank);
+                        ranksRef.child(rank.getUid()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Log.d(TAG, "Deleted rank for user: " + rank.getUserName());
+                            }
+                        });
+
+                        continue;
+                    }
+
+                    ranks.add(rank);
+                }
+
+                Log.d(TAG, duplicateRanks.toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }

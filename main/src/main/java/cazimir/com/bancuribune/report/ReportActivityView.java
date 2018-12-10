@@ -2,10 +2,13 @@ package cazimir.com.bancuribune.report;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.OnClick;
 import cazimir.com.bancuribune.BuildConfig;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseActivity;
@@ -19,6 +22,8 @@ public class ReportActivityView extends BaseActivity implements IReportActivityV
 
     private static final String TAG = ReportActivityView.class.getSimpleName();
     ReportPresenter mPresenter;
+    @BindView(R.id.check_duplicate_rank)
+    Button checkDuplicateRank;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,11 @@ public class ReportActivityView extends BaseActivity implements IReportActivityV
     @Override
     public void getTotalNumberOfJokes() {
         mPresenter.getTotalNumberOfJokes(this);
+    }
+
+    @OnClick(R.id.check_duplicate_rank)
+    public void onViewClicked() {
+        mPresenter.getAllRanks();
     }
 
     @Override
