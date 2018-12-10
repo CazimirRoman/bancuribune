@@ -18,4 +18,5 @@ public interface IMainPresenter {
     void writeVoteLogToDB(String uid);
     void checkAndAddRankToDB();
     void addUserToDatabase(String currentUserID, String userName);
+    boolean isLoggedInAnonymously();
 }

@@ -24,4 +24,6 @@ public interface IAuthPresenter {
     void performPasswordReset(OnResetPasswordListener listener, String email);
     void performResendVerificationEmail(OnResendVerificationEmailListener listener, String email, String password);
     boolean isAdmin();
+    boolean isLoggedInAnonymously();
+    void signInAnonymously(OnLoginWithEmailFinishedListener onLoginWithEmailFinishedListener);
 }
