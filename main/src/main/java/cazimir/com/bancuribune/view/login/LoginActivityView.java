@@ -76,9 +76,9 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         setFacebookButtonClickListener();
         initUI();
         mAuthPresenter.checkIfUserLoggedIn();
-        if (BuildConfig.DEBUG) {
-            startWithDebugDB();
-        }
+//        if (BuildConfig.DEBUG) {
+//            startWithDebugDB();
+//        }
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -125,7 +125,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
             case R.id.btnLoginWithEmail:
                 if (expandableLayout.isExpanded()) {
 
-                    hideKeyboard();
+                    //hideKeyboard();
 
                     if (isInternetAvailable()) {
                         String email = etEmail.getText().toString();

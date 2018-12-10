@@ -63,7 +63,7 @@ public class RegisterActivityView extends BaseBackActivity implements IRegisterA
     @OnClick(R.id.btnRegister)
     public void register(View view) {
 
-        hideKeyboard();
+        //hideKeyboard();
 
         if (isInternetAvailable()) {
             String email = etEmail.getText().toString();
