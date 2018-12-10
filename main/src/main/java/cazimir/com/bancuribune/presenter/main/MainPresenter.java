@@ -177,7 +177,8 @@ public class MainPresenter implements IMainPresenter {
                     public void onAddRankSuccess(Rank rank) {
                         mMainActivityView.addUserToDatabase();
                         mMainActivityView.saveRankDataToSharedPreferences(rank);
-                        mMainActivityView.showAlertDialog("În momentul de față ai rangul de Hamsie. Poți adăuga 2 bancuri pe zi", Constants.LEVEL_UP);
+                        //replace this behaviour with a trigger on the server when a new rank is added.
+                        //mMainActivityView.showAlertDialog("În momentul de față ai rangul de Hamsie. Poți adăuga 2 bancuri pe zi", Constants.LEVEL_UP);
                     }
 
                     @Override
@@ -245,5 +246,10 @@ public class MainPresenter implements IMainPresenter {
                 FirebaseCrash.log("User added successfully!");
             }
         }, currentUserID, userName);
+    }
+
+    @Override
+    public boolean isLoggedInAnonymously() {
+        return mAuthPresenter.isLoggedInAnonymously();
     }
 }

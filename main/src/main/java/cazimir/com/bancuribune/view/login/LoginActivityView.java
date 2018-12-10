@@ -8,6 +8,7 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.facebook.CallbackManager;
@@ -40,6 +41,8 @@ import static cazimir.com.bancuribune.constant.Constants.REGISTER_ACTIVITY_REQ_C
 
 public class LoginActivityView extends BaseActivity implements ILoginActivityView {
 
+    @BindView(R.id.btnSkipRegistration)
+    BootstrapButton btnSkipRegistration;
     private ILoginPresenter mPresenter;
     private AuthPresenter mAuthPresenter;
     private CallbackManager mCallbackManager;
@@ -76,6 +79,20 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         if (BuildConfig.DEBUG) {
             startWithDebugDB();
         }
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            if (extras.containsKey("loginRequired")) {
+                Toast.makeText(this, "Loghează-te pentru a putea benficia de toate funcțiile aplicației",
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_login_view;
     }
 
     private void startWithDebugDB() {
@@ -88,6 +105,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         btnGoToRegister.setBootstrapBrand(getAuthenticationBrand());
         btnLoginWithEmail.setBootstrapBrand(getAuthenticationBrand());
         btnForgotPassword.setBootstrapBrand(getAuthenticationBrand());
+        btnSkipRegistration.setBootstrapBrand(getAuthenticationBrand());
         expandableLayout.collapse();
     }
 
@@ -97,16 +115,11 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     }
 
     @Override
-    protected int getLayoutId() {
-        return R.layout.activity_login_view;
-    }
-
-    @Override
     protected int setActionBarTitle() {
         return R.string.nothing;
     }
 
-    @OnClick({R.id.btnLoginWithEmail, R.id.login_button_dummy, R.id.btnGoToRegister, R.id.btnForgotPassword})
+    @OnClick({R.id.btnLoginWithEmail, R.id.login_button_dummy, R.id.btnGoToRegister, R.id.btnForgotPassword, R.id.btnSkipRegistration})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnLoginWithEmail:
@@ -166,6 +179,24 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
 
             case R.id.btnForgotPassword:
                 startActivity(new Intent(LoginActivityView.this, ForgotPasswordActivityView.class));
+                break;
+            case R.id.btnSkipRegistration:
+
+                showProgress();
+
+                mPresenter.performAnonymousLogin(new OnLoginWithEmailFinishedListener() {
+                    @Override
+                    public void onSuccess() {
+                        hideProgress();
+                        launchMainActivity();
+                    }
+
+                    @Override
+                    public void onFailed(String error) {
+                        hideProgress();
+                        Toast.makeText(LoginActivityView.this, error, Toast.LENGTH_SHORT).show();
+                    }
+                });
                 break;
         }
     }

@@ -160,6 +160,18 @@
                         app:showOutline="true" />
                 </LinearLayout>
 
+                <com.beardedhen.androidbootstrap.BootstrapButton
+                    android:id="@+id/btnSkipRegistration"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:text="@string/skip"
+                    app:bootstrapSize="sm"
+                    app:buttonMode="regular"
+                    app:showOutline="true" />
+
             </LinearLayout>
 
         </ScrollView>
