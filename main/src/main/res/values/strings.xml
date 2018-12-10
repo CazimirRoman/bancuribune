@@ -77,5 +77,6 @@
     <string name="test_ad_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="production_ad_id">ca-app-pub-7748272108558557/6099098244</string>
     <string name="share">Trimite</string>
+    <string name="skip">Nu acum</string>
 
 </resources>

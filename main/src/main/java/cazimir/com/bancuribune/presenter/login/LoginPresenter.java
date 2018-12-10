@@ -23,16 +23,21 @@ public class LoginPresenter implements ILoginPresenter {
     public void performLogin(String email, String password) {
         mAuthPresenter.login(new OnLoginWithEmailFinishedListener() {
             @Override
-            public void onLoginWithEmailSuccess() {
+            public void onSuccess() {
                 mView.launchMainActivity();
                 mView.hideProgress();
             }
 
             @Override
-            public void onLoginWithEmailFailed(String error) {
+            public void onFailed(String error) {
                 mView.showAlertDialog(error, SweetAlertDialog.ERROR_TYPE);
                 mView.hideProgress();
             }
         }, email, password);
+    }
+
+    @Override
+    public void performAnonymousLogin(OnLoginWithEmailFinishedListener onLoginWithEmailFinishedListener) {
+        mAuthPresenter.signInAnonymously(onLoginWithEmailFinishedListener);
     }
 }

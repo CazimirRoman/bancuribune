@@ -74,6 +74,7 @@ import cazimir.com.bancuribune.utils.UtilHelper;
 import cazimir.com.bancuribune.view.add.AddJokeActivityView;
 import cazimir.com.bancuribune.view.admin.AdminActivityView;
 import cazimir.com.bancuribune.view.likedJokes.LikedJokesActivityView;
+import cazimir.com.bancuribune.view.login.LoginActivityView;
 import cazimir.com.bancuribune.view.profile.MyJokesActivityView;
 import cazimir.com.bancuribune.view.tutorial.TutorialActivityView;
 
@@ -234,6 +235,8 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         return now;
     }
 
+    //will replace this method with a trigger on the database when a new rank is added (rank is updated)
+    //each time the profile screen is accesed
     @Override
     public void checkIfNewRank(String rank) {
         String currentRank = getCurrentRankNameFromSharedPreferences();
@@ -420,10 +423,16 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
 
             @Override
             public void onJokeVoted(Joke joke, int position) {
+
                 disableHeartIcon(position);
                 animateHeartIcon(position);
                 playOnVotedAudio();
-                mPresenter.checkIfAlreadyVoted(joke, position);
+
+                if(!mPresenter.isLoggedInAnonymously()){
+                    mPresenter.checkIfAlreadyVoted(joke, position);
+                }else {
+                    startLoginActivity();
+                }
             }
 
             @Override
@@ -541,41 +550,55 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     @OnClick(R.id.addJokeButtonFAB)
     public void checkIfAllowedToAdd() {
 
-        String currentRank = getCurrentRankNameFromSharedPreferences();
+        if(!mPresenter.isLoggedInAnonymously()){
+            String currentRank = getCurrentRankNameFromSharedPreferences();
+            if (isInternetAvailable()) {
+                if (!mPresenter.isAdmin()) {
 
-        if (isInternetAvailable()) {
+                    switch (currentRank) {
+                        case HAMSIE:
+                            mPresenter.checkNumberOfAdds(ADD_JOKE_LIMIT_HAMSIE);
+                            break;
+                        case HERING:
+                            mPresenter.checkNumberOfAdds(ADD_JOKE_LIMIT_HERING);
+                            break;
+                        case SOMON:
+                            mPresenter.checkNumberOfAdds(ADD_JOKE_LIMIT_SOMON);
+                            break;
+                        case STIUCA:
+                            mPresenter.checkNumberOfAdds(ADD_JOKE_LIMIT_STIUCA);
+                            break;
+                        case RECHIN:
+                            mPresenter.checkNumberOfAdds(ADD_JOKE_LIMIT_RECHIN);
+                            break;
+                    }
 
-            if (!mPresenter.isAdmin()) {
-
-                switch (currentRank) {
-                    case HAMSIE:
-                        mPresenter.checkNumberOfAdds(ADD_JOKE_LIMIT_HAMSIE);
-                        break;
-                    case HERING:
-                        mPresenter.checkNumberOfAdds(ADD_JOKE_LIMIT_HERING);
-                        break;
-                    case SOMON:
-                        mPresenter.checkNumberOfAdds(ADD_JOKE_LIMIT_SOMON);
-                        break;
-                    case STIUCA:
-                        mPresenter.checkNumberOfAdds(ADD_JOKE_LIMIT_STIUCA);
-                        break;
-                    case RECHIN:
-                        mPresenter.checkNumberOfAdds(ADD_JOKE_LIMIT_RECHIN);
-                        break;
+                } else {
+                    navigateToAddJokeActivity();
                 }
-
-            } else {
-                navigateToAddJokeActivity();
             }
+        } else {
+            startLoginActivity();
         }
+    }
+
+    private void startLoginActivity() {
+        Intent i = new Intent(this, LoginActivityView.class);
+        i.putExtra("loginRequired", true);
+        startActivity(i);
+        finish();
     }
 
     @OnClick(R.id.myJokesButtonFAB)
     public void startMyJokesActivity() {
 
         if (isInternetAvailable()) {
-            goToMyJokesActivity();
+            if(!mPresenter.isLoggedInAnonymously()){
+                goToMyJokesActivity();
+            } else {
+                startLoginActivity();
+            }
+
         }
     }
 
@@ -625,7 +648,11 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     @OnClick(R.id.myLikedJokesButtonFAB)
     public void startMyLikedJokesActivity() {
         if (isInternetAvailable()) {
-            startActivityForResult(new Intent(this, LikedJokesActivityView.class), LIKED_JOKES_REQ_CODE);
+            if(!mPresenter.isLoggedInAnonymously()){
+                startActivityForResult(new Intent(this, LikedJokesActivityView.class), LIKED_JOKES_REQ_CODE);
+            } else {
+                startLoginActivity();
+            }
         }
     }
 

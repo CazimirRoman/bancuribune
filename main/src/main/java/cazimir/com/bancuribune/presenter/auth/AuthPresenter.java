@@ -60,12 +60,12 @@ public class AuthPresenter implements IAuthPresenter {
                             currentUser = mAuth.getCurrentUser();
                             if (mAuth.getCurrentUser().isEmailVerified()) {
                                 saveInstanceIdToUserObject();
-                                listener.onLoginWithEmailSuccess();
+                                listener.onSuccess();
                             } else {
-                                listener.onLoginWithEmailFailed("Te rog să îți verifici mailul. Ți-am trimis un link de confirmare.");
+                                listener.onFailed("Te rog să îți verifici mailul. Ți-am trimis un link de confirmare.");
                             }
                         } else {
-                            listener.onLoginWithEmailFailed(task.getException().getMessage());
+                            listener.onFailed(task.getException().getMessage());
                         }
                     }
                 });
@@ -275,5 +275,30 @@ public class AuthPresenter implements IAuthPresenter {
     public boolean isAdmin() {
         List<String> list = Arrays.asList(Constants.ADMINS);
         return list.contains(getCurrentUserID());
+    }
+
+    @Override
+    public boolean isLoggedInAnonymously() {
+        return mAuth.getCurrentUser().isAnonymous();
+    }
+
+    @Override
+    public void signInAnonymously(final OnLoginWithEmailFinishedListener listener) {
+        mAuth.signInAnonymously()
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInAnonymously:success");
+                            listener.onSuccess();
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInAnonymously:failure", task.getException());
+                            listener.onFailed(task.getException().getMessage());
+
+                        }
+                    }
+                });
     }
 }
