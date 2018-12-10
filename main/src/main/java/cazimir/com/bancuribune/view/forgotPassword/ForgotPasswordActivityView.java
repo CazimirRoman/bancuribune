@@ -45,7 +45,7 @@ public class ForgotPasswordActivityView extends BaseBackActivity implements IFor
         btnForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                hideKeyboard();
+                //hideKeyboard();
                 if (isFormDataValid(false)) {
                     if (isInternetAvailable()) {
                         mPresenter.sendResetInstructions(etEmail.getText().toString());
@@ -59,7 +59,7 @@ public class ForgotPasswordActivityView extends BaseBackActivity implements IFor
         btnResendVerificationEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hideKeyboard();
+                //hideKeyboard();
                 if (isFormDataValid(true)) {
                     if (isInternetAvailable()) {
                         mPresenter.resendVerificationEmail(etEmail.getText().toString(), etPassword.getText().toString());
