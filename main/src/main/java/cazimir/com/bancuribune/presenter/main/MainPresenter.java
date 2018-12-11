@@ -26,6 +26,8 @@ import cazimir.com.bancuribune.repository.OnAddRankFinishedListener;
 import cazimir.com.bancuribune.repository.OnAddUserListener;
 import cazimir.com.bancuribune.repository.OnCheckIfRankDataInDBListener;
 import cazimir.com.bancuribune.repository.OnShowReminderToAddListener;
+import cazimir.com.bancuribune.view.list.OnAddUserToDatabaseCallback;
+import cazimir.com.bancuribune.view.list.OnSaveInstanceIdToUserObjectCallback;
 
 import static cazimir.com.bancuribune.constant.Constants.EVENT_VOTED;
 
@@ -168,25 +170,48 @@ public class MainPresenter implements IMainPresenter {
             public void rankDataIsInDB(Rank rank) {
                 Log.d(TAG, "Rank already in DB");
                 mMainActivityView.saveRankDataToSharedPreferences(rank);
-                getAuthPresenter().saveInstanceIdToUserObject();
+                getAuthPresenter().saveInstanceIdToUserObject(new OnSaveInstanceIdToUserObjectCallback() {
+                    @Override
+                    public void onSuccess() {
+                        Log.d(TAG, "Instance Id saved");
+                    }
+
+                    @Override
+                    public void onFailed(String error) {
+                        mMainActivityView.showToast(error);
+                    }
+                });
             }
 
             @Override
             public void rankDataNotInDB() {
-                mJokesRepository.addRankToDB(new OnAddRankFinishedListener() {
+
+                //add user to DB first
+                mMainActivityView.addUserToDatabase(new OnAddUserToDatabaseCallback() {
                     @Override
-                    public void onAddRankSuccess(Rank rank) {
-                        mMainActivityView.addUserToDatabase();
-                        mMainActivityView.saveRankDataToSharedPreferences(rank);
-                        //replace this behaviour with a trigger on the server when a new rank is added.
-                        //mMainActivityView.showAlertDialog("În momentul de față ai rangul de Hamsie. Poți adăuga 2 bancuri pe zi", Constants.LEVEL_UP);
+                    public void onSuccess() {
+                        //after adding the user and instance Id, add the rank
+                        mJokesRepository.addRankToDB(new OnAddRankFinishedListener() {
+                            @Override
+                            public void onAddRankSuccess(Rank rank) {
+                                mMainActivityView.saveRankDataToSharedPreferences(rank);
+                                //replace this behaviour with a trigger on the server when a new rank is added.
+                                //mMainActivityView.showAlertDialog("În momentul de față ai rangul de Hamsie. Poți adăuga 2 bancuri pe zi", Constants.LEVEL_UP);
+                            }
+
+                            @Override
+                            public void onAddRankFailed(String error) {
+                                mMainActivityView.showAlertDialog(error, SweetAlertDialog.ERROR_TYPE);
+                            }
+                        }, constructRankObject());
                     }
 
                     @Override
-                    public void onAddRankFailed(String error) {
-                        mMainActivityView.showAlertDialog(error, SweetAlertDialog.ERROR_TYPE);
+                    public void onError(String error) {
+                        mMainActivityView.showToast(error);
                     }
-                }, constructRankObject());
+                });
+
             }
         }, mAuthPresenter.getCurrentUserID());
     }

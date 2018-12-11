@@ -178,7 +178,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="5dp"
             ads:adSize="BANNER"
-            ads:adUnitId="@string/production_ad_id" />
+            ads:adUnitId="@string/test_ad_id" />
 
     </LinearLayout>
 

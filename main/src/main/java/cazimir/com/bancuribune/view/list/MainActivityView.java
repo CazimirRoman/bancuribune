@@ -359,11 +359,21 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     }
 
     @Override
-    public void addUserToDatabase() {
+    public void addUserToDatabase(final OnAddUserToDatabaseCallback callback) {
         mPresenter.addUserToDatabase(mPresenter.getAuthPresenter().getCurrentUserID(),
                 mPresenter.getAuthPresenter().getCurrentUserName());
 
-        mPresenter.getAuthPresenter().saveInstanceIdToUserObject();
+        mPresenter.getAuthPresenter().saveInstanceIdToUserObject(new OnSaveInstanceIdToUserObjectCallback() {
+            @Override
+            public void onSuccess() {
+                callback.onSuccess();
+            }
+
+            @Override
+            public void onFailed(String error) {
+                callback.onError(error);
+            }
+        });
     }
 
     private void addRankAndUserToDB() {

@@ -8,7 +8,6 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.facebook.CallbackManager;
@@ -76,15 +75,14 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         setFacebookButtonClickListener();
         initUI();
         mAuthPresenter.checkIfUserLoggedIn();
-//        if (BuildConfig.DEBUG) {
-//            startWithDebugDB();
-//        }
+        if (BuildConfig.DEBUG) {
+            startWithDebugDB();
+        }
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             if (extras.containsKey("loginRequired")) {
-                Toast.makeText(this, "Loghează-te pentru a putea benficia de toate funcțiile aplicației",
-                        Toast.LENGTH_LONG).show();
+                showToast("Loghează-te pentru a putea benficia de toate funcțiile aplicației");
             }
         }
 
@@ -112,6 +110,11 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     @Override
     public Activity getContext() {
         return this;
+    }
+
+    @Override
+    public void showToast(String message) {
+        buildToast(message).show();
     }
 
     @Override
@@ -194,7 +197,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
                     @Override
                     public void onFailed(String error) {
                         hideProgress();
-                        Toast.makeText(LoginActivityView.this, error, Toast.LENGTH_SHORT).show();
+                        showToast(error);
                     }
                 });
                 break;
@@ -243,7 +246,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
 
     @Override
     public void loginFailed(String message) {
-        buildToast(message).show();
+        showToast(message);
     }
 
     @Override

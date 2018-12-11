@@ -30,6 +30,8 @@ import java.util.List;
 
 import cazimir.com.bancuribune.constant.Constants;
 import cazimir.com.bancuribune.model.User;
+import cazimir.com.bancuribune.repository.DatabaseTypeSingleton;
+import cazimir.com.bancuribune.view.list.OnSaveInstanceIdToUserObjectCallback;
 import cazimir.com.bancuribune.view.login.OnLoginWithEmailFinishedListener;
 import cazimir.com.bancuribune.view.register.OnRegistrationFinishedListener;
 import cazimir.com.bancuribune.view.forgotPassword.OnResendVerificationEmailListener;
@@ -59,7 +61,6 @@ public class AuthPresenter implements IAuthPresenter {
                         if (task.isSuccessful()) {
                             currentUser = mAuth.getCurrentUser();
                             if (mAuth.getCurrentUser().isEmailVerified()) {
-                                saveInstanceIdToUserObject();
                                 listener.onSuccess();
                             } else {
                                 listener.onFailed("Te rog să îți verifici mailul. Ți-am trimis un link de confirmare.");
@@ -123,19 +124,45 @@ public class AuthPresenter implements IAuthPresenter {
 
     @Override
     public void checkIfUserLoggedIn() {
+        //this implementation is for cases where the instanceId is not saved yet
+        final ILoginActivityView view = (ILoginActivityView) mView.getInstance();
+        view.showProgress();
         if (isLoggedInViaEmail() || isLoggedInViaFacebook()) {
-            saveInstanceIdToUserObject();
-            ILoginActivityView view = (ILoginActivityView) this.mView.getInstance();
-            view.launchMainActivity();
+            saveInstanceIdToUserObject(new OnSaveInstanceIdToUserObjectCallback() {
+                @Override
+                public void onSuccess() {
+                    view.launchMainActivity();
+                    view.hideProgress();
+                }
+
+                @Override
+                public void onFailed(String error) {
+                    view.showToast(error);
+                }
+            });
+        //not logged in
+        } else {
+            view.hideProgress();
         }
+
+
     }
 
     @Override
-    public void saveInstanceIdToUserObject() {
+    public void saveInstanceIdToUserObject(final OnSaveInstanceIdToUserObjectCallback callback) {
         final String instanceId = FirebaseInstanceId.getInstance().getToken();
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
-        final DatabaseReference usersRef = mDatabase.getReference("/users");
 
+        DatabaseTypeSingleton type = DatabaseTypeSingleton.getInstance();
+        final DatabaseReference usersRef;
+
+        if(!type.isDebug()){
+            usersRef = mDatabase.getReference("/users");
+        }else{
+            usersRef = mDatabase.getReference("/_dev/users_dev");
+        }
+
+        //if first login there is no user in the database until you get to the tutorial screen.
         if (instanceId != null) {
 
             Query query = usersRef.orderByChild("userId").equalTo(mAuth.getCurrentUser().getUid());
@@ -145,13 +172,18 @@ public class AuthPresenter implements IAuthPresenter {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot usersSnapshot : dataSnapshot.getChildren()) {
                         User user = usersSnapshot.getValue(User.class);
-                        usersRef.child(usersSnapshot.getKey()).child("instanceId").setValue(instanceId);
+                        usersRef.child(usersSnapshot.getKey()).child("instanceId").setValue(instanceId).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                callback.onSuccess();
+                            }
+                        });
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                    callback.onFailed(databaseError.getMessage());
                 }
             });
         }
@@ -217,7 +249,17 @@ public class AuthPresenter implements IAuthPresenter {
                             // Sign in success, update UI with the signed-in user's information
                             login.loginSuccess();
                             login.hideProgress();
-                            saveInstanceIdToUserObject();
+                            saveInstanceIdToUserObject(new OnSaveInstanceIdToUserObjectCallback() {
+                                @Override
+                                public void onSuccess() {
+
+                                }
+
+                                @Override
+                                public void onFailed(String error) {
+
+                                }
+                            });
 
                         } else {
                             // If sign in fails, display a message to the user.

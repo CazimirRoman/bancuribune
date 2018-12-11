@@ -4,6 +4,7 @@ package cazimir.com.bancuribune.presenter.auth;
 import com.facebook.FacebookCallback;
 import com.facebook.login.LoginResult;
 
+import cazimir.com.bancuribune.view.list.OnSaveInstanceIdToUserObjectCallback;
 import cazimir.com.bancuribune.view.login.OnLoginWithEmailFinishedListener;
 import cazimir.com.bancuribune.view.register.OnRegistrationFinishedListener;
 import cazimir.com.bancuribune.view.forgotPassword.OnResendVerificationEmailListener;
@@ -15,7 +16,7 @@ public interface IAuthPresenter {
     void registerUser(OnRegistrationFinishedListener listener, String email, String password);
     FacebookCallback<LoginResult> loginWithFacebook();
     void checkIfUserLoggedIn();
-    void saveInstanceIdToUserObject();
+    void saveInstanceIdToUserObject(OnSaveInstanceIdToUserObjectCallback callback);
     boolean isLoggedInViaFacebook();
     String getCurrentUserID();
     String getCurrentUserName();
