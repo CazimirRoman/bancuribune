@@ -68,6 +68,7 @@ public class MyJokesPresenter implements IMyJokesPresenter {
             @Override
             public void onGetMyJokesSuccess(List<Joke> jokes) {
                 mView.showMyJokesList(jokes);
+                mView.scrollToJokeIfFromPushNotification();
             }
 
             @Override

@@ -23,12 +23,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private static final String TAG = "FCM Service";
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        sendNotification(remoteMessage.getData().get("body"), remoteMessage.getData().get("title"), remoteMessage.getData().get("jokeId"));
+
+        sendNotification(remoteMessage.getData().get("body"), remoteMessage.getData().get("title"),
+                remoteMessage.getData().get("regards"), remoteMessage.getData().get("jokeId"));
     }
 
-    private void sendNotification(String body, String title, String jokeId) {
+    private void sendNotification(String body, String title, String regards, String jokeId) {
         Intent intent = new Intent(this, LoginActivityView.class);
         intent.putExtra("jokeId", jokeId);
+        intent.putExtra("regards", regards);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT);

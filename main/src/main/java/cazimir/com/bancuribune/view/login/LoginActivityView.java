@@ -45,6 +45,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     private AuthPresenter mAuthPresenter;
     private CallbackManager mCallbackManager;
     private String mJokeIdExtra;
+    private Boolean mIsNewRank = false;
 
     @BindView(R.id.etEmail)
     EditText etEmail;
@@ -233,13 +234,14 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     protected void onNewIntent(Intent intent) {
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            if (extras.containsKey("jokeId")) {
-                String extra = getIntent().getStringExtra("jokeId");
+            if (extras.getString("jokeId") != null) {
                 //extra coming from push notification after joke approved
-                if (extra != null) {
-                    mJokeIdExtra = extra;
+                mJokeIdExtra = getIntent().getStringExtra("jokeId");
+            }
 
-                }
+            //it is a rank update. for rank updates jokeId is not present
+            if(extras.getString("regards") != null && extras.getString("regards").equals("rank_updated")) {
+                mIsNewRank = true;
             }
         }
     }
@@ -250,6 +252,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         Intent i = new Intent(this, MainActivityView.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         i.putExtra("jokeId", mJokeIdExtra);
+        i.putExtra("regards", mIsNewRank);
         startActivity(i);
         this.finish();
     }

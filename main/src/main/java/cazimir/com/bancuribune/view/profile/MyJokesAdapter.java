@@ -24,6 +24,19 @@ public class MyJokesAdapter extends EmptyRecyclerView.Adapter<MyJokesAdapter.MyV
         myJokes = new ArrayList<>();
     }
 
+    //get position of joke in list based on jokeId that comes from push notif
+    public int getItemPositionFromJokeId(String jokeId) {
+
+        for (Joke joke : myJokes
+                ) {
+            if (joke.getUid().equals(jokeId)) {
+                return myJokes.indexOf(joke);
+            }
+        }
+
+        return 0;
+    }
+
     class MyViewHolder extends EmptyRecyclerView.ViewHolder{
 
         ExpandableTextView expandableTextView;

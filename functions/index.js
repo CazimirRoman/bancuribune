@@ -5,6 +5,9 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 
+const RANK_UPDATED = "rank_updated"
+const JOKE_APPROVED = "joke_approved"
+
 exports.onJokeApproved_test = functions.database.ref('/_dev/jokes_dev/{pushId}')
     .onWrite(event => {
 
@@ -45,8 +48,9 @@ exports.onJokeApproved_test = functions.database.ref('/_dev/jokes_dev/{pushId}')
                         const payload = {
 
                             data: {
-                                title: "Bancul tău a fost aprobat!",
-                                body: "Trimite-l prietenilor și adună voturi; astfel crești în rang.",
+                                title: "Bancul tău a fost aprobat, felicitări!",
+                                body: "Trimite-l prietenilor, adună voturi și urcă în rang. Click aici să vezi bancul.",
+                                regards: JOKE_APPROVED,
                                 jokeId: jokeId
                             }
                         };
@@ -107,8 +111,9 @@ exports.onJokeApproved_prod = functions.database.ref('/jokes/{pushId}')
                         const payload = {
 
                             data: {
-                                title: "Bancul tău a fost aprobat!",
-                                body: "Trimite-l prietenilor și adună voturi; astfel crești în rang.",
+                                title: "Bancul tău a fost aprobat, felicitări!",
+                                body: "Trimite-l prietenilor, adună voturi și urcă în rang. Click aici să vezi bancul.",
+                                regards: JOKE_APPROVED,
                                 jokeId: jokeId
                             }
                         };
@@ -161,8 +166,9 @@ exports.onJokeApproved_prod = functions.database.ref('/jokes/{pushId}')
                         const payload = {
 
                             data: {
-                                title: `Ai crescut in rangul peștilor!`,
-                                body: `În momentul de față ești ${currentRank}. Adaugă bancuri și dă-le share prietenilor tăi; astfel aduni puncte și crești în rang.`
+                                title: `Ai urcat în rangul pestilor, felicitari!`,
+                                body: `Acum ești ${currentRank}. \nAdaugă bancuri, adună voturi și trimite-le prietenilor că să ajungi un pește mai mare. Verifică aici numărul de voturi până la următorul rang în bancul de pești.`,
+                                regards: RANK_UPDATED
                             }
                         };
 

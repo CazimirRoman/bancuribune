@@ -30,7 +30,6 @@ public interface IMainActivityView extends IGeneralView {
     void enableHeartIcon(int position);
     void showAlertDialog(String message, int type);
     Date addLastCheckDateToSharedPreferences();
-    void checkIfNewRank(String rank);
     void playOnVotedAudio();
     void sendJokeToTrello(String joke);
     void goToMyJokesActivity();

@@ -75,6 +75,18 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
     }
 
     @Override
+    public void scrollToJokeIfFromPushNotification() {
+        if(getIntent().getStringExtra("jokeId") != null){
+            String jokeId = getIntent().getStringExtra("jokeId");
+            myJokesListRecyclerView.scrollToPosition(getJokePositionFromId(jokeId));
+        }
+    }
+
+    private int getJokePositionFromId(String jokeId) {
+        return adapter.getItemPositionFromJokeId(jokeId);
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.activity_my_jokes_view;
     }
