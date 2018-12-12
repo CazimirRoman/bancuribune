@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
@@ -40,11 +41,10 @@ import static cazimir.com.bancuribune.constant.Constants.REGISTER_ACTIVITY_REQ_C
 
 public class LoginActivityView extends BaseActivity implements ILoginActivityView {
 
-    @BindView(R.id.btnSkipRegistration)
-    BootstrapButton btnSkipRegistration;
     private ILoginPresenter mPresenter;
     private AuthPresenter mAuthPresenter;
     private CallbackManager mCallbackManager;
+    private String mJokeIdExtra;
 
     @BindView(R.id.etEmail)
     EditText etEmail;
@@ -64,7 +64,11 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     FrameLayout progress;
     @BindView(R.id.expandableLayout)
     ExpandableRelativeLayout expandableLayout;
-    private String mJokeIdExtra;
+    @BindView(R.id.btnSkipRegistration)
+    BootstrapButton btnSkipRegistration;
+    @BindView(R.id.scrollView)
+    ScrollView scrollView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +119,16 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     @Override
     public void showToast(String message) {
         buildToast(message).show();
+    }
+
+    @Override
+    public void hideViewsAndButtons() {
+        scrollView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showViewsAndButtons() {
+        scrollView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -234,6 +248,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     public void launchMainActivity() {
         onNewIntent(getIntent());
         Intent i = new Intent(this, MainActivityView.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         i.putExtra("jokeId", mJokeIdExtra);
         startActivity(i);
         this.finish();

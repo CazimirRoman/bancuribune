@@ -126,7 +126,9 @@ public class AuthPresenter implements IAuthPresenter {
     public void checkIfUserLoggedIn() {
         //this implementation is for cases where the instanceId is not saved yet
         final ILoginActivityView view = (ILoginActivityView) mView.getInstance();
+        view.hideViewsAndButtons();
         view.showProgress();
+
         if (isLoggedInViaEmail() || isLoggedInViaFacebook()) {
             saveInstanceIdToUserObject(new OnSaveInstanceIdToUserObjectCallback() {
                 @Override
@@ -142,6 +144,7 @@ public class AuthPresenter implements IAuthPresenter {
             });
         //not logged in
         } else {
+            view.showViewsAndButtons();
             view.hideProgress();
         }
 
