@@ -18,4 +18,5 @@ public interface ILoginActivityView extends IGeneralView {
     void showToast(String message);
     void hideViewsAndButtons();
     void showViewsAndButtons();
+    void setAnonymousToTrue();
 }

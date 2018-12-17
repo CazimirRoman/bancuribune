@@ -23,6 +23,7 @@ import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.callbacks.login.ILoginActivityView;
 import cazimir.com.bancuribune.callbacks.login.OnFormValidatedListener;
+import cazimir.com.bancuribune.constant.Constants;
 import cazimir.com.bancuribune.presenter.auth.AuthPresenter;
 import cazimir.com.bancuribune.presenter.login.ILoginPresenter;
 import cazimir.com.bancuribune.presenter.login.LoginPresenter;
@@ -46,6 +47,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     private CallbackManager mCallbackManager;
     private String mJokeIdExtra;
     private Boolean mIsNewRank = false;
+    private Boolean mIsAnonymousLogin = false;
 
     @BindView(R.id.etEmail)
     EditText etEmail;
@@ -79,10 +81,10 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         mCallbackManager = CallbackManager.Factory.create();
         setFacebookButtonClickListener();
         initUI();
-        mAuthPresenter.checkIfUserLoggedIn();
         if (BuildConfig.DEBUG) {
             startWithDebugDB();
         }
+        mAuthPresenter.checkIfUserLoggedIn();
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -130,6 +132,11 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     @Override
     public void showViewsAndButtons() {
         scrollView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setAnonymousToTrue() {
+        mIsAnonymousLogin = true;
     }
 
     @Override
@@ -194,27 +201,12 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
             case R.id.btnGoToRegister:
                 startActivityForResult(new Intent(LoginActivityView.this, RegisterActivityView.class), REGISTER_ACTIVITY_REQ_CODE);
                 break;
-
             case R.id.btnForgotPassword:
                 startActivity(new Intent(LoginActivityView.this, ForgotPasswordActivityView.class));
                 break;
             case R.id.btnSkipRegistration:
-
                 showProgress();
-
-                mPresenter.performAnonymousLogin(new OnLoginWithEmailFinishedListener() {
-                    @Override
-                    public void onSuccess() {
-                        hideProgress();
-                        launchMainActivity();
-                    }
-
-                    @Override
-                    public void onFailed(String error) {
-                        hideProgress();
-                        showToast(error);
-                    }
-                });
+                mPresenter.performAnonymousLogin();
                 break;
         }
     }
@@ -253,6 +245,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         i.putExtra("jokeId", mJokeIdExtra);
         i.putExtra("regards", mIsNewRank);
+        i.putExtra(Constants.ANONYMOUS_LOGIN, mIsAnonymousLogin);
         startActivity(i);
         this.finish();
     }

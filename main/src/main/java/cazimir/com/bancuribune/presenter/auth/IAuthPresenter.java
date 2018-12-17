@@ -4,6 +4,7 @@ package cazimir.com.bancuribune.presenter.auth;
 import com.facebook.FacebookCallback;
 import com.facebook.login.LoginResult;
 
+import cazimir.com.bancuribune.presenter.login.OnAnonymousLoginCallback;
 import cazimir.com.bancuribune.view.list.OnSaveInstanceIdToUserObjectCallback;
 import cazimir.com.bancuribune.view.login.OnLoginWithEmailFinishedListener;
 import cazimir.com.bancuribune.view.register.OnRegistrationFinishedListener;
@@ -26,5 +27,5 @@ public interface IAuthPresenter {
     void performResendVerificationEmail(OnResendVerificationEmailListener listener, String email, String password);
     boolean isAdmin();
     boolean isLoggedInAnonymously();
-    void signInAnonymously(OnLoginWithEmailFinishedListener onLoginWithEmailFinishedListener);
+    void signInAnonymously(OnAnonymousLoginCallback onAnonymousLoginCallback);
 }

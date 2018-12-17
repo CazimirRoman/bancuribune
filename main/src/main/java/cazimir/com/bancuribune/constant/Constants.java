@@ -62,4 +62,5 @@ public class Constants {
     public static final String NO_MODIFICATIONS = "no modifications";
     public static final String[] ADMINS = new String[]{"IINgcJQYhrar9QBi2qcojfRqely2", "eXDuTHO9UPZAS02HctjQHI2hsRv2", "ry6AK3WcFdNgEXhbNXqZEThtCFj2"};
     public static final int REMOVE_FROM_FAVORITES = 8;
+    public static final String ANONYMOUS_LOGIN = "anonymous";
 }

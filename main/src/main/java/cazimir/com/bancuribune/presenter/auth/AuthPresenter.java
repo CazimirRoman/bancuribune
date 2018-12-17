@@ -30,6 +30,7 @@ import java.util.List;
 
 import cazimir.com.bancuribune.constant.Constants;
 import cazimir.com.bancuribune.model.User;
+import cazimir.com.bancuribune.presenter.login.OnAnonymousLoginCallback;
 import cazimir.com.bancuribune.repository.DatabaseTypeSingleton;
 import cazimir.com.bancuribune.view.list.OnSaveInstanceIdToUserObjectCallback;
 import cazimir.com.bancuribune.view.login.OnLoginWithEmailFinishedListener;
@@ -328,17 +329,15 @@ public class AuthPresenter implements IAuthPresenter {
     }
 
     @Override
-    public void signInAnonymously(final OnLoginWithEmailFinishedListener listener) {
+    public void signInAnonymously(final OnAnonymousLoginCallback listener) {
         mAuth.signInAnonymously()
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInAnonymously:success");
                             listener.onSuccess();
                         } else {
-                            // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInAnonymously:failure", task.getException());
                             listener.onFailed(task.getException().getMessage());
 
