@@ -6,6 +6,7 @@ import java.util.List;
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.model.Joke;
 import cazimir.com.bancuribune.model.Rank;
+import cazimir.com.bancuribune.view.list.OnAddUserToDatabaseCallback;
 
 public interface IMainActivityView extends IGeneralView {
     void getAllJokesData(boolean reset, boolean swipe);
@@ -24,12 +25,11 @@ public interface IMainActivityView extends IGeneralView {
     void updateRemainingAdds(int remaining);
     void hideSwipeRefresh();
     void refreshAdapter(Joke joke);
-    void addUserToDatabase();
+    void addUserToDatabase(OnAddUserToDatabaseCallback callback);
     void refreshJokesListAdapter();
     void enableHeartIcon(int position);
     void showAlertDialog(String message, int type);
     Date addLastCheckDateToSharedPreferences();
-    void checkIfNewRank(String rank);
     void playOnVotedAudio();
     void sendJokeToTrello(String joke);
     void goToMyJokesActivity();

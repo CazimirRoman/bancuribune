@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.facebook.CallbackManager;
@@ -23,6 +23,7 @@ import cazimir.com.bancuribune.base.BaseActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.callbacks.login.ILoginActivityView;
 import cazimir.com.bancuribune.callbacks.login.OnFormValidatedListener;
+import cazimir.com.bancuribune.constant.Constants;
 import cazimir.com.bancuribune.presenter.auth.AuthPresenter;
 import cazimir.com.bancuribune.presenter.login.ILoginPresenter;
 import cazimir.com.bancuribune.presenter.login.LoginPresenter;
@@ -41,11 +42,12 @@ import static cazimir.com.bancuribune.constant.Constants.REGISTER_ACTIVITY_REQ_C
 
 public class LoginActivityView extends BaseActivity implements ILoginActivityView {
 
-    @BindView(R.id.btnSkipRegistration)
-    BootstrapButton btnSkipRegistration;
     private ILoginPresenter mPresenter;
     private AuthPresenter mAuthPresenter;
     private CallbackManager mCallbackManager;
+    private String mJokeIdExtra;
+    private Boolean mIsNewRank = false;
+    private Boolean mIsAnonymousLogin = false;
 
     @BindView(R.id.etEmail)
     EditText etEmail;
@@ -65,7 +67,11 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     FrameLayout progress;
     @BindView(R.id.expandableLayout)
     ExpandableRelativeLayout expandableLayout;
-    private String mJokeIdExtra;
+    @BindView(R.id.btnSkipRegistration)
+    BootstrapButton btnSkipRegistration;
+    @BindView(R.id.scrollView)
+    ScrollView scrollView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,16 +81,15 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         mCallbackManager = CallbackManager.Factory.create();
         setFacebookButtonClickListener();
         initUI();
+        if (BuildConfig.DEBUG) {
+            //startWithDebugDB();
+        }
         mAuthPresenter.checkIfUserLoggedIn();
-//        if (BuildConfig.DEBUG) {
-//            startWithDebugDB();
-//        }
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             if (extras.containsKey("loginRequired")) {
-                Toast.makeText(this, "Loghează-te pentru a putea benficia de toate funcțiile aplicației",
-                        Toast.LENGTH_LONG).show();
+                showToast("Loghează-te pentru a putea benficia de toate funcțiile aplicației");
             }
         }
 
@@ -112,6 +117,26 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     @Override
     public Activity getContext() {
         return this;
+    }
+
+    @Override
+    public void showToast(String message) {
+        buildToast(message).show();
+    }
+
+    @Override
+    public void hideViewsAndButtons() {
+        scrollView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showViewsAndButtons() {
+        scrollView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void setAnonymousToTrue() {
+        mIsAnonymousLogin = true;
     }
 
     @Override
@@ -176,27 +201,12 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
             case R.id.btnGoToRegister:
                 startActivityForResult(new Intent(LoginActivityView.this, RegisterActivityView.class), REGISTER_ACTIVITY_REQ_CODE);
                 break;
-
             case R.id.btnForgotPassword:
                 startActivity(new Intent(LoginActivityView.this, ForgotPasswordActivityView.class));
                 break;
             case R.id.btnSkipRegistration:
-
                 showProgress();
-
-                mPresenter.performAnonymousLogin(new OnLoginWithEmailFinishedListener() {
-                    @Override
-                    public void onSuccess() {
-                        hideProgress();
-                        launchMainActivity();
-                    }
-
-                    @Override
-                    public void onFailed(String error) {
-                        hideProgress();
-                        Toast.makeText(LoginActivityView.this, error, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                mPresenter.performAnonymousLogin();
                 break;
         }
     }
@@ -216,13 +226,14 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     protected void onNewIntent(Intent intent) {
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            if (extras.containsKey("jokeId")) {
-                String extra = getIntent().getStringExtra("jokeId");
+            if (extras.getString("jokeId") != null) {
                 //extra coming from push notification after joke approved
-                if (extra != null) {
-                    mJokeIdExtra = extra;
+                mJokeIdExtra = getIntent().getStringExtra("jokeId");
+            }
 
-                }
+            //it is a rank update. for rank updates jokeId is not present
+            if(extras.getString("regards") != null && extras.getString("regards").equals("rank_updated")) {
+                mIsNewRank = true;
             }
         }
     }
@@ -231,7 +242,10 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     public void launchMainActivity() {
         onNewIntent(getIntent());
         Intent i = new Intent(this, MainActivityView.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         i.putExtra("jokeId", mJokeIdExtra);
+        i.putExtra("regards", mIsNewRank);
+        i.putExtra(Constants.ANONYMOUS_LOGIN, mIsAnonymousLogin);
         startActivity(i);
         this.finish();
     }
@@ -243,7 +257,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
 
     @Override
     public void loginFailed(String message) {
-        buildToast(message).show();
+        showToast(message);
     }
 
     @Override

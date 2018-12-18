@@ -15,4 +15,8 @@ public interface ILoginActivityView extends IGeneralView {
     void setEmailError(String error);
     void setPasswordError(String error);
     Activity getContext();
+    void showToast(String message);
+    void hideViewsAndButtons();
+    void showViewsAndButtons();
+    void setAnonymousToTrue();
 }

@@ -7,5 +7,5 @@ import cazimir.com.bancuribune.view.login.OnLoginWithEmailFinishedListener;
  */
 public interface ILoginPresenter {
     void performLogin(String email, String password);
-    void performAnonymousLogin(OnLoginWithEmailFinishedListener onLoginWithEmailFinishedListener);
+    void performAnonymousLogin();
 }

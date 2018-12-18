@@ -70,6 +70,7 @@
 
         <activity
             android:name=".view.login.LoginActivityView"
+            android:launchMode="singleTop"
             android:windowSoftInputMode="adjustPan">
 
             <intent-filter>

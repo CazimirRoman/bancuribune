@@ -47,21 +47,6 @@ public class MySweetAlertDialog {
                 dialog.show();
                 break;
 
-            case Constants.LEVEL_UP:
-                dialog = new SweetAlertDialog(mContext, SweetAlertDialog.SUCCESS_TYPE)
-                        .setTitleText("Ai crescut in rang!")
-                        .setContentText(message)
-                        .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                            @Override
-                            public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                MainActivityView main = (MainActivityView) mContext;
-                                main.goToMyJokesActivity();
-                                sweetAlertDialog.dismissWithAnimation();
-                            }
-                        });
-                dialog.show();
-                break;
-
             case Constants.ADD_JOKE_REMINDER:
                 dialog = new SweetAlertDialog(mContext, SweetAlertDialog.CUSTOM_IMAGE_TYPE)
                         .setTitleText("Bloop!")

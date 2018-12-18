@@ -12,9 +12,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 import com.squareup.picasso.Picasso;
@@ -24,6 +26,7 @@ import java.net.URL;
 import java.util.List;
 
 import butterknife.BindView;
+import cazimir.com.bancuribune.BuildConfig;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
@@ -42,8 +45,8 @@ import cazimir.com.bancuribune.view.login.LoginActivityView;
 
 public class MyJokesActivityView extends BaseBackActivity implements IMyJokesActivityView {
 
-    @BindView(R.id.adView)
-    AdView adView;
+    @BindView(R.id.adBannerLayout)
+    LinearLayout adBannerLayout;
     private IMyJokesPresenter mPresenter;
     private MyJokesAdapter adapter;
 
@@ -70,13 +73,37 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
         initRecycleView();
         getProfilePictureAndName();
         getMyJokes();
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        showAds();
     }
 
     @Override
     protected int getLayoutId() {
         return R.layout.activity_my_jokes_view;
+    }
+
+    @Override
+    public void scrollToJokeIfFromPushNotification() {
+        if (getIntent().getStringExtra("jokeId") != null) {
+            String jokeId = getIntent().getStringExtra("jokeId");
+            myJokesListRecyclerView.scrollToPosition(getJokePositionFromId(jokeId));
+        }
+    }
+
+    private void showAds() {
+        AdView mAdView = new AdView(this);
+        mAdView.setAdSize(AdSize.BANNER);
+        if (BuildConfig.DEBUG) {
+            mAdView.setAdUnitId(Constants.AD_UNIT_ID_TEST);
+        } else {
+            mAdView.setAdUnitId(Constants.AD_UNIT_ID_PROD);
+        }
+        adBannerLayout.addView(mAdView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+    }
+
+    private int getJokePositionFromId(String jokeId) {
+        return adapter.getItemPositionFromJokeId(jokeId);
     }
 
     @Override

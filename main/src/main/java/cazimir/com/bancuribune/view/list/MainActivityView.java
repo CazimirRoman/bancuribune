@@ -41,6 +41,7 @@ import android.widget.Toast;
 
 import com.facebook.Profile;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.julienvey.trello.Trello;
 import com.julienvey.trello.domain.Card;
@@ -86,7 +87,6 @@ import static cazimir.com.bancuribune.constant.Constants.ADD_JOKE_LIMIT_STIUCA;
 import static cazimir.com.bancuribune.constant.Constants.ADD_JOKE_REQUEST;
 import static cazimir.com.bancuribune.constant.Constants.ADMIN;
 import static cazimir.com.bancuribune.constant.Constants.EVENT_JOKE_EXPANDED;
-import static cazimir.com.bancuribune.constant.Constants.EVENT_LEVEL_UP;
 import static cazimir.com.bancuribune.constant.Constants.EVENT_SHARED;
 import static cazimir.com.bancuribune.constant.Constants.HAMSIE;
 import static cazimir.com.bancuribune.constant.Constants.HERING;
@@ -150,14 +150,13 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     FloatingActionButton scrollToTop;
     @BindView(R.id.adBannerLayout)
     LinearLayout adBannerLayout;
-    @BindView(R.id.adView)
-    AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DatabaseTypeSingleton type = DatabaseTypeSingleton.getInstance();
         mPresenter = new MainPresenter(this, new AuthPresenter(this), new JokesRepository(type.isDebug()));
+        goToProfileIfActivityIfStartedFromPushNotification();
         onboardingNeeded();
         setSwipeRefreshListener();
         initializeRatingReminder();
@@ -165,14 +164,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         updateUIForAdmin();
         getAllJokesData(true, false);
         initializeLikeSound();
-        if(checkIfJokeIdFromPushIsAvailable() != null){
-            Log.d(TAG + " getJokeId", getIntent().getStringExtra("jokeId"));
-            startMyJokesActivity();
-        } else {
-            Log.d(TAG + " getJokeId", "JokeId not received");
-        }
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        showAds();
     }
 
     @Override
@@ -180,8 +172,30 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         return R.layout.activity_main_view;
     }
 
-    private String checkIfJokeIdFromPushIsAvailable() {
-        return getIntent().getStringExtra("jokeId");
+    private void showAds() {
+        AdView mAdView = new AdView(this);
+        mAdView.setAdSize(AdSize.BANNER);
+        if(BuildConfig.DEBUG){
+            mAdView.setAdUnitId(Constants.AD_UNIT_ID_TEST);
+        }else{
+            mAdView.setAdUnitId(Constants.AD_UNIT_ID_PROD);
+        }
+        adBannerLayout.addView(mAdView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+    }
+
+    private void goToProfileIfActivityIfStartedFromPushNotification() {
+        //we need to start Profile activity in both cases (joke approved and rank updated)
+        if(checkIfExtraDataAvailable()){
+            startMyJokesActivity();
+        } else {
+            Log.d(TAG + " getExtras", "No extras received");
+        }
+    }
+
+    private boolean checkIfExtraDataAvailable() {
+        return (getIntent().getStringExtra("jokeId") != null) || (getIntent().getBooleanExtra("regards", false));
     }
 
     @Override
@@ -233,19 +247,6 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         editor.putLong("last_check", now.getTime());
         editor.apply();
         return now;
-    }
-
-    //will replace this method with a trigger on the database when a new rank is added (rank is updated)
-    //each time the profile screen is accesed
-    @Override
-    public void checkIfNewRank(String rank) {
-        String currentRank = getCurrentRankNameFromSharedPreferences();
-        if (currentRank != null && !currentRank.equals(rank)) {
-            Bundle bundle = new Bundle();
-            bundle.putString("rang", rank);
-            logEvent(EVENT_LEVEL_UP, bundle);
-            showAlertDialog(getString(R.string.leveled_up_message), SweetAlertDialog.SUCCESS_TYPE);
-        }
     }
 
     @Override
@@ -355,15 +356,32 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         }
 
         //because when you logout the shared preferences containing the current rank is also deleted
-        addRankAndUserToDB();
+        //we do not need to add user and rank to db if anonymous login because user cannot add or vote.
+        if(!isAnonymousLogin()){
+            addRankAndUserToDB();
+        }
+    }
+
+    private boolean isAnonymousLogin() {
+        return getIntent().getBooleanExtra(Constants.ANONYMOUS_LOGIN, false);
     }
 
     @Override
-    public void addUserToDatabase() {
+    public void addUserToDatabase(final OnAddUserToDatabaseCallback callback) {
         mPresenter.addUserToDatabase(mPresenter.getAuthPresenter().getCurrentUserID(),
                 mPresenter.getAuthPresenter().getCurrentUserName());
 
-        mPresenter.getAuthPresenter().saveInstanceIdToUserObject();
+        mPresenter.getAuthPresenter().saveInstanceIdToUserObject(new OnSaveInstanceIdToUserObjectCallback() {
+            @Override
+            public void onSuccess() {
+                callback.onSuccess();
+            }
+
+            @Override
+            public void onFailed(String error) {
+                callback.onError(error);
+            }
+        });
     }
 
     private void addRankAndUserToDB() {
@@ -591,7 +609,6 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
 
     @OnClick(R.id.myJokesButtonFAB)
     public void startMyJokesActivity() {
-
         if (isInternetAvailable()) {
             if(!mPresenter.isLoggedInAnonymously()){
                 goToMyJokesActivity();
@@ -603,7 +620,9 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     }
 
     public void goToMyJokesActivity() {
-        startActivityForResult(new Intent(new Intent(this, MyJokesActivityView.class)), USER_LOGOUT_REQ);
+        Intent i = new Intent(this, MyJokesActivityView.class);
+        i.putExtra("jokeId", getIntent().getStringExtra("jokeId"));
+        startActivityForResult(i, USER_LOGOUT_REQ);
     }
 
     @Override

@@ -37,7 +37,20 @@ public class LoginPresenter implements ILoginPresenter {
     }
 
     @Override
-    public void performAnonymousLogin(OnLoginWithEmailFinishedListener onLoginWithEmailFinishedListener) {
-        mAuthPresenter.signInAnonymously(onLoginWithEmailFinishedListener);
+    public void performAnonymousLogin() {
+        mAuthPresenter.signInAnonymously(new OnAnonymousLoginCallback() {
+            @Override
+            public void onSuccess() {
+                mView.hideProgress();
+                mView.setAnonymousToTrue();
+                mView.launchMainActivity();
+            }
+
+            @Override
+            public void onFailed(String message) {
+                mView.hideProgress();
+                mView.showToast(message);
+            }
+        });
     }
 }
