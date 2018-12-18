@@ -9,13 +9,16 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cazimir.com.bancuribune.BuildConfig;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
@@ -31,6 +34,8 @@ import static cazimir.com.bancuribune.constant.Constants.EVENT_ADDED;
 
 public class AddJokeActivityView extends BaseBackActivity implements IAddJokeActivityView {
 
+    @BindView(R.id.adBannerLayout)
+    LinearLayout adBannerLayout;
     private AddJokePresenter mPresenter;
     private Intent intent;
 
@@ -38,8 +43,6 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
     EditText addJokeEdit;
     @BindView(R.id.addNewJokeButtonFAB)
     FloatingActionButton addJokeButton;
-    @BindView(R.id.adView)
-    AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +50,25 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
         DatabaseTypeSingleton type = DatabaseTypeSingleton.getInstance();
         mPresenter = new AddJokePresenter(this, new AuthPresenter(this), new JokesRepository(type.isDebug()));
         intent = this.getIntent();
+        showAds();
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_add_joke;
+    }
+
+    private void showAds() {
+        AdView mAdView = new AdView(this);
+        mAdView.setAdSize(AdSize.BANNER);
+        if (BuildConfig.DEBUG) {
+            mAdView.setAdUnitId(Constants.AD_UNIT_ID_TEST);
+        } else {
+            mAdView.setAdUnitId(Constants.AD_UNIT_ID_PROD);
+        }
+        adBannerLayout.addView(mAdView);
         AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        mAdView.loadAd(adRequest);
     }
 
     @Override
@@ -61,11 +81,6 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
     protected void setBackArrowColour() {
         final Drawable upArrow = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_action_arrow_back, null);
         getSupportActionBar().setHomeAsUpIndicator(upArrow);
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_add_joke;
     }
 
     @Override

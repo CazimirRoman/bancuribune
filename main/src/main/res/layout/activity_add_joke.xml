@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,36 +16,44 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <com.beardedhen.androidbootstrap.BootstrapEditText
-            android:id="@+id/editNewJoke"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:fontFamily="@font/open_sans"
-            android:gravity="top|start"
-            android:hint="@string/add_joke_hint"
-            android:inputType="textMultiLine"
-            android:lines="8"
-            android:padding="10dp"
-            android:scrollbars="vertical"
-            app:bootstrapBrand="info"
-            app:bootstrapSize="lg"
-            app:roundedCorners="true" />
+            android:layout_height="wrap_content">
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end">
-
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/addNewJokeButtonFAB"
-                android:layout_width="wrap_content"
+            <com.beardedhen.androidbootstrap.BootstrapEditText
+                android:id="@+id/editNewJoke"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:scaleType="center"
-                android:src="@drawable/ic_add" />
+                android:fontFamily="@font/open_sans"
+                android:gravity="top|start"
+                android:hint="@string/add_joke_hint"
+                android:inputType="textMultiLine"
+                android:lines="8"
+                android:padding="10dp"
+                android:scrollbars="vertical"
+                app:bootstrapBrand="info"
+                app:bootstrapSize="lg"
+                app:roundedCorners="true" />
 
-        </FrameLayout>
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignBottom="@+id/editNewJoke">
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/addNewJokeButtonFAB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:scaleType="center"
+                    android:src="@drawable/ic_add" />
+
+            </FrameLayout>
+
+        </RelativeLayout>
 
     </LinearLayout>
 
@@ -55,16 +62,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
         android:orientation="horizontal">
-
-        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/adView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="5dp"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/test_ad_id" />
     </LinearLayout>
 
 </RelativeLayout>

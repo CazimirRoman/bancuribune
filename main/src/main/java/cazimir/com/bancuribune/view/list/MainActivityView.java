@@ -41,6 +41,7 @@ import android.widget.Toast;
 
 import com.facebook.Profile;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.julienvey.trello.Trello;
 import com.julienvey.trello.domain.Card;
@@ -149,8 +150,6 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     FloatingActionButton scrollToTop;
     @BindView(R.id.adBannerLayout)
     LinearLayout adBannerLayout;
-    @BindView(R.id.adView)
-    AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,13 +164,25 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         updateUIForAdmin();
         getAllJokesData(true, false);
         initializeLikeSound();
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        showAds();
     }
 
     @Override
     protected int getLayoutId() {
         return R.layout.activity_main_view;
+    }
+
+    private void showAds() {
+        AdView mAdView = new AdView(this);
+        mAdView.setAdSize(AdSize.BANNER);
+        if(BuildConfig.DEBUG){
+            mAdView.setAdUnitId(Constants.AD_UNIT_ID_TEST);
+        }else{
+            mAdView.setAdUnitId(Constants.AD_UNIT_ID_PROD);
+        }
+        adBannerLayout.addView(mAdView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
     private void goToProfileIfActivityIfStartedFromPushNotification() {

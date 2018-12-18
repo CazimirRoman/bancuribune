@@ -63,4 +63,6 @@ public class Constants {
     public static final String[] ADMINS = new String[]{"IINgcJQYhrar9QBi2qcojfRqely2", "eXDuTHO9UPZAS02HctjQHI2hsRv2", "ry6AK3WcFdNgEXhbNXqZEThtCFj2"};
     public static final int REMOVE_FROM_FAVORITES = 8;
     public static final String ANONYMOUS_LOGIN = "anonymous";
+    public static final String AD_UNIT_ID_TEST = "ca-app-pub-3940256099942544/6300978111";
+    public static final String AD_UNIT_ID_PROD = "ca-app-pub-7748272108558557/6099098244";
 }

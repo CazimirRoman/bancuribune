@@ -17,13 +17,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 
 import butterknife.BindView;
+import cazimir.com.bancuribune.BuildConfig;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
@@ -44,6 +47,8 @@ import static cazimir.com.bancuribune.constant.Constants.MY_STORAGE_REQ_CODE;
 public class LikedJokesActivityView extends BaseBackActivity implements ILikedJokesActivityView {
 
     private static final String TAG = LikedJokesActivityView.class.getSimpleName();
+    @BindView(R.id.adBannerLayout)
+    LinearLayout adBannerLayout;
     private ILikedJokesPresenter mPresenter;
     private LikedJokesAdapter adapter;
     private String sharedText;
@@ -54,8 +59,6 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
     EmptyRecyclerView likedJokesListRecyclerView;
     @BindView(R.id.progress_bar)
     ProgressBar progressMain;
-    @BindView(R.id.adView)
-    AdView adView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +67,7 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
         mPresenter = new LikedJokesPresenter(this, new AuthPresenter(this), new JokesRepository(type.isDebug()));
         initRecycleView();
         getLikedJokes();
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        showAds();
     }
 
     @Override
@@ -83,6 +85,19 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
     protected void setBackArrowColour() {
         final Drawable upArrow = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_action_arrow_back, null);
         getSupportActionBar().setHomeAsUpIndicator(upArrow);
+    }
+
+    private void showAds() {
+        AdView mAdView = new AdView(this);
+        mAdView.setAdSize(AdSize.BANNER);
+        if (BuildConfig.DEBUG) {
+            mAdView.setAdUnitId(Constants.AD_UNIT_ID_TEST);
+        } else {
+            mAdView.setAdUnitId(Constants.AD_UNIT_ID_PROD);
+        }
+        adBannerLayout.addView(mAdView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
     private void initRecycleView() {
