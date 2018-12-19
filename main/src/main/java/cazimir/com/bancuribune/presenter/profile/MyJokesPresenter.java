@@ -97,4 +97,9 @@ public class MyJokesPresenter implements IMyJokesPresenter {
             }
         }, rankName, points, mAuthPresenter.getCurrentUserID());
     }
+
+    @Override
+    public boolean isAdmin() {
+        return mAuthPresenter.isAdmin();
+    }
 }

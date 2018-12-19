@@ -7,10 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ms.square.android.expandabletextview.ExpandableTextView;
@@ -30,12 +28,12 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
 
     private static final String TAG = JokesAdapter.class.getSimpleName();
     private List<Joke> jokes;
-    private final OnJokeClickListener listener;
+    private OnJokeClickListener mListener;
     private boolean mAdmin;
     private boolean editStarted = false;
 
-    public JokesAdapter(@NonNull OnJokeClickListener listener ,boolean admin) {
-        this.listener = listener;
+    public JokesAdapter(@NonNull OnJokeClickListener listener, boolean admin) {
+        mListener = listener;
         mAdmin = admin;
         jokes = new ArrayList<>();
     }
@@ -99,14 +97,14 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
         holder.share.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onJokeShared(joke);
+                mListener.onJokeShared(joke);
             }
         });
 
         holder.heart.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onJokeVoted(jokes.get(position), position);
+                mListener.onJokeVoted(jokes.get(position), position);
             }
         });
 
@@ -116,7 +114,7 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
             @Override
             public void onExpandStateChanged(TextView textView, boolean isExpanded) {
                 if(isExpanded){
-                    listener.onJokeExpanded();
+                    mListener.onJokeExpanded();
                 }
             }
         });
@@ -125,12 +123,12 @@ public class JokesAdapter extends RecyclerView.Adapter<JokesAdapter.MyViewHolder
             @Override
             public void onClick(View view) {
                 if(editStarted){
-                    listener.onJokeModified(joke.getUid(), holder.edit.getText().toString());
+                    mListener.onJokeModified(joke.getUid(), holder.edit.getText().toString());
                     holder.approve.setVisibility(View.GONE);
                     return;
                 }
 
-                listener.onJokeModified(joke.getUid(), NO_MODIFICATIONS);
+                mListener.onJokeModified(joke.getUid(), NO_MODIFICATIONS);
 
             }
         });

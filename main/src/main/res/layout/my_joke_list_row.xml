@@ -55,23 +55,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <cazimir.com.bancuribune.utils.FontAwesomeTextView
-                    android:id="@+id/share"
-                    style="@style/fontAwesome.iconSizeJoke"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:elevation="20dp"
-                    android:text="@string/fa_icon_share"
-                    app:elevation="20dp">
-                </cazimir.com.bancuribune.utils.FontAwesomeTextView>
-
                 <TextView
                     android:id="@+id/approved"
                     style="@style/text.medium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
+                    android:visibility="gone"
                     android:layout_gravity="center_vertical"
                     android:gravity="start"
                     tools:text="not approved"/>
@@ -85,28 +75,34 @@
                     <LinearLayout
                         android:id="@+id/my_points"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end">
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_gravity="start">
 
                         <cazimir.com.bancuribune.utils.FontAwesomeTextView
-                            style="@style/fontAwesome.secondaryText"
-                            android:layout_width="0dp"
+                            style="@style/text.heart"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
                             android:padding="5dp"
-                            android:layout_weight="0.5"
                             android:textColor="@android:color/holo_red_light"
-                            android:gravity="end"
                             android:text="@string/fa_icon_heart"/>
 
                         <TextView
                             android:id="@+id/points"
                             style="@style/text.medium"
                             android:layout_width="match_parent"
+                            android:layout_gravity="center_vertical"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:gravity="end"
-                            tools:text="Points"/>
+                            tools:text="123"/>
+
+                        <cazimir.com.bancuribune.utils.FontAwesomeTextView
+                            android:id="@+id/share"
+                            style="@style/fontAwesome.iconSizeJoke"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/fa_icon_share"
+                            app:elevation="20dp">
+                        </cazimir.com.bancuribune.utils.FontAwesomeTextView>
 
                     </LinearLayout>
 
@@ -118,6 +114,7 @@
                         <TextView
                             android:id="@+id/date"
                             style="@style/text.medium"
+                            android:visibility="gone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             tools:text="24/09/2017"/>
