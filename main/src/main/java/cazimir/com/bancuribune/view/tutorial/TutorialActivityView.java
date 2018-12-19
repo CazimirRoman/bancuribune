@@ -70,5 +70,6 @@ public class TutorialActivityView extends AppCompatActivity {
         Intent i = new Intent(TutorialActivityView.this, MainActivityView.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
+        finish();
     }
 }

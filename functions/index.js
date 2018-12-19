@@ -49,7 +49,7 @@ exports.onJokeApproved_test = functions.database.ref('/_dev/jokes_dev/{pushId}')
 
                         data: {
                             title: "Bancul tău a fost aprobat, felicitări!",
-                            body: "Trimite-l prietenilor, adună voturi și urcă în rang. Click aici să vezi bancul.",
+                            body: "Trimite-l prietenilor, adună voturi și urcă în rang. Clic aici să vezi bancul.",
                             regards: JOKE_APPROVED,
                             jokeId: jokeId
                         }
@@ -112,7 +112,7 @@ exports.onJokeApproved_prod = functions.database.ref('/jokes/{pushId}')
 
                         data: {
                             title: "Bancul tău a fost aprobat, felicitări!",
-                            body: "Trimite-l prietenilor, adună voturi și urcă în rang. Click aici să vezi bancul.",
+                            body: "Trimite-l prietenilor, adună voturi și urcă în rang. Clic aici să vezi bancul.",
                             regards: JOKE_APPROVED,
                             jokeId: jokeId
                         }

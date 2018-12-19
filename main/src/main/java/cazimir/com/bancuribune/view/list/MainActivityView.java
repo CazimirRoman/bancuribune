@@ -358,6 +358,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         //because when you logout the shared preferences containing the current rank is also deleted
         //we do not need to add user and rank to db if anonymous login because user cannot add or vote.
         if(!isAnonymousLogin()){
+            //if rank is in DB save instanceId to user table to send push notifications
             addRankAndUserToDB();
         }
     }

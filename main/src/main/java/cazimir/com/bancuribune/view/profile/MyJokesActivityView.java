@@ -1,12 +1,21 @@
 package cazimir.com.bancuribune.view.profile;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,6 +23,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
@@ -30,6 +40,7 @@ import cazimir.com.bancuribune.BuildConfig;
 import cazimir.com.bancuribune.R;
 import cazimir.com.bancuribune.base.BaseBackActivity;
 import cazimir.com.bancuribune.base.IGeneralView;
+import cazimir.com.bancuribune.callbacks.list.OnJokeClickListener;
 import cazimir.com.bancuribune.callbacks.myJokes.IMyJokesActivityView;
 import cazimir.com.bancuribune.callbacks.myJokes.OnCalculatePointsListener;
 import cazimir.com.bancuribune.callbacks.myJokes.OnGetFacebookNameListener;
@@ -41,15 +52,19 @@ import cazimir.com.bancuribune.presenter.profile.MyJokesPresenter;
 import cazimir.com.bancuribune.repository.DatabaseTypeSingleton;
 import cazimir.com.bancuribune.repository.JokesRepository;
 import cazimir.com.bancuribune.utils.EmptyRecyclerView;
+import cazimir.com.bancuribune.utils.UtilHelper;
 import cazimir.com.bancuribune.view.login.LoginActivityView;
+
+import static cazimir.com.bancuribune.constant.Constants.EVENT_SHARED;
+import static cazimir.com.bancuribune.constant.Constants.MY_STORAGE_REQ_CODE;
 
 public class MyJokesActivityView extends BaseBackActivity implements IMyJokesActivityView {
 
+    private final static String TAG = MyJokesActivityView.class.getSimpleName();
     @BindView(R.id.adBannerLayout)
     LinearLayout adBannerLayout;
     private IMyJokesPresenter mPresenter;
     private MyJokesAdapter adapter;
-
 
     @BindView(R.id.profileName)
     TextView profileName;
@@ -64,6 +79,7 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
     @BindView(R.id.nextRank)
     TextView profileNextRank;
     private boolean maxRangReached = false;
+    private String sharedText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,9 +203,92 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
     private void initRecycleView() {
         EmptyRecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         myJokesListRecyclerView.setLayoutManager(layoutManager);
-        adapter = new MyJokesAdapter();
+        adapter = new MyJokesAdapter(new OnJokeClickListener() {
+            @Override
+            public void onJokeShared(final Joke data) {
+                logEvent(EVENT_SHARED, null);
+                showToast(getString(R.string.share_open));
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        shareJoke(data.getJokeText());
+                    }
+                }, 500);
+            }
+
+            @Override
+            public void onJokeVoted(Joke joke, int position) {
+
+            }
+
+            @Override
+            public void onJokeExpanded() {
+
+            }
+
+            @Override
+            public void onJokeUnlike(Joke joke, int position) {
+
+            }
+
+            @Override
+            public void onJokeModified(String uid, String jokeText) {
+
+            }
+        });
         myJokesListRecyclerView.setAdapter(adapter);
         myJokesListRecyclerView.setEmptyView(findViewById(R.id.empty_view));
+    }
+
+    private void shareJoke(String text) {
+
+        this.sharedText = text;
+
+        if (writeStoragePermissionGranted()) {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            int words = UtilHelper.countWords(text);
+            if (mPresenter.isAdmin()) {
+                Log.d(TAG, "shareJoke: " + "Admin user logged in");
+                if (words <= Constants.MAX_JOKE_SIZE_PER_PAGE) {
+                    Log.d(TAG, "shareJoke: " + "Bancul este mai mic de 45 de cuvinte. Are lungimea de: " + words + " de cuvinte");
+                    Bitmap bitmap = UtilHelper.drawMultilineTextToBitmap(this, R.drawable.share_background, text);
+                    String bitmapPath = MediaStore.Images.Media.insertImage(this.getContentResolver(), bitmap, "title", "description");
+                    Uri bitmapUri = Uri.parse(bitmapPath);
+                    sendIntent.putExtra(Intent.EXTRA_STREAM, bitmapUri);
+                    sendIntent.setType("image/*");
+                    startActivity(Intent.createChooser(sendIntent, "Share"));
+                } else {
+                    Log.d(TAG, "shareJoke: " + "Bancul este prea lung. Alege altul mai scurt");
+                    Toast.makeText(this, "Bancul este prea lung", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                sendIntent.putExtra(Intent.EXTRA_TEXT, text + "\n\n" + getString(R.string.share_text));
+                sendIntent.setType("text/plain");
+                startActivity(sendIntent);
+            }
+        }
+    }
+
+    private boolean writeStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_STORAGE_REQ_CODE);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_STORAGE_REQ_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                shareJoke(sharedText);
+            } else {
+                showToast(getString(R.string.permission_denied));
+            }
+        }
     }
 
     @Override
@@ -205,7 +304,39 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
             findViewById(R.id.no_jokes_added).setVisibility(View.VISIBLE);
         }
 
-        adapter = new MyJokesAdapter();
+        adapter = new MyJokesAdapter(new OnJokeClickListener() {
+            @Override
+            public void onJokeShared(final Joke data) {
+                logEvent(EVENT_SHARED, null);
+                showToast(getString(R.string.share_open));
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        shareJoke(data.getJokeText());
+                    }
+                }, 500);
+            }
+
+            @Override
+            public void onJokeVoted(Joke joke, int position) {
+
+            }
+
+            @Override
+            public void onJokeExpanded() {
+
+            }
+
+            @Override
+            public void onJokeUnlike(Joke joke, int position) {
+
+            }
+
+            @Override
+            public void onJokeModified(String uid, String jokeText) {
+
+            }
+        });
         myJokesListRecyclerView.setAdapter(adapter);
         for (Joke joke : myJokes) {
             adapter.add(joke);

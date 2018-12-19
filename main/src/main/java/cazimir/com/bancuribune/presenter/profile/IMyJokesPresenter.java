@@ -16,4 +16,5 @@ public interface IMyJokesPresenter {
     void getFacebookProfilePicture(OnGetProfilePictureListener listener) throws IOException;
     void calculateTotalPoints(OnCalculatePointsListener listener, List<Joke> jokes);
     void updateRankPointsAndName(int points, String rankName, String rankId);
+    boolean isAdmin();
 }
