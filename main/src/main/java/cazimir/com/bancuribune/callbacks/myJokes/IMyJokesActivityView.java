@@ -12,8 +12,11 @@ public interface IMyJokesActivityView extends IGeneralView {
     void showToast(String message);
     void redirectToLoginPage();
     void clearSharedPreferences();
-
     void scrollToJokeIfFromPushNotification();
-
     void showAlertDialog(String message, int type);
+    boolean getMostVoted();
+    void setMostVoted(boolean mostVoted);
+    void toggleMostVotesNewestJokesButton();
+    void showProgressBarForNewestMostVoted();
+    void hideProgressBarForNewestMostVotedButton();
 }

@@ -22,9 +22,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
@@ -61,11 +63,18 @@ import static cazimir.com.bancuribune.constant.Constants.MY_STORAGE_REQ_CODE;
 public class MyJokesActivityView extends BaseBackActivity implements IMyJokesActivityView {
 
     private final static String TAG = MyJokesActivityView.class.getSimpleName();
-    @BindView(R.id.adBannerLayout)
-    LinearLayout adBannerLayout;
+    @BindView(R.id.progress_bar)
+    ProgressBar mProgressBar;
+    @BindView(R.id.btnGetMostVotes)
+    BootstrapButton btnGetMostVotes;
     private IMyJokesPresenter mPresenter;
     private MyJokesAdapter adapter;
+    private Boolean mMostVoted = true;
 
+    @BindView(R.id.adBannerLayout)
+    LinearLayout adBannerLayout;
+    @BindView(R.id.btnGetNewestJokes)
+    BootstrapButton btnGetNewestJokes;
     @BindView(R.id.profileName)
     TextView profileName;
     @BindView(R.id.profileImage)
@@ -88,8 +97,31 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
         mPresenter = new MyJokesPresenter(this, new AuthPresenter(this), new JokesRepository(type.isDebug()));
         initRecycleView();
         getProfilePictureAndName();
-        getMyJokes();
+        getMyJokes(mMostVoted);
         showAds();
+
+        btnGetNewestJokes.setOnCheckedChangedListener(new BootstrapButton.OnCheckedChangedListener() {
+            @Override
+            public void OnCheckedChanged(BootstrapButton bootstrapButton, boolean isChecked) {
+                if (isChecked) {
+                    myJokesListRecyclerView.setAdapter(constructAndGetNewAdapter());
+                    showProgressBarForNewestMostVoted();
+                    getMyJokes(false);
+                }
+            }
+        });
+
+        btnGetMostVotes.setOnCheckedChangedListener(new BootstrapButton.OnCheckedChangedListener() {
+            @Override
+            public void OnCheckedChanged(BootstrapButton bootstrapButton, boolean isChecked) {
+                if (isChecked) {
+                    myJokesListRecyclerView.setAdapter(constructAndGetNewAdapter());
+                    showProgressBarForNewestMostVoted();
+                    getMyJokes(true);
+                }
+            }
+        });
+
     }
 
     @Override
@@ -159,6 +191,39 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
         getAlertDialog().show(message, type);
     }
 
+    @Override
+    public boolean getMostVoted() {
+        return mMostVoted;
+    }
+
+    @Override
+    public void setMostVoted(boolean mostVoted) {
+        mMostVoted = mostVoted;
+    }
+
+    @Override
+    public void toggleMostVotesNewestJokesButton() {
+        btnGetNewestJokes.setText(getTextForVotesPointsButton());
+    }
+
+    @Override
+    public void showProgressBarForNewestMostVoted() {
+        mProgressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBarForNewestMostVotedButton() {
+        mProgressBar.setVisibility(View.INVISIBLE);
+    }
+
+    private int getTextForVotesPointsButton() {
+        if (mMostVoted) {
+            return R.string.getMostVotedJokes;
+        } else {
+            return R.string.getNewestJokes;
+        }
+    }
+
     private void getProfilePictureAndName() {
         try {
             getProfilePictureFromFacebook();
@@ -196,14 +261,20 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
         });
     }
 
-    private void getMyJokes() {
-        mPresenter.getMyJokes();
+    private void getMyJokes(boolean mostPoints) {
+        mPresenter.getMyJokes(mostPoints);
     }
 
     private void initRecycleView() {
         EmptyRecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         myJokesListRecyclerView.setLayoutManager(layoutManager);
-        adapter = new MyJokesAdapter(new OnJokeClickListener() {
+        adapter = constructAndGetNewAdapter();
+        myJokesListRecyclerView.setAdapter(adapter);
+        myJokesListRecyclerView.setEmptyView(findViewById(R.id.empty_view));
+    }
+
+    private MyJokesAdapter constructAndGetNewAdapter() {
+        return new MyJokesAdapter(new OnJokeClickListener() {
             @Override
             public void onJokeShared(final Joke data) {
                 logEvent(EVENT_SHARED, null);
@@ -236,8 +307,6 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
 
             }
         });
-        myJokesListRecyclerView.setAdapter(adapter);
-        myJokesListRecyclerView.setEmptyView(findViewById(R.id.empty_view));
     }
 
     private void shareJoke(String text) {

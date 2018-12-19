@@ -3,15 +3,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <LinearLayout
 
         android:layout_width="match_parent"
-        android:layout_weight="0.9"
         android:layout_height="0dp"
+        android:layout_weight="0.9"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <include
@@ -43,6 +44,7 @@
                 app:hasBorder="true" />
 
             <LinearLayout
+                android:id="@+id/namePointsRank"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
@@ -111,6 +113,47 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+                <com.beardedhen.androidbootstrap.BootstrapButtonGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:orientation="horizontal"
+                    android:layout_centerHorizontal="true"
+                    app:roundedCorners="true"
+                    app:bootstrapBrand="info"
+                    app:bootstrapSize="lg"
+                    app:buttonMode="radio">
+
+                    <com.beardedhen.androidbootstrap.BootstrapButton
+                        android:id="@+id/btnGetMostVotes"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="0.5"
+                        android:layout_height="wrap_content"
+                        android:text="@string/getMostVotedJokes"
+                        app:bootstrapBrand="info"
+                        app:bootstrapSize="lg"
+                        app:checked="true"
+                        app:buttonMode="radio" />
+
+                    <com.beardedhen.androidbootstrap.BootstrapButton
+                        android:id="@+id/btnGetNewestJokes"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="0.5"
+                        android:layout_height="wrap_content"
+                        android:text="@string/getNewestJokes"
+                        app:bootstrapBrand="info"
+                        app:bootstrapSize="lg"
+                        app:buttonMode="radio" />
+
+                </com.beardedhen.androidbootstrap.BootstrapButtonGroup>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white">
 
@@ -156,10 +199,20 @@
 
             </RelativeLayout>
 
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                style="?android:progressBarStyle"
+                android:elevation="20dp"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
             <cazimir.com.bancuribune.utils.EmptyRecyclerView
                 android:id="@+id/myJokesList"
+                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent" />
 
 
         </RelativeLayout>
@@ -169,16 +222,16 @@
     <LinearLayout
         android:id="@+id/adBannerLayout"
         android:layout_width="match_parent"
-        android:layout_weight="0.1"
         android:layout_height="0dp"
+        android:layout_weight="0.09"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
-            tools:text="Adview"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_height="wrap_content" />
+            tools:text="Adview" />
     </LinearLayout>
 
 </LinearLayout>

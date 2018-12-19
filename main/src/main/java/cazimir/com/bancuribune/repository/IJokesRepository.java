@@ -23,7 +23,7 @@ public interface IJokesRepository {
     void getAllJokes(OnGetJokesListener listener, boolean reset);
     void getTotalNumberOfJokes(OnGetTotalNumberOfJokesCompleted listener);
     void getAllPendingJokes(OnGetAllPendingJokesListener listener);
-    void getMyJokes(OnGetMyJokesListener listener, String userId);
+    void getMyJokes(OnGetMyJokesListener listener, String userId, boolean getNewest);
     void getVotesForUser(OnGetLikedJokesListener listener, String userId);
     void addRankToDB(OnAddRankFinishedListener listener, Rank rank);
     void addJoke(cazimir.com.bancuribune.callbacks.add.OnAddJokeFinishedListener listener, Joke joke);

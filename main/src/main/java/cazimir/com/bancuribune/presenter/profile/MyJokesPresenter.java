@@ -63,19 +63,20 @@ public class MyJokesPresenter implements IMyJokesPresenter {
     }
 
     @Override
-    public void getMyJokes() {
+    public void getMyJokes(boolean mostPoints) {
         mRepository.getMyJokes(new OnGetMyJokesListener() {
             @Override
             public void onGetMyJokesSuccess(List<Joke> jokes) {
                 mView.showMyJokesList(jokes);
                 mView.scrollToJokeIfFromPushNotification();
+                mView.hideProgressBarForNewestMostVotedButton();
             }
 
             @Override
             public void onGetMyJokesError(String error) {
                 mView.showToast(error);
             }
-        }, mAuthPresenter.getCurrentUserID());
+        }, mAuthPresenter.getCurrentUserID(), mostPoints);
     }
 
     @Override

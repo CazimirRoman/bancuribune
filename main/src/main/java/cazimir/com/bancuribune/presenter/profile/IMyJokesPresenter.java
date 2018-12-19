@@ -10,7 +10,7 @@ import cazimir.com.bancuribune.view.profile.OnGetProfilePictureListener;
 
 public interface IMyJokesPresenter {
 
-    void getMyJokes();
+    void getMyJokes(boolean getNewest);
     void logUserOut();
     void getProfileName(OnGetFacebookNameListener listener);
     void getFacebookProfilePicture(OnGetProfilePictureListener listener) throws IOException;

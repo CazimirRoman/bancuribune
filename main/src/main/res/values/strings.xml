@@ -78,5 +78,7 @@
     <string name="production_ad_id">ca-app-pub-7748272108558557/6099098244</string>
     <string name="share">Trimite</string>
     <string name="skip">Nu acum</string>
+    <string name="getNewestJokes">Cele mai noi</string>
+    <string name="getMostVotedJokes">Cele mai votate</string>
 
 </resources>
