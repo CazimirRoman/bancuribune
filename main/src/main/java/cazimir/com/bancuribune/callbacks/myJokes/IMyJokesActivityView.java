@@ -14,9 +14,7 @@ public interface IMyJokesActivityView extends IGeneralView {
     void clearSharedPreferences();
     void scrollToJokeIfFromPushNotification();
     void showAlertDialog(String message, int type);
-    boolean getMostVoted();
-    void setMostVoted(boolean mostVoted);
-    void toggleMostVotesNewestJokesButton();
     void showProgressBarForNewestMostVoted();
     void hideProgressBarForNewestMostVotedButton();
+    void setMostPoints(boolean mostPoints);
 }

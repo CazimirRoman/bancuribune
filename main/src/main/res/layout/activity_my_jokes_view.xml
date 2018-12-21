@@ -128,22 +128,22 @@
                     app:buttonMode="radio">
 
                     <com.beardedhen.androidbootstrap.BootstrapButton
-                        android:id="@+id/btnGetMostVotes"
-                        android:layout_width="wrap_content"
-                        android:layout_weight="0.5"
-                        android:layout_height="wrap_content"
-                        android:text="@string/getMostVotedJokes"
-                        app:bootstrapBrand="info"
-                        app:bootstrapSize="lg"
-                        app:checked="true"
-                        app:buttonMode="radio" />
-
-                    <com.beardedhen.androidbootstrap.BootstrapButton
                         android:id="@+id/btnGetNewestJokes"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_weight="0.5"
                         android:layout_height="wrap_content"
                         android:text="@string/getNewestJokes"
+                        app:bootstrapBrand="info"
+                        app:checked="true"
+                        app:bootstrapSize="lg"
+                        app:buttonMode="radio" />
+
+                    <com.beardedhen.androidbootstrap.BootstrapButton
+                        android:id="@+id/btnGetMostVotes"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.5"
+                        android:layout_height="wrap_content"
+                        android:text="@string/getMostVotedJokes"
                         app:bootstrapBrand="info"
                         app:bootstrapSize="lg"
                         app:buttonMode="radio" />
