@@ -1,6 +1,5 @@
 package cazimir.com.bancuribune.repository;
 
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -251,7 +250,7 @@ public class JokesRepository implements IJokesRepository {
     }
 
     @Override
-    public void getMyJokes(final OnGetMyJokesListener listener, String userId) {
+    public void getMyJokes(final OnGetMyJokesListener listener, String userId, final boolean mostPoints) {
         final ArrayList<Joke> myJokes = new ArrayList<>();
 
         Query query = jokesRef.orderByChild("createdBy").equalTo(userId);
@@ -266,14 +265,18 @@ public class JokesRepository implements IJokesRepository {
                     myJokes.add(joke);
                 }
 
-                //show jokes with most votes on top
-                Collections.sort(myJokes, new Comparator<Joke>() {
-                    @Override
-                    public int compare(Joke j1, Joke j2) {
-                        return j2.getPoints() - j1.getPoints();
-                    }
+                if(mostPoints){
+                    //show jokes with most votes on top
+                    Collections.sort(myJokes, new Comparator<Joke>() {
+                        @Override
+                        public int compare(Joke j1, Joke j2) {
+                            return j2.getPoints() - j1.getPoints();
+                        }
 
-                });
+                    });
+                }else{
+                    Collections.reverse(myJokes);
+                }
 
                 listener.onGetMyJokesSuccess(myJokes);
             }
