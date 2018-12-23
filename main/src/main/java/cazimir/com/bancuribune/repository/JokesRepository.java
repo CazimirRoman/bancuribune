@@ -56,6 +56,9 @@ public class JokesRepository implements IJokesRepository {
 
     private Boolean debugDB;
 
+    //rank to be updated
+    private Rank mRankToBeUpdated = null;
+
     public JokesRepository(Boolean debugDB) {
         this.debugDB = debugDB;
         database = FirebaseDatabase.getInstance();
@@ -587,19 +590,21 @@ public class JokesRepository implements IJokesRepository {
 
         Query query = ranksRef.orderByChild("userId").equalTo(userId);
 
-        query.addChildEventListener(new ChildEventListener() {
-
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                final Rank rank = dataSnapshot.getValue(Rank.class);
-                assert rank != null;
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                ranksRef.child(rank.getUid()).child("totalPoints").setValue(points, new DatabaseReference.CompletionListener() {
+                for (DataSnapshot data: dataSnapshot.getChildren()
+                     ) {
+                    mRankToBeUpdated = data.getValue(Rank.class);
+                }
+
+                ranksRef.child(mRankToBeUpdated.getUid()).child("totalPoints").setValue(points, new DatabaseReference.CompletionListener() {
 
                     @Override
                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                         if (databaseError == null) {
-                            ranksRef.child(rank.getUid()).child("rank").setValue(rankName, new DatabaseReference.CompletionListener() {
+                            ranksRef.child(mRankToBeUpdated.getUid()).child("rank").setValue(rankName, new DatabaseReference.CompletionListener() {
 
                                 @Override
                                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -611,26 +616,10 @@ public class JokesRepository implements IJokesRepository {
                         }
                     }
                 });
-
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });

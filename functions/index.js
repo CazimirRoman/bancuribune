@@ -136,137 +136,161 @@ exports.onRankUpdated_test = functions.database.ref('/_dev/ranks_dev/{pushId}')
 
         var jokeId = -1;
         var instanceId = null;
-        var createdBy = event.after.child("userId").val();
+        var userId = event.after.child("userId").val();
+        var previousRank = event.before.child("rank").val();
         var currentRank = event.after.child("rank").val();
 
-        //first of all get user object based on uid for the created joke
-        const getUser = admin.database().ref("/_dev/users_dev").orderByChild('userId').equalTo(createdBy).once('value')
+        //check if new rang otherwise a push notification will be sent each time the points are updated
+        //which do not interest us. we want to send updates only when rang changes
+        if (currentRank != previousRank) {
 
-        //return this promise first
-        return Promise.all([getUser]).then(results => {
+            //check if new user
+            if (previousRank == null) {
+                console.log("This is a new user!");
+            } else {
+                console.log("Rank changed from " + previousRank + " to " + currentRank);
+            }
 
-            var userUid;
+            //first of all get user object based on uid for the created joke
+            const getUser = admin.database().ref("/_dev/users_dev").orderByChild('userId').equalTo(userId).once('value')
 
-            results[0].forEach(function(childSnapshot) {
-                var value = childSnapshot.val();
-                userUid = value.uid;
-                console.log("The key for the user is: " + value.uid)
-            });
+            //return this promise first
+            return Promise.all([getUser]).then(results => {
 
-            //using the key of the user get access to the instanceId property in the user object
-            var getInstanceId = admin.database().ref(`/_dev/users_dev/${userUid}/instanceId`).once('value');
+                var userUid;
 
-            //then return this promise
-            return Promise.all([getInstanceId]).then(results => {
+                results[0].forEach(function(childSnapshot) {
+                    var value = childSnapshot.val();
+                    userUid = value.uid;
+                    console.log("The key for the user is: " + value.uid)
+                });
 
-                const instanceId = results[0].val();
+                //using the key of the user get access to the instanceId property in the user object
+                var getInstanceId = admin.database().ref(`/_dev/users_dev/${userUid}/instanceId`).once('value');
 
-                console.log("The instance id is: " + instanceId)
+                //then return this promise
+                return Promise.all([getInstanceId]).then(results => {
 
-                if (currentRank === 'Hamsie') {
+                    const instanceId = results[0].val();
 
-                    var payload = {
+                    console.log("The instance id is: " + instanceId)
 
-                        data: {
-                            title: `În bancul de pești ești ${currentRank}.`,
-                            body: `Adaugă bancuri, adună voturi și trimite-le prietenilor că să ajungi un pește mai mare. Verifică aici numărul de voturi până la următorul rang în bancul de pești.`,
-                            regards: RANK_UPDATED
-                        }
+                    if (currentRank === 'Hamsie') {
 
-                    };
+                        var payload = {
 
-                } else {
+                            data: {
+                                title: `În bancul de pești ești ${currentRank}.`,
+                                body: `Adaugă bancuri, adună voturi și trimite-le prietenilor că să ajungi un pește mai mare. Verifică aici numărul de voturi până la următorul rang în bancul de pești.`,
+                                regards: RANK_UPDATED
+                            }
 
-                    var payload = {
+                        };
 
-                        data: {
-                            title: `Ai urcat în rangul peștilor, felicitări!`,
-                            body: `Acum ești ${currentRank}. \nAdaugă bancuri, adună voturi și trimite-le prietenilor ca să ajungi un pește mai mare. Verifică aici numărul de voturi până la următorul rang în bancul de pești.`,
-                            regards: RANK_UPDATED
-                        }
+                    } else {
 
-                    };
+                        var payload = {
 
-                }
+                            data: {
+                                title: `Ai urcat în rangul peștilor, felicitări!`,
+                                body: `Acum ești ${currentRank}. \nAdaugă bancuri, adună voturi și trimite-le prietenilor ca să ajungi un pește mai mare. Verifică aici numărul de voturi până la următorul rang în bancul de pești.`,
+                                regards: RANK_UPDATED
+                            }
 
-                admin.messaging().sendToDevice(instanceId, payload)
-                    .then(function(response) {
-                        console.log("Successfully sent message:", response);
-                    })
-                    .catch(function(error) {
-                        console.log("Error sending message:", error);
-                    });
+                        };
+
+                    }
+
+                    admin.messaging().sendToDevice(instanceId, payload)
+                        .then(function(response) {
+                            console.log("Successfully sent message:", response);
+                        })
+                        .catch(function(error) {
+                            console.log("Error sending message:", error);
+                        });
+                })
             })
-        })
-
+        }
     });
 
-        exports.onRankUpdated_prod = functions.database.ref('/ranks/{pushId}')
-            .onWrite(event => {
+exports.onRankUpdated_prod = functions.database.ref('/ranks/{pushId}')
+    .onWrite(event => {
 
-                var jokeId = -1;
-                var instanceId = null;
-                var createdBy = event.after.child("userId").val();
-                var currentRank = event.after.child("rank").val();
+        var jokeId = -1;
+        var instanceId = null;
+        var userId = event.after.child("userId").val();
+        var previousRank = event.before.child("rank").val();
+        var currentRank = event.after.child("rank").val();
 
-                //first of all get user object based on uid for the created joke
-                const getUser = admin.database().ref("/users").orderByChild('userId').equalTo(createdBy).once('value')
+        //check if new rang otherwise a push notification will be sent each time the points are updated
+        //which do not interest us. we want to send updates only when rang changes
+        if (currentRank != previousRank) {
 
-                //return this promise first
-                return Promise.all([getUser]).then(results => {
+            //check if new user
+            if (previousRank == null) {
+                console.log("This is a new user!");
+            } else {
+                console.log("Rank changed from " + previousRank + " to " + currentRank);
+            }
 
-                    var userUid;
+            //first of all get user object based on uid for the created joke
+            const getUser = admin.database().ref("/users").orderByChild('userId').equalTo(userId).once('value')
 
-                    results[0].forEach(function(childSnapshot) {
-                        var value = childSnapshot.val();
-                        userUid = value.uid;
-                        console.log("The key for the user is: " + value.uid)
-                    });
+            //return this promise first
+            return Promise.all([getUser]).then(results => {
 
-                    //using the key of the user get access to the instanceId property in the user object
-                    var getInstanceId = admin.database().ref(`/users/${userUid}/instanceId`).once('value');
+                var userUid;
 
-                    //then return this promise
-                    return Promise.all([getInstanceId]).then(results => {
+                results[0].forEach(function(childSnapshot) {
+                    var value = childSnapshot.val();
+                    userUid = value.uid;
+                    console.log("The key for the user is: " + value.uid)
+                });
 
-                        const instanceId = results[0].val();
+                //using the key of the user get access to the instanceId property in the user object
+                var getInstanceId = admin.database().ref(`/users/${userUid}/instanceId`).once('value');
 
-                        console.log("The instance id is: " + instanceId)
+                //then return this promise
+                return Promise.all([getInstanceId]).then(results => {
 
-                        if (currentRank === 'Hamsie') {
+                    const instanceId = results[0].val();
 
-                            var payload = {
+                    console.log("The instance id is: " + instanceId)
 
-                                data: {
-                                    title: `În bancul de pești ești ${currentRank}.`,
-                                    body: `Adaugă bancuri, adună voturi și trimite-le prietenilor că să ajungi un pește mai mare. Verifică aici numărul de voturi până la următorul rang în bancul de pești.`,
-                                    regards: RANK_UPDATED
-                                }
+                    if (currentRank === 'Hamsie') {
 
-                            };
+                        var payload = {
 
-                        } else {
+                            data: {
+                                title: `În bancul de pești ești ${currentRank}.`,
+                                body: `Adaugă bancuri, adună voturi și trimite-le prietenilor că să ajungi un pește mai mare. Verifică aici numărul de voturi până la următorul rang în bancul de pești.`,
+                                regards: RANK_UPDATED
+                            }
 
-                            var payload = {
+                        };
 
-                                data: {
-                                    title: `Ai urcat în rangul peștilor, felicitări!`,
-                                    body: `Acum ești ${currentRank}. \nAdaugă bancuri, adună voturi și trimite-le prietenilor ca să ajungi un pește mai mare. Verifică aici numărul de voturi până la următorul rang în bancul de pești.`,
-                                    regards: RANK_UPDATED
-                                }
+                    } else {
 
-                            };
+                        var payload = {
 
-                        }
+                            data: {
+                                title: `Ai urcat în rangul peștilor, felicitări!`,
+                                body: `Acum ești ${currentRank}. \nAdaugă bancuri, adună voturi și trimite-le prietenilor ca să ajungi un pește mai mare. Verifică aici numărul de voturi până la următorul rang în bancul de pești.`,
+                                regards: RANK_UPDATED
+                            }
 
-                        admin.messaging().sendToDevice(instanceId, payload)
-                            .then(function(response) {
-                                console.log("Successfully sent message:", response);
-                            })
-                            .catch(function(error) {
-                                console.log("Error sending message:", error);
-                            });
-                    })
+                        };
+
+                    }
+
+                    admin.messaging().sendToDevice(instanceId, payload)
+                        .then(function(response) {
+                            console.log("Successfully sent message:", response);
+                        })
+                        .catch(function(error) {
+                            console.log("Error sending message:", error);
+                        });
                 })
-
-            });
+            })
+        }
+    });

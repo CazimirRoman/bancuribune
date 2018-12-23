@@ -333,7 +333,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         protected Card doInBackground(TrelloObject... params) {
             Card card = new Card();
             card.setName(params[0].getText());
-            card.setDesc(activityReference.get().mPresenter.getAuthPresenter().getCurrentUserEmail());
+            card.setDesc(activityReference.get().mPresenter.getAuthPresenter().getCurrentUserName());
             if (params[0].isJoke()) {
                 return trelloApi.createCard(TRELLO_JOKE_LIST, card);
             }

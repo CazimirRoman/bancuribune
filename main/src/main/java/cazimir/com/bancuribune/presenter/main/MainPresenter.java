@@ -85,7 +85,8 @@ public class MainPresenter implements IMainPresenter {
         mJokesRepository.getAllJokesAddedOverThePastWeek(new OnShowReminderToAddListener() {
             @Override
             public void showAddReminderToUser() {
-                mMainActivityView.showAlertDialog("Știi bancuri amuzante? Adaugă-le acum în aplicație și câștigă like-urile celorlalți useri", SweetAlertDialog.SUCCESS_TYPE);
+                mMainActivityView.showAlertDialog("Știi bancuri amuzante? Adaugă-le acum " +
+                        "în aplicație și câștigă like-urile celorlalți useri", SweetAlertDialog.SUCCESS_TYPE);
                 mMainActivityView.addLastCheckDateToSharedPreferences();
             }
         }, mAuthPresenter.getCurrentUserID(), lastCheckDate);

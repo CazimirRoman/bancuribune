@@ -32,6 +32,7 @@ import cazimir.com.bancuribune.utils.UtilHelper;
 import cazimir.com.bancuribune.view.forgotPassword.ForgotPasswordActivityView;
 import cazimir.com.bancuribune.view.list.MainActivityView;
 import cazimir.com.bancuribune.view.register.RegisterActivityView;
+import timber.log.Timber;
 
 import static cazimir.com.bancuribune.constant.Constants.EMAIL_EMPTY;
 import static cazimir.com.bancuribune.constant.Constants.EMAIL_INVALID;
@@ -212,6 +213,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     }
 
     private void setFacebookButtonClickListener() {
+
         facebookButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -229,10 +231,12 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
             if (extras.getString("jokeId") != null) {
                 //extra coming from push notification after joke approved
                 mJokeIdExtra = getIntent().getStringExtra("jokeId");
+                Timber.d("User clicked on push notification for joke approved with id: %d", mJokeIdExtra);
             }
 
             //it is a rank update. for rank updates jokeId is not present
             if(extras.getString("regards") != null && extras.getString("regards").equals("rank_updated")) {
+                Timber.i("User clicked on push notification for rank update");
                 mIsNewRank = true;
             }
         }
@@ -240,6 +244,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
 
     @Override
     public void launchMainActivity() {
+        Timber.i("Launching main activity...");
         onNewIntent(getIntent());
         Intent i = new Intent(this, MainActivityView.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -290,6 +295,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
 
     @Override
     public void hideProgress() {
+        Timber.i("Hiding progress bar");
         progress.setVisibility(View.GONE);
     }
 
