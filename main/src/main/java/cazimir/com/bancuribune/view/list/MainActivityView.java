@@ -78,6 +78,7 @@ import cazimir.com.bancuribune.view.likedJokes.LikedJokesActivityView;
 import cazimir.com.bancuribune.view.login.LoginActivityView;
 import cazimir.com.bancuribune.view.profile.MyJokesActivityView;
 import cazimir.com.bancuribune.view.tutorial.TutorialActivityView;
+import timber.log.Timber;
 
 import static cazimir.com.bancuribune.constant.Constants.ADD_JOKE_LIMIT_HAMSIE;
 import static cazimir.com.bancuribune.constant.Constants.ADD_JOKE_LIMIT_HERING;
@@ -158,6 +159,12 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         mPresenter = new MainPresenter(this, new AuthPresenter(this), new JokesRepository(type.isDebug()));
         goToProfileIfActivityIfStartedFromPushNotification();
         onboardingNeeded();
+        //because when you logout the shared preferences containing the current rank is also deleted
+        //we do not need to add user and rank to db if anonymous login because user cannot add or vote.
+        if(!isAnonymousLogin()){
+            //if rank is in DB save instanceId to user table to send push notifications
+            addRankAndUserToDB();
+        }
         setSwipeRefreshListener();
         initializeRatingReminder();
         checkIfReminderToAddShouldBeShown();
@@ -354,13 +361,6 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         if (isFirstRun()) {
             startTutorialActivity();
         }
-
-        //because when you logout the shared preferences containing the current rank is also deleted
-        //we do not need to add user and rank to db if anonymous login because user cannot add or vote.
-        if(!isAnonymousLogin()){
-            //if rank is in DB save instanceId to user table to send push notifications
-            addRankAndUserToDB();
-        }
     }
 
     private boolean isAnonymousLogin() {
@@ -408,16 +408,19 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         });
     }
 
+    /**
+     * @return true if it is a fresh install of the application in order to show the user the tutorial screen.
+     */
     private boolean isFirstRun() {
 
         Boolean mFirstRun;
-        String currentUserId = mPresenter.getAuthPresenter().getCurrentUserID();
+        String currentUserID = mPresenter.getAuthPresenter().getCurrentUserID();
 
         SharedPreferences mPreferences = this.getSharedPreferences("first_time", Context.MODE_PRIVATE);
-        mFirstRun = mPreferences.getBoolean(currentUserId, true);
+        mFirstRun = mPreferences.getBoolean(currentUserID, true);
         if (mFirstRun) {
             SharedPreferences.Editor editor = mPreferences.edit();
-            editor.putBoolean(currentUserId, false);
+            editor.putBoolean(currentUserID, false);
             editor.apply();
             return true;
         }
@@ -447,9 +450,10 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
                 animateHeartIcon(position);
                 playOnVotedAudio();
 
-                if(!mPresenter.isLoggedInAnonymously()){
+                //if not logged in anonymously
+                if (!mPresenter.isLoggedInAnonymously()) {
                     mPresenter.checkIfAlreadyVoted(joke, position);
-                }else {
+                } else {
                     startLoginActivity();
                 }
             }

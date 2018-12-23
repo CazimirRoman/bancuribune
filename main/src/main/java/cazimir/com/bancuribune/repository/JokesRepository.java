@@ -469,41 +469,31 @@ public class JokesRepository implements IJokesRepository {
 
             @Override
             public void onComplete(final DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null) {
-                    listener.OnUpdatePointsFailed(databaseError.getMessage());
-                } else {
+                if (databaseError == null) {
 
                     Query query = jokesRef.orderByChild("uid").equalTo(joke.getUid());
 
-                    query.addChildEventListener(new ChildEventListener() {
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                            Joke joke = dataSnapshot.getValue(Joke.class);
-                            listener.OnUpdatePointsSuccess(joke);
-                        }
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        @Override
-                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                        }
-
-                        @Override
-                        public void onChildRemoved(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot data : dataSnapshot.getChildren()
+                                    ) {
+                                Joke joke = data.getValue(Joke.class);
+                                listener.OnUpdatePointsSuccess(joke);
+                            }
 
                         }
 
                         @Override
-                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
                         }
                     });
 
 
+                } else {
+                    listener.OnUpdatePointsFailed(databaseError.getMessage());
                 }
             }
         });

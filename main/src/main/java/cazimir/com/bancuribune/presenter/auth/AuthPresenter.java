@@ -173,7 +173,7 @@ public class AuthPresenter implements IAuthPresenter {
                     view.showToast(error);
                 }
             });
-        //not logged in
+            //not logged in
         } else {
             view.showViewsAndButtons();
             view.hideProgress();
@@ -189,7 +189,6 @@ public class AuthPresenter implements IAuthPresenter {
     @Override
     public void saveInstanceIdToUserObject(final OnSaveInstanceIdToUserObjectCallback callback) {
 
-        Timber.i("Saving instanceId to user object in database...");
         final String instanceId = FirebaseInstanceId.getInstance().getToken();
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
 
@@ -204,7 +203,6 @@ public class AuthPresenter implements IAuthPresenter {
 
         //if first login there is no user in the database until you get to the tutorial screen.
         if (instanceId != null) {
-            Timber.i("Got instance id: %s", instanceId);
             Query query = usersRef.orderByChild("userId").equalTo(mAuth.getCurrentUser().getUid());
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override

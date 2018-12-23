@@ -150,9 +150,6 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         switch (view.getId()) {
             case R.id.btnLoginWithEmail:
                 if (expandableLayout.isExpanded()) {
-
-                    //hideKeyboard();
-
                     if (isInternetAvailable()) {
                         String email = etEmail.getText().toString();
                         String password = etPassword.getText().toString();
