@@ -6,6 +6,7 @@
 /.idea/libraries
 /.idea/misc.xml
 .DS_Store
-/build
+/buildg
 /captures
 .externalNativeBuild
+/node_modules
