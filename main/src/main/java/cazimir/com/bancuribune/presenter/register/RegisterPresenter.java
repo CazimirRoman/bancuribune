@@ -11,9 +11,9 @@ public class RegisterPresenter implements IRegisterPresenter {
     private IRegisterActivityView mView;
     private IAuthPresenter mAuthPresenter;
 
-    public RegisterPresenter(IRegisterActivityView mView, IAuthPresenter mAuthPresenter) {
-        this.mView = mView;
-        this.mAuthPresenter = mAuthPresenter;
+    public RegisterPresenter(IRegisterActivityView view, IAuthPresenter authPresenter) {
+        mView = view;
+        mAuthPresenter = authPresenter;
     }
 
     @Override

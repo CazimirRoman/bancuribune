@@ -30,6 +30,7 @@ import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 import com.squareup.picasso.Picasso;
 
@@ -94,7 +95,7 @@ public class MyJokesActivityView extends BaseBackActivity implements IMyJokesAct
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DatabaseTypeSingleton type = DatabaseTypeSingleton.getInstance();
-        mPresenter = new MyJokesPresenter(this, new AuthPresenter(this), new JokesRepository(type.isDebug()));
+        mPresenter = new MyJokesPresenter(this, new AuthPresenter(this, FirebaseAuth.getInstance()), new JokesRepository(type.isDebug()));
         initRecycleView();
         getProfilePictureAndName();
         getMyJokes(false);

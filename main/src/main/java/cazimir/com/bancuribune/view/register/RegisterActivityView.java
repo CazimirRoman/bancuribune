@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -43,7 +44,7 @@ public class RegisterActivityView extends BaseBackActivity implements IRegisterA
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = new RegisterPresenter(this, new AuthPresenter(this));
+        mPresenter = new RegisterPresenter(this, new AuthPresenter(this, FirebaseAuth.getInstance()));
         btnRegister.setBootstrapBrand(getAuthenticationBrand());
     }
 
@@ -62,8 +63,6 @@ public class RegisterActivityView extends BaseBackActivity implements IRegisterA
 
     @OnClick(R.id.btnRegister)
     public void register(View view) {
-
-        //hideKeyboard();
 
         if (isInternetAvailable()) {
             String email = etEmail.getText().toString();

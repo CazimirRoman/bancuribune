@@ -14,6 +14,7 @@ import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
+import com.google.firebase.auth.FirebaseAuth;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -43,8 +44,7 @@ import static cazimir.com.bancuribune.constant.Constants.REGISTER_ACTIVITY_REQ_C
 
 public class LoginActivityView extends BaseActivity implements ILoginActivityView {
 
-    private ILoginPresenter mPresenter;
-    private AuthPresenter mAuthPresenter;
+    private ILoginPresenter mLoginPresenter;
     private CallbackManager mCallbackManager;
     private String mJokeIdExtra;
     private Boolean mIsNewRank = false;
@@ -77,15 +77,15 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = new LoginPresenter(this, new AuthPresenter(this));
-        mAuthPresenter = new AuthPresenter(this);
+        mLoginPresenter = new LoginPresenter(this, new AuthPresenter(this, FirebaseAuth.getInstance()));
         mCallbackManager = CallbackManager.Factory.create();
         setFacebookButtonClickListener();
         initUI();
         if (BuildConfig.DEBUG) {
             //startWithDebugDB();
         }
-        mAuthPresenter.checkIfUserLoggedIn();
+
+        mLoginPresenter.checkIfUserLoggedIn();
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -156,7 +156,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
                         UtilHelper.validateFormData(new OnFormValidatedListener() {
                             @Override
                             public void onValidateSuccess(String email, String password) {
-                                mPresenter.performLogin(email, password);
+                                mLoginPresenter.performLogin(email, password);
                                 showProgress();
                             }
 
@@ -204,7 +204,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
                 break;
             case R.id.btnSkipRegistration:
                 showProgress();
-                mPresenter.performAnonymousLogin();
+                mLoginPresenter.performAnonymousLogin();
                 break;
         }
     }
@@ -215,7 +215,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
             @Override
             public void onClick(View view) {
                 facebookButton.setReadPermissions("email", "public_profile");
-                facebookButton.registerCallback(mCallbackManager, mAuthPresenter.loginWithFacebook());
+                facebookButton.registerCallback(mCallbackManager, mLoginPresenter.loginWithFacebook());
                 facebookButton.setVisibility(View.GONE);
             }
         });

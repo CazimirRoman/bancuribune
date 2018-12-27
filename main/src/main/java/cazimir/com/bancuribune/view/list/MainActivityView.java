@@ -43,6 +43,7 @@ import com.facebook.Profile;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.julienvey.trello.Trello;
 import com.julienvey.trello.domain.Card;
 import com.julienvey.trello.impl.TrelloImpl;
@@ -156,7 +157,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DatabaseTypeSingleton type = DatabaseTypeSingleton.getInstance();
-        mPresenter = new MainPresenter(this, new AuthPresenter(this), new JokesRepository(type.isDebug()));
+        mPresenter = new MainPresenter(this, new AuthPresenter(this, FirebaseAuth.getInstance()), new JokesRepository(type.isDebug()));
         goToProfileIfActivityIfStartedFromPushNotification();
         onboardingNeeded();
         //because when you logout the shared preferences containing the current rank is also deleted
@@ -776,7 +777,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
             case R.id.switchDB:
                 DatabaseTypeSingleton type = DatabaseTypeSingleton.getInstance();
                 type.setType(!type.isDebug());
-                mPresenter = new MainPresenter(this, new AuthPresenter(this), new JokesRepository(type.isDebug()));
+                mPresenter = new MainPresenter(this, new AuthPresenter(this, FirebaseAuth.getInstance()), new JokesRepository(type.isDebug()));
                 mPresenter.getAllJokesData(true, true);
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {

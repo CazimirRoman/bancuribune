@@ -11,15 +11,14 @@ public class ForgotPasswordPresenter implements IForgotPasswordPresenter {
     private final IAuthPresenter mAuthPresenter;
 
     public ForgotPasswordPresenter(IForgotPasswordActivityView view, IAuthPresenter authPresenter) {
-        this.mView = view;
-        this.mAuthPresenter = authPresenter;
+        mView = view;
+        mAuthPresenter = authPresenter;
     }
 
     @Override
     public void resendVerificationEmail(String email, String password) {
         mView.showProgress();
         mAuthPresenter.performResendVerificationEmail(new OnResendVerificationEmailListener() {
-
             @Override
             public void onResendEmailSuccess(String message) {
                 mView.showToast(message);

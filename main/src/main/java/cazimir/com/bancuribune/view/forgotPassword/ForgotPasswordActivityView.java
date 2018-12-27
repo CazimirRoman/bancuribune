@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
 import butterknife.BindView;
@@ -40,7 +41,7 @@ public class ForgotPasswordActivityView extends BaseBackActivity implements IFor
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mPresenter = new ForgotPasswordPresenter(this, new AuthPresenter(this));
+        mPresenter = new ForgotPasswordPresenter(this, new AuthPresenter(this, FirebaseAuth.getInstance()));
 
         btnForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
