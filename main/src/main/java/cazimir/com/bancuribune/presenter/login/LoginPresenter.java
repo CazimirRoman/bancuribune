@@ -70,11 +70,57 @@ public class LoginPresenter implements ILoginPresenter {
 
     @Override
     public void checkIfUserLoggedIn() {
-        mAuthPresenter.checkIfUserLoggedIn();
+        mAuthPresenter.checkIfUserLoggedIn(new OnCheckIfLoggedInCallback() {
+            @Override
+            public void isLoggedIn() {
+                mAuthPresenter.saveInstanceIdToUserObject(new OnSaveInstanceIdToUserObjectCallback() {
+                    @Override
+                    public void onSuccess() {
+                        mView.launchMainActivity();
+                        mView.hideProgress();
+                    }
+
+                    @Override
+                    public void onFailed(String error) {
+                        mView.showToast(error);
+                    }
+                });
+            }
+
+            @Override
+            public void isNotLoggedIn() {
+                mView.showViewsAndButtons();
+                mView.hideProgress();
+            }
+        });
     }
 
     @Override
     public FacebookCallback<LoginResult> loginWithFacebook() {
-        return mAuthPresenter.loginWithFacebook();
+        return mAuthPresenter.loginWithFacebook(new OnLoginWithFacebookCallback() {
+            @Override
+            public void onLoginWithFacebookSuccess() {
+                mAuthPresenter.saveInstanceIdToUserObject(new OnSaveInstanceIdToUserObjectCallback() {
+                    @Override
+                    public void onSuccess() {
+                        mView.loginSuccess();
+                        mView.hideProgress();
+                    }
+
+                    @Override
+                    public void onFailed(String error) {
+                        mView.loginFailed(error);
+                        mView.hideProgress();
+                    }
+                });
+
+            }
+
+            @Override
+            public void onLoginWithFacebookFailed(String error) {
+                mView.loginFailed(error);
+                mView.hideProgress();
+            }
+        });
     }
 }

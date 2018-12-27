@@ -228,7 +228,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
             if (extras.getString("jokeId") != null) {
                 //extra coming from push notification after joke approved
                 mJokeIdExtra = getIntent().getStringExtra("jokeId");
-                Timber.d("User clicked on push notification for joke approved with id: %d", mJokeIdExtra);
+                Timber.i("User clicked on push notification for joke approved with id: %s", mJokeIdExtra);
             }
 
             //it is a rank update. for rank updates jokeId is not present
@@ -249,6 +249,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         i.putExtra("regards", mIsNewRank);
         i.putExtra(Constants.ANONYMOUS_LOGIN, mIsAnonymousLogin);
         startActivity(i);
+        Timber.i("Launching main activity...");
         this.finish();
     }
 

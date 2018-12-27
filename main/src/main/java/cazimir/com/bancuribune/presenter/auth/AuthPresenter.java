@@ -16,7 +16,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.internal.InternalAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,6 +33,8 @@ import cazimir.com.bancuribune.callbacks.myJokes.IMyJokesActivityView;
 import cazimir.com.bancuribune.constant.Constants;
 import cazimir.com.bancuribune.model.User;
 import cazimir.com.bancuribune.presenter.login.OnAnonymousLoginCallback;
+import cazimir.com.bancuribune.presenter.login.OnCheckIfLoggedInCallback;
+import cazimir.com.bancuribune.presenter.login.OnLoginWithFacebookCallback;
 import cazimir.com.bancuribune.repository.DatabaseTypeSingleton;
 import cazimir.com.bancuribune.view.forgotPassword.OnResendVerificationEmailListener;
 import cazimir.com.bancuribune.view.forgotPassword.OnResetPasswordListener;
@@ -97,13 +98,13 @@ public class AuthPresenter implements IAuthPresenter {
     }
 
     @Override
-    public FacebookCallback<LoginResult> loginWithFacebook() {
+    public FacebookCallback<LoginResult> loginWithFacebook(final OnLoginWithFacebookCallback onLoginWithFacebookCallback) {
         Timber.i("Trying to login with Facebook...");
 
         return new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                handleFacebookAccessToken(loginResult.getAccessToken());
+                handleFacebookAccessToken(loginResult.getAccessToken(), onLoginWithFacebookCallback);
             }
 
             @Override
@@ -153,7 +154,7 @@ public class AuthPresenter implements IAuthPresenter {
     }
 
     @Override
-    public void checkIfUserLoggedIn() {
+    public void checkIfUserLoggedIn(OnCheckIfLoggedInCallback callback) {
         Timber.i("Checking if user is logged in...");
         //this implementation is for cases where the instanceId is not saved yet
         final ILoginActivityView view = (ILoginActivityView) mView.getInstance();
@@ -161,23 +162,13 @@ public class AuthPresenter implements IAuthPresenter {
         view.showProgress();
 
         if (isLoggedInViaEmail() || isLoggedInViaFacebook()) {
-            saveInstanceIdToUserObject(new OnSaveInstanceIdToUserObjectCallback() {
-                @Override
-                public void onSuccess() {
-                    view.launchMainActivity();
-                    view.hideProgress();
-                }
 
-                @Override
-                public void onFailed(String error) {
-                    view.showToast(error);
-                }
-            });
+            callback.isLoggedIn();
+
             //not logged in. show login views and buttons. that means showing the whole scrollview which contains them.
         } else {
             Timber.i("User is NOT logged in");
-            view.showViewsAndButtons();
-            view.hideProgress();
+            callback.isNotLoggedIn();
         }
     }
 
@@ -230,7 +221,7 @@ public class AuthPresenter implements IAuthPresenter {
 
     private boolean isLoggedInViaEmail() {
         Boolean result = mAuth.getCurrentUser() != null && mAuth.getCurrentUser().isEmailVerified();
-        Timber.i("The user is logged in with email: %s", getCurrentUserName());
+        Timber.i("The user is logged in with email: %s", result);
         return result;
     }
 
@@ -238,7 +229,7 @@ public class AuthPresenter implements IAuthPresenter {
     public boolean isLoggedInViaFacebook() {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         Boolean result = accessToken != null;
-        Timber.i("The user is logged in with Facebook: %s", getCurrentUserName());
+        Timber.i("The user is logged in with Facebook: %s", result);
         return result;
     }
 
@@ -282,7 +273,7 @@ public class AuthPresenter implements IAuthPresenter {
         view.clearSharedPreferences();
     }
 
-    private void handleFacebookAccessToken(AccessToken accessToken) {
+    private void handleFacebookAccessToken(AccessToken accessToken, final OnLoginWithFacebookCallback listenerFromLoginPresenter) {
 
         final ILoginActivityView login = (ILoginActivityView) this.mView.getInstance();
         Activity context = login.getContext();
@@ -294,28 +285,12 @@ public class AuthPresenter implements IAuthPresenter {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            login.loginSuccess();
-                            login.hideProgress();
                             Timber.i("Facebook login success!");
-                            saveInstanceIdToUserObject(new OnSaveInstanceIdToUserObjectCallback() {
-                                @Override
-                                public void onSuccess() {
-                                    Timber.i("Saved instance id to database after facebook " +
-                                            "login");
-                                }
-
-                                @Override
-                                public void onFailed(String error) {
-                                    Timber.e("Something went wrong when saving instance id " +
-                                            "to db after facebook login: %s", error);
-                                }
-                            });
-
+                            listenerFromLoginPresenter.onLoginWithFacebookSuccess();
                         } else {
                             // If sign in fails, display a message to the user.
                             Timber.e("Login with facebook failed! Reason: %s", task.getException().toString());
-                            login.loginFailed(task.getException().toString());
-                            login.hideProgress();
+                            listenerFromLoginPresenter.onLoginWithFacebookFailed(task.getException().toString());
                         }
 
                     }
