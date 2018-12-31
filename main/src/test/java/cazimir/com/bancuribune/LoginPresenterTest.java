@@ -1,12 +1,14 @@
 package cazimir.com.bancuribune;
 
-import com.facebook.FacebookCallback;
+import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import cazimir.com.bancuribune.presenter.auth.AuthPresenter;
@@ -19,7 +21,6 @@ import cazimir.com.bancuribune.view.login.OnLoginWithEmailCallback;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * TODO: Add a class header comment!
@@ -29,9 +30,10 @@ public class LoginPresenterTest {
     private LoginPresenter mLoginPresenter;
     private static final String EMAIL = "email@gmail.com";
     private static final String PASSWORD = "123456";
+    private static final String LOGIN_FAILED = "Login failed!";
 
     @Mock
-    private LoginActivityView mView;
+    private LoginActivityView mLoginActivityView;
 
     @Mock
     private AuthPresenter mAuthPresenter;
@@ -48,11 +50,11 @@ public class LoginPresenterTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        mLoginPresenter = new LoginPresenter(mView, mAuthPresenter);
+        mLoginPresenter = new LoginPresenter(mLoginActivityView, mAuthPresenter);
     }
 
     @Test
-    public void shouldLaunchMainActivityIfLoginSuccessful() {
+    public void shouldLaunchMainActivityIfLoginWithEmailSuccessful() {
         //try to login
         mLoginPresenter.performLogin(EMAIL, PASSWORD);
         verify(mAuthPresenter).login(mOnLoginWithEmailCallbackArgumentCaptor.capture(), eq(EMAIL), eq(PASSWORD));
@@ -62,8 +64,24 @@ public class LoginPresenterTest {
         //saved instanceId to DB
         mOnSaveInstanceIdToUserObjectCallbackArgumentCaptor.getValue().onSuccess();
         //check if method to launch main activity is called
-        verify(mView).launchMainActivity();
+        InOrder inOrder = Mockito.inOrder(mLoginActivityView);
+        inOrder.verify(mLoginActivityView).launchMainActivity();
+        inOrder.verify(mLoginActivityView).hideProgress();
     }
+
+    @Test
+    public void shouldShowAlertDialogIfLoginWithEmailFailed(){
+        //try to login
+        mLoginPresenter.performLogin(EMAIL, PASSWORD);
+        verify(mAuthPresenter).login(mOnLoginWithEmailCallbackArgumentCaptor.capture(), eq(EMAIL), eq(PASSWORD));
+        //return login success
+        mOnLoginWithEmailCallbackArgumentCaptor.getValue().onFailed(LOGIN_FAILED);
+        InOrder inOrder = Mockito.inOrder(mLoginActivityView);
+        inOrder.verify(mLoginActivityView).showAlertDialog(LOGIN_FAILED, SweetAlertDialog.ERROR_TYPE);
+        inOrder.verify(mLoginActivityView).hideProgress();
+    }
+
+
 
     /**
      * Each time the user logs in the instance id of the firebase session needs to be saved in order
@@ -75,6 +93,8 @@ public class LoginPresenterTest {
         verify(mAuthPresenter).login(mOnLoginWithEmailCallbackArgumentCaptor.capture(), eq(EMAIL), eq(PASSWORD));
         mOnLoginWithEmailCallbackArgumentCaptor.getValue().onSuccess();
         verify(mAuthPresenter).saveInstanceIdToUserObject(mOnSaveInstanceIdToUserObjectCallbackArgumentCaptor.capture());
+        mOnSaveInstanceIdToUserObjectCallbackArgumentCaptor.getValue().onSuccess();
+        verify(mLoginActivityView).launchMainActivity();
     }
 
     /**
