@@ -1,4 +1,4 @@
-package cazimir.com.bancuribune.presenter.forgot;
+package cazimir.com.bancuribune;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import cazimir.com.bancuribune.presenter.auth.AuthPresenter;
+import cazimir.com.bancuribune.presenter.forgot.ForgotPasswordPresenter;
 import cazimir.com.bancuribune.view.forgotPassword.ForgotPasswordActivityView;
 import cazimir.com.bancuribune.view.forgotPassword.OnResendVerificationEmailListener;
 import cazimir.com.bancuribune.view.forgotPassword.OnResetPasswordListener;
@@ -26,6 +27,8 @@ public class ForgotPasswordPresenterTest {
     private static final String PASSWORD = "123456";
     private static final String RESENT_EMAIL_SUCCEEDED = "Email resend succeeded";
     private static final String RESEND_EMAIL_FAILED = "Email resend failed";
+    private static final String RESET_EMAIL_SUCCEEDED = "Email reset succeeded";
+    private static final String RESET_EMAIL_FAILED = "Email reset failed";
 
     private ForgotPasswordPresenter mForgotPasswordPresenter;
 
@@ -69,11 +72,23 @@ public class ForgotPasswordPresenterTest {
     }
 
     @Test
-    public void sendResetInstructions() {
+    public void shouldShowToastAndRedirectToLoginIfPasswordResetSuccessful() {
         mForgotPasswordPresenter.sendResetInstructions(EMAIL);
-        verify(mAuthPresenter).performPasswordReset(mOnResetPasswordListenerArgumentCaptor);
+        verify(mAuthPresenter).performPasswordReset(mOnResetPasswordListenerArgumentCaptor.capture(), eq(EMAIL));
+        mOnResetPasswordListenerArgumentCaptor.getValue().onResetPasswordSuccess(RESET_EMAIL_SUCCEEDED);
+        InOrder inOrder = Mockito.inOrder(mForgotPasswordActivityView);
+        inOrder.verify(mForgotPasswordActivityView).showToast(RESET_EMAIL_SUCCEEDED);
+        inOrder.verify(mForgotPasswordActivityView).redirectToLogin();
+        inOrder.verify(mForgotPasswordActivityView).hideProgress();
+    }
 
-
-
+    @Test
+    public void shouldShowToastAndHideProgressIfPasswordResetFailed() {
+        mForgotPasswordPresenter.sendResetInstructions(EMAIL);
+        verify(mAuthPresenter).performPasswordReset(mOnResetPasswordListenerArgumentCaptor.capture(), eq(EMAIL));
+        mOnResetPasswordListenerArgumentCaptor.getValue().onResetPasswordFailed(RESET_EMAIL_FAILED);
+        InOrder inOrder = Mockito.inOrder(mForgotPasswordActivityView);
+        inOrder.verify(mForgotPasswordActivityView).showToast(RESET_EMAIL_FAILED);
+        inOrder.verify(mForgotPasswordActivityView).hideProgress();
     }
 }

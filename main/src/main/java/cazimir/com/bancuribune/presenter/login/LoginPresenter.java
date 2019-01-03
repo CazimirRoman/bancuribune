@@ -83,6 +83,7 @@ public class LoginPresenter implements ILoginPresenter {
                     @Override
                     public void onFailed(String error) {
                         mView.showToast(error);
+                        mView.hideProgress();
                     }
                 });
             }

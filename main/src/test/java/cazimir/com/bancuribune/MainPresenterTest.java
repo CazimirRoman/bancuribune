@@ -39,9 +39,6 @@ public class MainPresenterTest {
     @Mock
     private AuthPresenter mAuthPresenter;
 
-    @Captor
-    private ArgumentCaptor<OnAdminCheckCallback> mOnAdminCheckCallbackArgumentCaptor;
-
 
     @Before
     public void setUp() {
@@ -71,8 +68,6 @@ public class MainPresenterTest {
 
         when(mAuthPresenter.getCurrentUserID()).thenReturn(ADMIN_ID);
         mMainPresenter.showAdminButtonsIfAdmin();
-        verify(mJokesRepository).checkIfAdmin(mOnAdminCheckCallbackArgumentCaptor.capture(), eq(ADMIN_ID));
-        mOnAdminCheckCallbackArgumentCaptor.getValue().onIsAdmin();
         verify(mMainActivityView).showAdminButtons();
     }
 

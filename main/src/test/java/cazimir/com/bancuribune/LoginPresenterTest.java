@@ -27,10 +27,12 @@ import static org.mockito.Mockito.verify;
  */
 public class LoginPresenterTest {
 
+    private static final String SAVE_INSTANCE_ID_FAILED = "instance id not saved";
     private LoginPresenter mLoginPresenter;
     private static final String EMAIL = "email@gmail.com";
     private static final String PASSWORD = "123456";
-    private static final String LOGIN_FAILED = "Login failed!";
+    private static final String LOGIN_WITH_EMAIL_FAILED = "Login failed!";
+    private static final String LOGIN_WITH_FACEBOOK_FAILED = "login with facebook failed";
 
     @Mock
     private LoginActivityView mLoginActivityView;
@@ -75,13 +77,11 @@ public class LoginPresenterTest {
         mLoginPresenter.performLogin(EMAIL, PASSWORD);
         verify(mAuthPresenter).login(mOnLoginWithEmailCallbackArgumentCaptor.capture(), eq(EMAIL), eq(PASSWORD));
         //return login success
-        mOnLoginWithEmailCallbackArgumentCaptor.getValue().onFailed(LOGIN_FAILED);
+        mOnLoginWithEmailCallbackArgumentCaptor.getValue().onFailed(LOGIN_WITH_EMAIL_FAILED);
         InOrder inOrder = Mockito.inOrder(mLoginActivityView);
-        inOrder.verify(mLoginActivityView).showAlertDialog(LOGIN_FAILED, SweetAlertDialog.ERROR_TYPE);
+        inOrder.verify(mLoginActivityView).showAlertDialog(LOGIN_WITH_EMAIL_FAILED, SweetAlertDialog.ERROR_TYPE);
         inOrder.verify(mLoginActivityView).hideProgress();
     }
-
-
 
     /**
      * Each time the user logs in the instance id of the firebase session needs to be saved in order
@@ -98,6 +98,21 @@ public class LoginPresenterTest {
     }
 
     /**
+     * Saving the instance id failed after logging with email!
+     */
+    @Test
+    public void shouldShowErrorToastIfSavingInstanceIdFailedWAfterLoggingInWithEmail() {
+        mLoginPresenter.performLogin(EMAIL, PASSWORD);
+        verify(mAuthPresenter).login(mOnLoginWithEmailCallbackArgumentCaptor.capture(), eq(EMAIL), eq(PASSWORD));
+        mOnLoginWithEmailCallbackArgumentCaptor.getValue().onSuccess();
+        verify(mAuthPresenter).saveInstanceIdToUserObject(mOnSaveInstanceIdToUserObjectCallbackArgumentCaptor.capture());
+        mOnSaveInstanceIdToUserObjectCallbackArgumentCaptor.getValue().onFailed(SAVE_INSTANCE_ID_FAILED);
+        InOrder inOrder = Mockito.inOrder(mLoginActivityView);
+        inOrder.verify(mLoginActivityView).showToast(SAVE_INSTANCE_ID_FAILED);
+        inOrder.verify(mLoginActivityView).hideProgress();
+    }
+
+    /**
      * Should test that after logging in to facebook the instance id is saved to the database
      */
     @Test
@@ -106,6 +121,36 @@ public class LoginPresenterTest {
         verify(mAuthPresenter).loginWithFacebook(mOnLoginWithFacebookCallbackArgumentCaptor.capture());
         mOnLoginWithFacebookCallbackArgumentCaptor.getValue().onLoginWithFacebookSuccess();
         verify(mAuthPresenter).saveInstanceIdToUserObject(mOnSaveInstanceIdToUserObjectCallbackArgumentCaptor.capture());
+    }
+
+    /**
+     * Saving the instance id failed after logging with email!
+     */
+    @Test
+    public void shouldShowErrorToastIfSavingInstanceIdFailedAfterLoggingInWithFacebook() {
+        mLoginPresenter.loginWithFacebook();
+        verify(mAuthPresenter).loginWithFacebook(mOnLoginWithFacebookCallbackArgumentCaptor.capture());
+        mOnLoginWithFacebookCallbackArgumentCaptor.getValue().onLoginWithFacebookSuccess();
+        verify(mAuthPresenter).saveInstanceIdToUserObject(mOnSaveInstanceIdToUserObjectCallbackArgumentCaptor.capture());
+        mOnSaveInstanceIdToUserObjectCallbackArgumentCaptor.getValue().onFailed(LOGIN_WITH_FACEBOOK_FAILED);
+        InOrder inOrder = Mockito.inOrder(mLoginActivityView);
+        inOrder.verify(mLoginActivityView).loginFailed(LOGIN_WITH_FACEBOOK_FAILED);
+        inOrder.verify(mLoginActivityView).hideProgress();
+    }
+
+    /**
+     * Saving the instance id failed after logging with email!
+     */
+    @Test
+    public void shouldShowErrorToastAndHideProgressIfSavingInstanceIdFailed() {
+        mLoginPresenter.performLogin(EMAIL, PASSWORD);
+        verify(mAuthPresenter).login(mOnLoginWithEmailCallbackArgumentCaptor.capture(), eq(EMAIL), eq(PASSWORD));
+        mOnLoginWithEmailCallbackArgumentCaptor.getValue().onSuccess();
+        verify(mAuthPresenter).saveInstanceIdToUserObject(mOnSaveInstanceIdToUserObjectCallbackArgumentCaptor.capture());
+        mOnSaveInstanceIdToUserObjectCallbackArgumentCaptor.getValue().onFailed(SAVE_INSTANCE_ID_FAILED);
+        InOrder inOrder = Mockito.inOrder(mLoginActivityView);
+        inOrder.verify(mLoginActivityView).showToast(SAVE_INSTANCE_ID_FAILED);
+        inOrder.verify(mLoginActivityView).hideProgress();
     }
 
     /**
