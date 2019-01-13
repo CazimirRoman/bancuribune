@@ -13,6 +13,12 @@ exports.onJokeApproved_test = functions.database.ref('/_dev/jokes_dev/{pushId}')
 
         var jokeId = -1;
 
+        if (event.data.previous.exists()) {
+            console.log(event.data.child("uid").val());
+            return;
+          }
+
+        //approved turned from false to true
         if ((!event.before.child("approved").val()) && event.after.child("approved").val()) {
 
             const message = event.after.child("jokeText").val();
