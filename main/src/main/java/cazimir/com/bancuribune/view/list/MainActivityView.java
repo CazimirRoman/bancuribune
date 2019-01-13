@@ -239,6 +239,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     }
 
     private Date getLastCheckDateFromSharedPreferences() {
+
         preferences = this.getSharedPreferences("reminder", Context.MODE_PRIVATE);
         long lastCheck = preferences.getLong("last_check", 0);
         //first run
@@ -275,6 +276,8 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
 
     private String getCurrentRankNameFromSharedPreferences() {
         preferences = getSharedPreferences(RANK, MODE_PRIVATE);
+        Timber.tag(Constants.TIMBER_SHARED_PREFERENCES).i("Current rank from shared preferences is: %s",
+                preferences.getString(RANK_NAME, null));
         return preferences.getString(RANK_NAME, null);
     }
 

@@ -37,8 +37,10 @@ import cazimir.com.bancuribune.model.User;
 import cazimir.com.bancuribune.model.Vote;
 import cazimir.com.bancuribune.report.OnGetAllRanksListener;
 import cazimir.com.bancuribune.utils.UtilHelper;
+import timber.log.Timber;
 
 import static cazimir.com.bancuribune.constant.Constants.NO_MODIFICATIONS;
+import static cazimir.com.bancuribune.constant.Constants.TIMBER_ADD_JOKE_FLOW;
 
 public class JokesRepository implements IJokesRepository {
 
@@ -372,6 +374,9 @@ public class JokesRepository implements IJokesRepository {
 
     @Override
     public void addJoke(final cazimir.com.bancuribune.callbacks.add.OnAddJokeFinishedListener listener, Joke joke) {
+
+        Timber.tag(Constants.TIMBER_ADD_JOKE_FLOW).i("Starting to add joke-> %s <-to db", joke.getJokeText());
+
         String uid = jokesRef.push().getKey();
         joke.setUid(uid);
         jokesRef.child(uid).setValue(joke, new DatabaseReference.CompletionListener() {
@@ -379,8 +384,10 @@ public class JokesRepository implements IJokesRepository {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
+                    Timber.e("Could not add joke. Reason: %s", databaseError.getMessage());
                     listener.onAddFailed(databaseError.getMessage());
                 } else {
+                    Timber.tag(TIMBER_ADD_JOKE_FLOW).i("Joke added successfully!");
                     listener.onAddSuccess();
                 }
             }
@@ -388,7 +395,9 @@ public class JokesRepository implements IJokesRepository {
     }
 
     @Override
-    public void getAllJokesAddedToday(final OnAllowedToAddFinishedListener listener, String userId, final int addLimit) {
+    public void getAllJokesAddedToday(final OnAllowedToAddFinishedListener listener, final String userId, final int addLimit) {
+
+        Timber.tag(Constants.TIMBER_ADD_JOKE_FLOW).i("Checking number of jokes added today...");
 
         final ArrayList<Joke> addedJokesToday = new ArrayList<>();
 
@@ -410,19 +419,22 @@ public class JokesRepository implements IJokesRepository {
                     }
                 }
 
+                Timber.tag(TIMBER_ADD_JOKE_FLOW).i("User %s added %s jokes today. His limit is %s jokes per day", userId,
+                        String.valueOf(addedJokesToday.size()), String.valueOf(addLimit));
+
                 if (addedJokesToday.size() < addLimit) {
-
                     int remainingAdds = addLimit - addedJokesToday.size();
-
+                    Timber.tag(TIMBER_ADD_JOKE_FLOW).i("User is allowed to add");
                     listener.isAllowedToAdd(remainingAdds);
                 } else {
+                    Timber.tag(TIMBER_ADD_JOKE_FLOW).i("User is not allowed to add any more jokes today");
                     listener.isNotAllowedToAdd(addLimit);
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Timber.e("Something bad happened: %s", databaseError.getMessage());
             }
         });
     }

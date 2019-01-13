@@ -27,7 +27,6 @@ import cazimir.com.bancuribune.repository.OnAddUserListener;
 import cazimir.com.bancuribune.repository.OnCheckIfRankDataInDBListener;
 import cazimir.com.bancuribune.repository.OnShowReminderToAddListener;
 import cazimir.com.bancuribune.view.list.OnAddUserToDatabaseCallback;
-import cazimir.com.bancuribune.view.list.OnSaveInstanceIdToUserObjectCallback;
 
 import static cazimir.com.bancuribune.constant.Constants.EVENT_VOTED;
 

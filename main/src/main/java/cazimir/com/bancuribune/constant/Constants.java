@@ -4,7 +4,6 @@ public class Constants {
 
     public static final String EVENT_VOTED = "joke_voted";
     public static final String EVENT_SHARED = "joke_shared";
-    public static final String EVENT_LEVEL_UP = "level_up";
     public static final String EVENT_ADDED = "joke_added";
     public static final String EVENT_JOKE_EXPANDED = "joke_expanded";
     public static final int ADD_JOKE_LIMIT_HAMSIE = 2;
@@ -65,4 +64,6 @@ public class Constants {
     public static final String ANONYMOUS_LOGIN = "anonymous";
     public static final String AD_UNIT_ID_TEST = "ca-app-pub-3940256099942544/6300978111";
     public static final String AD_UNIT_ID_PROD = "ca-app-pub-7748272108558557/6099098244";
+    public static final String TIMBER_ADD_JOKE_FLOW = "AddJokeFlow";
+    public static final String TIMBER_SHARED_PREFERENCES = "SharedPreferences";
 }
