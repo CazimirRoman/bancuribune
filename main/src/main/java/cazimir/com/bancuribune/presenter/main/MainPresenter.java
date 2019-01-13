@@ -27,7 +27,6 @@ import cazimir.com.bancuribune.repository.OnAddUserListener;
 import cazimir.com.bancuribune.repository.OnCheckIfRankDataInDBListener;
 import cazimir.com.bancuribune.repository.OnShowReminderToAddListener;
 import cazimir.com.bancuribune.view.list.OnAddUserToDatabaseCallback;
-import cazimir.com.bancuribune.view.list.OnSaveInstanceIdToUserObjectCallback;
 
 import static cazimir.com.bancuribune.constant.Constants.EVENT_VOTED;
 
@@ -85,7 +84,8 @@ public class MainPresenter implements IMainPresenter {
         mJokesRepository.getAllJokesAddedOverThePastWeek(new OnShowReminderToAddListener() {
             @Override
             public void showAddReminderToUser() {
-                mMainActivityView.showAlertDialog("Știi bancuri amuzante? Adaugă-le acum în aplicație și câștigă like-urile celorlalți useri", SweetAlertDialog.SUCCESS_TYPE);
+                mMainActivityView.showAlertDialog("Știi bancuri amuzante? Adaugă-le acum " +
+                        "în aplicație și câștigă like-urile celorlalți useri", SweetAlertDialog.SUCCESS_TYPE);
                 mMainActivityView.addLastCheckDateToSharedPreferences();
             }
         }, mAuthPresenter.getCurrentUserID(), lastCheckDate);
@@ -129,14 +129,14 @@ public class MainPresenter implements IMainPresenter {
     public void increaseJokePointByOne(Joke joke, final int position) {
         mJokesRepository.updateJokePoints(new OnUpdatePointsFinishedListener() {
             @Override
-            public void OnUpdatePointsFailed(String error) {
-                mMainActivityView.showAlertDialog(error, SweetAlertDialog.ERROR_TYPE);
+            public void OnUpdatePointsSuccess(Joke joke) {
+                mMainActivityView.refreshAdapter(joke);
                 mMainActivityView.enableHeartIcon(position);
             }
 
             @Override
-            public void OnUpdatePointsSuccess(Joke joke) {
-                mMainActivityView.refreshAdapter(joke);
+            public void OnUpdatePointsFailed(String error) {
+                mMainActivityView.showAlertDialog(error, SweetAlertDialog.ERROR_TYPE);
                 mMainActivityView.enableHeartIcon(position);
             }
         }, joke);
@@ -170,17 +170,6 @@ public class MainPresenter implements IMainPresenter {
             public void rankDataIsInDB(Rank rank) {
                 Log.d(TAG, "Rank already in DB");
                 mMainActivityView.saveRankDataToSharedPreferences(rank);
-                getAuthPresenter().saveInstanceIdToUserObject(new OnSaveInstanceIdToUserObjectCallback() {
-                    @Override
-                    public void onSuccess() {
-                        Log.d(TAG, "Instance Id saved");
-                    }
-
-                    @Override
-                    public void onFailed(String error) {
-                        mMainActivityView.showToast(error);
-                    }
-                });
             }
 
             @Override
@@ -190,13 +179,12 @@ public class MainPresenter implements IMainPresenter {
                 mMainActivityView.addUserToDatabase(new OnAddUserToDatabaseCallback() {
                     @Override
                     public void onSuccess() {
-                        //after adding the user and instance Id, add the rank
+                        //after adding the user and instance Id, add the rank.
                         mJokesRepository.addRankToDB(new OnAddRankFinishedListener() {
                             @Override
                             public void onAddRankSuccess(Rank rank) {
                                 mMainActivityView.saveRankDataToSharedPreferences(rank);
                                 //replace this behaviour with a trigger on the server when a new rank is added.
-                                //mMainActivityView.showAlertDialog("În momentul de față ai rangul de Hamsie. Poți adăuga 2 bancuri pe zi", Constants.LEVEL_UP);
                             }
 
                             @Override

@@ -3,7 +3,6 @@ package cazimir.com.bancuribune.presenter.auth;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.facebook.FacebookCallback;
@@ -28,157 +27,183 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import java.util.Arrays;
 import java.util.List;
 
-import cazimir.com.bancuribune.constant.Constants;
-import cazimir.com.bancuribune.model.User;
-import cazimir.com.bancuribune.presenter.login.OnAnonymousLoginCallback;
-import cazimir.com.bancuribune.repository.DatabaseTypeSingleton;
-import cazimir.com.bancuribune.view.list.OnSaveInstanceIdToUserObjectCallback;
-import cazimir.com.bancuribune.view.login.OnLoginWithEmailFinishedListener;
-import cazimir.com.bancuribune.view.register.OnRegistrationFinishedListener;
-import cazimir.com.bancuribune.view.forgotPassword.OnResendVerificationEmailListener;
-import cazimir.com.bancuribune.view.forgotPassword.OnResetPasswordListener;
 import cazimir.com.bancuribune.base.IGeneralView;
 import cazimir.com.bancuribune.callbacks.login.ILoginActivityView;
 import cazimir.com.bancuribune.callbacks.myJokes.IMyJokesActivityView;
+import cazimir.com.bancuribune.constant.Constants;
+import cazimir.com.bancuribune.model.User;
+import cazimir.com.bancuribune.presenter.login.OnAnonymousLoginCallback;
+import cazimir.com.bancuribune.presenter.login.OnCheckIfLoggedInCallback;
+import cazimir.com.bancuribune.presenter.login.OnLoginWithFacebookCallback;
+import cazimir.com.bancuribune.repository.DatabaseTypeSingleton;
+import cazimir.com.bancuribune.view.forgotPassword.OnResendVerificationEmailListener;
+import cazimir.com.bancuribune.view.forgotPassword.OnResetPasswordListener;
+import cazimir.com.bancuribune.view.list.OnSaveInstanceIdToUserObjectCallback;
+import cazimir.com.bancuribune.view.login.OnLoginWithEmailCallback;
+import cazimir.com.bancuribune.view.register.OnRegistrationCallback;
+import timber.log.Timber;
 
 public class AuthPresenter implements IAuthPresenter {
 
-    private static final String TAG = AuthPresenter.class.getSimpleName();
     private FirebaseAuth mAuth;
     private IGeneralView mView;
-    private FirebaseUser currentUser;
+    private FirebaseUser mCurrentUser;
 
-    public AuthPresenter(IGeneralView view) {
-        mAuth = FirebaseAuth.getInstance();
-        this.mView = view;
+    public AuthPresenter(IGeneralView view, FirebaseAuth auth) {
+        mAuth = auth;
+        mView = view;
     }
 
     @Override
-    public void login(final OnLoginWithEmailFinishedListener listener, String email, String password) {
+    public void login(final OnLoginWithEmailCallback callback, final String email, String password) {
+        Timber.i("Trying to log in with email: %s", email);
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            currentUser = mAuth.getCurrentUser();
+                            mCurrentUser = mAuth.getCurrentUser();
                             if (mAuth.getCurrentUser().isEmailVerified()) {
-                                listener.onSuccess();
+                                Timber.i("Login success!");
+                                callback.onSuccess();
                             } else {
-                                listener.onFailed("Te rog să îți verifici mailul. Ți-am trimis un link de confirmare.");
+                                Timber.i("User did not verify his/her email address: %s", email);
+                                callback.onFailed("Te rog să îți verifici mailul. Ți-am trimis un link de confirmare.");
                             }
                         } else {
-                            listener.onFailed(task.getException().getMessage());
+                            Timber.e("Could not log user with email %s in. Reason: %s", email, task.getException().getMessage());
+                            callback.onFailed(task.getException().getMessage());
                         }
                     }
                 });
     }
 
     @Override
-    public void registerUser(final OnRegistrationFinishedListener listener, String email, String password) {
+    public void loginAnonymously(final OnAnonymousLoginCallback listener) {
+        Timber.i("Trying to login anonymously...");
+        mAuth.signInAnonymously()
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            Timber.i("Signed in anonymously!");
+                            listener.onSuccess();
+                        } else {
+                            Timber.i("Failed to sign in anonyously! Reason: %s", task.getException().getMessage());
+                            listener.onFailed(task.getException().getMessage());
 
-        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (!task.isSuccessful()) {
-                    listener.onRegistrationFailed(task.getException().getMessage());
-                } else {
-                    final FirebaseUser user = mAuth.getCurrentUser();
-                    if (user != null && !user.isEmailVerified()) {
-                        user.sendEmailVerification()
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            listener.onRegistrationSuccess("Ți-am trimis un email de verificare la " + user.getEmail());
-                                        } else {
-                                            listener.onRegistrationFailed("Nu am putut trimite mailul de verificare");
-                                        }
-                                    }
-                                });
+                        }
                     }
-                }
-            }
-        });
+                });
     }
 
     @Override
-    public FacebookCallback<LoginResult> loginWithFacebook() {
+    public FacebookCallback<LoginResult> loginWithFacebook(final OnLoginWithFacebookCallback onLoginWithFacebookCallback) {
+        Timber.i("Trying to login with Facebook...");
 
         return new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-
-                handleFacebookAccessToken(loginResult.getAccessToken());
+                handleFacebookAccessToken(loginResult.getAccessToken(), onLoginWithFacebookCallback);
             }
 
             @Override
             public void onCancel() {
-
+                Timber.e("Facebook login canceled!");
             }
 
             @Override
             public void onError(FacebookException error) {
+                Timber.e(error);
             }
         };
 
     }
 
     @Override
-    public void checkIfUserLoggedIn() {
+    public void registerUser(final OnRegistrationCallback callback, String email, String password) {
+        Timber.i("Trying to register user with email: %s", email);
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    final FirebaseUser user = mAuth.getCurrentUser();
+                    if (user != null && !user.isEmailVerified()) {
+                        Timber.i("User registered. Sending email verification...");
+                        user.sendEmailVerification()
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if (task.isSuccessful()) {
+                                            Timber.i("Verification email sent to: %s", user.getEmail());
+                                            callback.onRegistrationSuccess("Ți-am trimis un email de verificare la " + user.getEmail());
+                                        } else {
+                                            Timber.e("Verification email could not be sent. Reason: %s", task.getException().getMessage());
+                                            callback.onRegistrationFailed("Nu am putut trimite mailul de verificare");
+                                        }
+                                    }
+                                });
+                    }
+
+                } else {
+                    Timber.e("User registration failed. Reason: %s", task.getException().getMessage());
+                    callback.onRegistrationFailed(task.getException().getMessage());
+                }
+            }
+        });
+    }
+
+    @Override
+    public void checkIfUserLoggedIn(OnCheckIfLoggedInCallback callback) {
+        Timber.i("Checking if user is logged in...");
         //this implementation is for cases where the instanceId is not saved yet
         final ILoginActivityView view = (ILoginActivityView) mView.getInstance();
         view.hideViewsAndButtons();
         view.showProgress();
 
         if (isLoggedInViaEmail() || isLoggedInViaFacebook()) {
-            saveInstanceIdToUserObject(new OnSaveInstanceIdToUserObjectCallback() {
-                @Override
-                public void onSuccess() {
-                    view.launchMainActivity();
-                    view.hideProgress();
-                }
 
-                @Override
-                public void onFailed(String error) {
-                    view.showToast(error);
-                }
-            });
-        //not logged in
+            callback.isLoggedIn();
+
+            //not logged in. show login views and buttons. that means showing the whole scrollview which contains them.
         } else {
-            view.showViewsAndButtons();
-            view.hideProgress();
+            Timber.i("User is NOT logged in");
+            callback.isNotLoggedIn();
         }
-
-
     }
 
+    /**
+     * This method saves the instance id for the user to the database so we can use it when sending push notifications
+     *
+     * @param callback
+     */
     @Override
     public void saveInstanceIdToUserObject(final OnSaveInstanceIdToUserObjectCallback callback) {
+
         final String instanceId = FirebaseInstanceId.getInstance().getToken();
         FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
 
         DatabaseTypeSingleton type = DatabaseTypeSingleton.getInstance();
         final DatabaseReference usersRef;
 
-        if(!type.isDebug()){
+        if (!type.isDebug()) {
             usersRef = mDatabase.getReference("/users");
-        }else{
+        } else {
             usersRef = mDatabase.getReference("/_dev/users_dev");
         }
 
         //if first login there is no user in the database until you get to the tutorial screen.
         if (instanceId != null) {
-
             Query query = usersRef.orderByChild("userId").equalTo(mAuth.getCurrentUser().getUid());
-
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     for (DataSnapshot usersSnapshot : dataSnapshot.getChildren()) {
-                        User user = usersSnapshot.getValue(User.class);
+                        final User user = usersSnapshot.getValue(User.class);
                         usersRef.child(usersSnapshot.getKey()).child("instanceId").setValue(instanceId).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
+                                Timber.i("Saved instance id for user %s: %s", user.getName(), instanceId);
                                 callback.onSuccess();
                             }
                         });
@@ -187,6 +212,7 @@ public class AuthPresenter implements IAuthPresenter {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Timber.i("Could not save instance id to database. Reason: %s", databaseError.getMessage());
                     callback.onFailed(databaseError.getMessage());
                 }
             });
@@ -195,7 +221,7 @@ public class AuthPresenter implements IAuthPresenter {
 
     private boolean isLoggedInViaEmail() {
         Boolean result = mAuth.getCurrentUser() != null && mAuth.getCurrentUser().isEmailVerified();
-        Log.d(TAG, "isLoggedInViaEmail: " + result);
+        Timber.i("The user is logged in with email: %s", result);
         return result;
     }
 
@@ -203,43 +229,51 @@ public class AuthPresenter implements IAuthPresenter {
     public boolean isLoggedInViaFacebook() {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         Boolean result = accessToken != null;
-        Log.d(TAG, "isLoggedInViaFacebook: " + String.valueOf(result));
+        Timber.i("The user is logged in with Facebook: %s", result);
         return result;
     }
 
 
     @Override
-    public String getCurrentUserID() {
+    public String getCurrentUserID() throws NullPointerException {
 
-        if (mAuth.getCurrentUser() != null) {
-            return mAuth.getCurrentUser().getUid();
+        String currentUserId = null;
+
+        try {
+            currentUserId = mAuth.getCurrentUser().getUid();
+            Timber.i("Got current user id: %s", currentUserId);
+            return currentUserId;
+        } catch (NullPointerException e) {
+            Timber.e("Get Current user; get user id returned null!");
+            Timber.e(e);
         }
-        return "";
+
+        return currentUserId;
     }
 
     @Override
     public String getCurrentUserName() {
+        // TODO: 27.12.2018 Refactor the same as above method
         if (mAuth.getCurrentUser() != null) {
-            return mAuth.getCurrentUser().getEmail();
+            String currentUserEmail = mAuth.getCurrentUser().getEmail();
+            Timber.i("Got current user email: %s", currentUserEmail);
+            return currentUserEmail;
         }
 
         return "";
     }
 
     @Override
-    public String getCurrentUserEmail() {
-        return mAuth.getCurrentUser().getEmail();
-    }
-
-    @Override
     public void logUserOut(IMyJokesActivityView view) {
+        Timber.i("Logging user %s out", mAuth.getCurrentUser().getEmail());
         mAuth.signOut();
         LoginManager.getInstance().logOut();
+        Timber.i("Logout success!");
         view.redirectToLoginPage();
         view.clearSharedPreferences();
     }
 
-    private void handleFacebookAccessToken(AccessToken accessToken) {
+    private void handleFacebookAccessToken(AccessToken accessToken, final OnLoginWithFacebookCallback listenerFromLoginPresenter) {
 
         final ILoginActivityView login = (ILoginActivityView) this.mView.getInstance();
         Activity context = login.getContext();
@@ -251,38 +285,28 @@ public class AuthPresenter implements IAuthPresenter {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            login.loginSuccess();
-                            login.hideProgress();
-                            saveInstanceIdToUserObject(new OnSaveInstanceIdToUserObjectCallback() {
-                                @Override
-                                public void onSuccess() {
-
-                                }
-
-                                @Override
-                                public void onFailed(String error) {
-
-                                }
-                            });
-
+                            Timber.i("Facebook login success!");
+                            listenerFromLoginPresenter.onLoginWithFacebookSuccess();
                         } else {
                             // If sign in fails, display a message to the user.
-                            login.loginFailed(task.getException().toString());
-                            login.hideProgress();
+                            Timber.e("Login with facebook failed! Reason: %s", task.getException().toString());
+                            listenerFromLoginPresenter.onLoginWithFacebookFailed(task.getException().toString());
                         }
 
                     }
                 });
     }
 
-    public void performPasswordReset(final OnResetPasswordListener listener, String email) {
+    public void performPasswordReset(final OnResetPasswordListener listener, final String email) {
         mAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
+                            Timber.i("Password reset email sent to %s", email);
                             listener.onResetPasswordSuccess("Ți-am trimis un mail cu instrucțiunile de resetare");
                         } else {
+                            Timber.e("Password reset email NOT sent to %s. Reason: %s", email, task.getException().getMessage());
                             listener.onResetPasswordFailed(task.getException().getMessage());
                         }
                     }
@@ -297,14 +321,16 @@ public class AuthPresenter implements IAuthPresenter {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            currentUser = mAuth.getCurrentUser();
-                            if (currentUser != null) {
-                                currentUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            mCurrentUser = mAuth.getCurrentUser();
+                            if (mCurrentUser != null) {
+                                mCurrentUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if (task.isSuccessful()) {
+                                            Timber.i("Verification email resent to %s", email);
                                             listener.onResendEmailSuccess("Ți-am retrimis emailul de verificare la: " + email);
                                         } else {
+                                            Timber.e("Verification email NOT sent to %s. Reason: %s", email, task.getException().getMessage());
                                             listener.onResendEmailFailed(task.getException().getMessage());
                                         }
                                     }
@@ -320,29 +346,15 @@ public class AuthPresenter implements IAuthPresenter {
     @Override
     public boolean isAdmin() {
         List<String> list = Arrays.asList(Constants.ADMINS);
-        return list.contains(getCurrentUserID());
+        Boolean isAdmin = list.contains(getCurrentUserID());
+        Timber.i("Is current user admin: %s", isAdmin);
+        return isAdmin;
     }
 
     @Override
     public boolean isLoggedInAnonymously() {
-        return mAuth.getCurrentUser().isAnonymous();
-    }
-
-    @Override
-    public void signInAnonymously(final OnAnonymousLoginCallback listener) {
-        mAuth.signInAnonymously()
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "signInAnonymously:success");
-                            listener.onSuccess();
-                        } else {
-                            Log.w(TAG, "signInAnonymously:failure", task.getException());
-                            listener.onFailed(task.getException().getMessage());
-
-                        }
-                    }
-                });
+        Boolean isLoggedInAnonymously = mAuth.getCurrentUser().isAnonymous();
+        Timber.i("Logged in anonymously: %s", isLoggedInAnonymously);
+        return isLoggedInAnonymously;
     }
 }

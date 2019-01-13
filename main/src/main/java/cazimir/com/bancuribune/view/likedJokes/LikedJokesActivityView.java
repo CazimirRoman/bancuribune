@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import butterknife.BindView;
 import cazimir.com.bancuribune.BuildConfig;
@@ -64,7 +65,7 @@ public class LikedJokesActivityView extends BaseBackActivity implements ILikedJo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DatabaseTypeSingleton type = DatabaseTypeSingleton.getInstance();
-        mPresenter = new LikedJokesPresenter(this, new AuthPresenter(this), new JokesRepository(type.isDebug()));
+        mPresenter = new LikedJokesPresenter(this, new AuthPresenter(this, FirebaseAuth.getInstance()), new JokesRepository(type.isDebug()));
         initRecycleView();
         getLikedJokes();
         showAds();

@@ -14,6 +14,7 @@ import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
+import com.google.firebase.auth.FirebaseAuth;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -32,6 +33,7 @@ import cazimir.com.bancuribune.utils.UtilHelper;
 import cazimir.com.bancuribune.view.forgotPassword.ForgotPasswordActivityView;
 import cazimir.com.bancuribune.view.list.MainActivityView;
 import cazimir.com.bancuribune.view.register.RegisterActivityView;
+import timber.log.Timber;
 
 import static cazimir.com.bancuribune.constant.Constants.EMAIL_EMPTY;
 import static cazimir.com.bancuribune.constant.Constants.EMAIL_INVALID;
@@ -42,8 +44,7 @@ import static cazimir.com.bancuribune.constant.Constants.REGISTER_ACTIVITY_REQ_C
 
 public class LoginActivityView extends BaseActivity implements ILoginActivityView {
 
-    private ILoginPresenter mPresenter;
-    private AuthPresenter mAuthPresenter;
+    private ILoginPresenter mLoginPresenter;
     private CallbackManager mCallbackManager;
     private String mJokeIdExtra;
     private Boolean mIsNewRank = false;
@@ -76,15 +77,15 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter = new LoginPresenter(this, new AuthPresenter(this));
-        mAuthPresenter = new AuthPresenter(this);
+        mLoginPresenter = new LoginPresenter(this, new AuthPresenter(this, FirebaseAuth.getInstance()));
         mCallbackManager = CallbackManager.Factory.create();
         setFacebookButtonClickListener();
         initUI();
         if (BuildConfig.DEBUG) {
             //startWithDebugDB();
         }
-        mAuthPresenter.checkIfUserLoggedIn();
+
+        mLoginPresenter.checkIfUserLoggedIn();
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -149,16 +150,13 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         switch (view.getId()) {
             case R.id.btnLoginWithEmail:
                 if (expandableLayout.isExpanded()) {
-
-                    //hideKeyboard();
-
                     if (isInternetAvailable()) {
                         String email = etEmail.getText().toString();
                         String password = etPassword.getText().toString();
                         UtilHelper.validateFormData(new OnFormValidatedListener() {
                             @Override
                             public void onValidateSuccess(String email, String password) {
-                                mPresenter.performLogin(email, password);
+                                mLoginPresenter.performLogin(email, password);
                                 showProgress();
                             }
 
@@ -206,17 +204,18 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
                 break;
             case R.id.btnSkipRegistration:
                 showProgress();
-                mPresenter.performAnonymousLogin();
+                mLoginPresenter.performAnonymousLogin();
                 break;
         }
     }
 
     private void setFacebookButtonClickListener() {
+
         facebookButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 facebookButton.setReadPermissions("email", "public_profile");
-                facebookButton.registerCallback(mCallbackManager, mAuthPresenter.loginWithFacebook());
+                facebookButton.registerCallback(mCallbackManager, mLoginPresenter.loginWithFacebook());
                 facebookButton.setVisibility(View.GONE);
             }
         });
@@ -229,10 +228,12 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
             if (extras.getString("jokeId") != null) {
                 //extra coming from push notification after joke approved
                 mJokeIdExtra = getIntent().getStringExtra("jokeId");
+                Timber.i("User clicked on push notification for joke approved with id: %s", mJokeIdExtra);
             }
 
             //it is a rank update. for rank updates jokeId is not present
             if(extras.getString("regards") != null && extras.getString("regards").equals("rank_updated")) {
+                Timber.i("User clicked on push notification for rank update");
                 mIsNewRank = true;
             }
         }
@@ -240,6 +241,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
 
     @Override
     public void launchMainActivity() {
+        Timber.i("Launching main activity...");
         onNewIntent(getIntent());
         Intent i = new Intent(this, MainActivityView.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -247,6 +249,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         i.putExtra("regards", mIsNewRank);
         i.putExtra(Constants.ANONYMOUS_LOGIN, mIsAnonymousLogin);
         startActivity(i);
+        Timber.i("Launching main activity...");
         this.finish();
     }
 
@@ -290,6 +293,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
 
     @Override
     public void hideProgress() {
+        Timber.i("Hiding progress bar");
         progress.setVisibility(View.GONE);
     }
 

@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
 import butterknife.BindView;
@@ -48,7 +49,7 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DatabaseTypeSingleton type = DatabaseTypeSingleton.getInstance();
-        mPresenter = new AddJokePresenter(this, new AuthPresenter(this), new JokesRepository(type.isDebug()));
+        mPresenter = new AddJokePresenter(this, new AuthPresenter(this, FirebaseAuth.getInstance()), new JokesRepository(type.isDebug()));
         intent = this.getIntent();
         showAds();
     }

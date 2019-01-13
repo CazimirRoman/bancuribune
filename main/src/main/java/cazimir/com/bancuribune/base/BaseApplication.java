@@ -8,7 +8,9 @@ import com.crashlytics.android.core.CrashlyticsCore;
 import com.facebook.appevents.AppEventsLogger;
 
 import cazimir.com.bancuribune.BuildConfig;
+import cazimir.com.bancuribune.log.ReleaseLogger;
 import io.fabric.sdk.android.Fabric;
+import timber.log.Timber;
 
 public class BaseApplication extends MultiDexApplication {
     @Override
@@ -17,6 +19,13 @@ public class BaseApplication extends MultiDexApplication {
         AppEventsLogger.activateApp(this);
         TypefaceProvider.registerDefaultIconSets();
         setUpCrashlytics();
+
+        //initialize Timber
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        } else {
+            Timber.plant(new ReleaseLogger());
+        }
     }
 
     private void setUpCrashlytics() {

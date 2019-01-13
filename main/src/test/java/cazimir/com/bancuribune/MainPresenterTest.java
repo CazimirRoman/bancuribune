@@ -1,32 +1,34 @@
 package cazimir.com.bancuribune;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
+import cazimir.com.bancuribune.callbacks.admin.OnJokeApprovedListener;
 import cazimir.com.bancuribune.presenter.auth.AuthPresenter;
 import cazimir.com.bancuribune.presenter.main.MainPresenter;
 import cazimir.com.bancuribune.repository.JokesRepository;
-import cazimir.com.bancuribune.repository.OnAdminCheckCallback;
+import cazimir.com.bancuribune.repository.OnShowReminderToAddListener;
 import cazimir.com.bancuribune.view.list.MainActivityView;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * TODO: Add a class header comment!
- */
 public class MainPresenterTest {
 
     private static final String NO_ADMIN_ID = "123456";
     private static final String ADMIN_ID = "IINgcJQYhrar9QBi2qcojfRqely2";
-    String userId = "userId";
+    private static final String USER_ID = "xxxxxxxxxxxxxxxxx";
+    private static final String JOKE_TEXT = "This is a joke";
+    private static final String APROBAT_TEXT = "aprobat";
+    private static final String ERROR_TEXT = "error text";
 
     private MainPresenter mMainPresenter;
 
@@ -40,7 +42,10 @@ public class MainPresenterTest {
     private AuthPresenter mAuthPresenter;
 
     @Captor
-    private ArgumentCaptor<OnAdminCheckCallback> mOnAdminCheckCallbackArgumentCaptor;
+    private ArgumentCaptor<OnShowReminderToAddListener> mOnShowReminderToAddListenerArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<OnJokeApprovedListener> mOnJokeApprovedListenerArgumentCaptor;
 
 
     @Before
@@ -71,13 +76,25 @@ public class MainPresenterTest {
 
         when(mAuthPresenter.getCurrentUserID()).thenReturn(ADMIN_ID);
         mMainPresenter.showAdminButtonsIfAdmin();
-        verify(mJokesRepository).checkIfAdmin(mOnAdminCheckCallbackArgumentCaptor.capture(), eq(ADMIN_ID));
-        mOnAdminCheckCallbackArgumentCaptor.getValue().onIsAdmin();
         verify(mMainActivityView).showAdminButtons();
     }
 
     @Test
-    public void checkNumberOfAddsLastWeek(){
-        
+    public void shouldRefreshJokesListIfJokeTextSuccesfullySavedToDatabase(){
+        mMainPresenter.approveJoke(USER_ID, JOKE_TEXT);
+        verify(mJokesRepository).approveJoke(mOnJokeApprovedListenerArgumentCaptor.capture(), eq(USER_ID), eq(JOKE_TEXT));
+        mOnJokeApprovedListenerArgumentCaptor.getValue().onJokeApprovedSuccess(APROBAT_TEXT);
+        InOrder inOrder = Mockito.inOrder(mMainActivityView);
+        inOrder.verify(mMainActivityView).showToast(APROBAT_TEXT);
+        inOrder.verify(mMainActivityView).getAllJokesData(true, false);
+        inOrder.verify(mMainActivityView).hideKeyboard();
+    }
+
+    @Test
+    public void shouldShowErrorToastIfJokeTextFailedToSaveToDatabase(){
+        mMainPresenter.approveJoke(USER_ID, JOKE_TEXT);
+        verify(mJokesRepository).approveJoke(mOnJokeApprovedListenerArgumentCaptor.capture(), eq(USER_ID), eq(JOKE_TEXT));
+        mOnJokeApprovedListenerArgumentCaptor.getValue().onJokeApprovedFailed(ERROR_TEXT);
+        verify(mMainActivityView).showToast(eq(ERROR_TEXT));
     }
 }

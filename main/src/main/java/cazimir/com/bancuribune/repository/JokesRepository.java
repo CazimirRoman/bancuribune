@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,8 +37,10 @@ import cazimir.com.bancuribune.model.User;
 import cazimir.com.bancuribune.model.Vote;
 import cazimir.com.bancuribune.report.OnGetAllRanksListener;
 import cazimir.com.bancuribune.utils.UtilHelper;
+import timber.log.Timber;
 
 import static cazimir.com.bancuribune.constant.Constants.NO_MODIFICATIONS;
+import static cazimir.com.bancuribune.constant.Constants.TIMBER_ADD_JOKE_FLOW;
 
 public class JokesRepository implements IJokesRepository {
 
@@ -55,6 +56,9 @@ public class JokesRepository implements IJokesRepository {
     private String keyStep;
 
     private Boolean debugDB;
+
+    //rank to be updated
+    private Rank mRankToBeUpdated = null;
 
     public JokesRepository(Boolean debugDB) {
         this.debugDB = debugDB;
@@ -370,6 +374,9 @@ public class JokesRepository implements IJokesRepository {
 
     @Override
     public void addJoke(final cazimir.com.bancuribune.callbacks.add.OnAddJokeFinishedListener listener, Joke joke) {
+
+        Timber.tag(Constants.TIMBER_ADD_JOKE_FLOW).i("Starting to add joke-> %s <-to db", joke.getJokeText());
+
         String uid = jokesRef.push().getKey();
         joke.setUid(uid);
         jokesRef.child(uid).setValue(joke, new DatabaseReference.CompletionListener() {
@@ -377,8 +384,10 @@ public class JokesRepository implements IJokesRepository {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError != null) {
+                    Timber.e("Could not add joke. Reason: %s", databaseError.getMessage());
                     listener.onAddFailed(databaseError.getMessage());
                 } else {
+                    Timber.tag(TIMBER_ADD_JOKE_FLOW).i("Joke added successfully!");
                     listener.onAddSuccess();
                 }
             }
@@ -386,7 +395,9 @@ public class JokesRepository implements IJokesRepository {
     }
 
     @Override
-    public void getAllJokesAddedToday(final OnAllowedToAddFinishedListener listener, String userId, final int addLimit) {
+    public void getAllJokesAddedToday(final OnAllowedToAddFinishedListener listener, final String userId, final int addLimit) {
+
+        Timber.tag(Constants.TIMBER_ADD_JOKE_FLOW).i("Checking number of jokes added today...");
 
         final ArrayList<Joke> addedJokesToday = new ArrayList<>();
 
@@ -408,19 +419,22 @@ public class JokesRepository implements IJokesRepository {
                     }
                 }
 
+                Timber.tag(TIMBER_ADD_JOKE_FLOW).i("User %s added %s jokes today. His limit is %s jokes per day", userId,
+                        String.valueOf(addedJokesToday.size()), String.valueOf(addLimit));
+
                 if (addedJokesToday.size() < addLimit) {
-
                     int remainingAdds = addLimit - addedJokesToday.size();
-
+                    Timber.tag(TIMBER_ADD_JOKE_FLOW).i("User is allowed to add");
                     listener.isAllowedToAdd(remainingAdds);
                 } else {
+                    Timber.tag(TIMBER_ADD_JOKE_FLOW).i("User is not allowed to add any more jokes today");
                     listener.isNotAllowedToAdd(addLimit);
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Timber.e("Something bad happened: %s", databaseError.getMessage());
             }
         });
     }
@@ -466,41 +480,31 @@ public class JokesRepository implements IJokesRepository {
 
             @Override
             public void onComplete(final DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError != null) {
-                    listener.OnUpdatePointsFailed(databaseError.getMessage());
-                } else {
+                if (databaseError == null) {
 
                     Query query = jokesRef.orderByChild("uid").equalTo(joke.getUid());
 
-                    query.addChildEventListener(new ChildEventListener() {
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                            Joke joke = dataSnapshot.getValue(Joke.class);
-                            listener.OnUpdatePointsSuccess(joke);
-                        }
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        @Override
-                        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                        }
-
-                        @Override
-                        public void onChildRemoved(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot data : dataSnapshot.getChildren()
+                                    ) {
+                                Joke joke = data.getValue(Joke.class);
+                                listener.OnUpdatePointsSuccess(joke);
+                            }
 
                         }
 
                         @Override
-                        public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
 
                         }
                     });
 
 
+                } else {
+                    listener.OnUpdatePointsFailed(databaseError.getMessage());
                 }
             }
         });
@@ -587,19 +591,21 @@ public class JokesRepository implements IJokesRepository {
 
         Query query = ranksRef.orderByChild("userId").equalTo(userId);
 
-        query.addChildEventListener(new ChildEventListener() {
-
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                final Rank rank = dataSnapshot.getValue(Rank.class);
-                assert rank != null;
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                ranksRef.child(rank.getUid()).child("totalPoints").setValue(points, new DatabaseReference.CompletionListener() {
+                for (DataSnapshot data: dataSnapshot.getChildren()
+                     ) {
+                    mRankToBeUpdated = data.getValue(Rank.class);
+                }
+
+                ranksRef.child(mRankToBeUpdated.getUid()).child("totalPoints").setValue(points, new DatabaseReference.CompletionListener() {
 
                     @Override
                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                         if (databaseError == null) {
-                            ranksRef.child(rank.getUid()).child("rank").setValue(rankName, new DatabaseReference.CompletionListener() {
+                            ranksRef.child(mRankToBeUpdated.getUid()).child("rank").setValue(rankName, new DatabaseReference.CompletionListener() {
 
                                 @Override
                                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -611,26 +617,10 @@ public class JokesRepository implements IJokesRepository {
                         }
                     }
                 });
-
             }
 
             @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });

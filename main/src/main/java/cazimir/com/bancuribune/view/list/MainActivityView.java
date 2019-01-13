@@ -43,6 +43,7 @@ import com.facebook.Profile;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.julienvey.trello.Trello;
 import com.julienvey.trello.domain.Card;
 import com.julienvey.trello.impl.TrelloImpl;
@@ -78,6 +79,7 @@ import cazimir.com.bancuribune.view.likedJokes.LikedJokesActivityView;
 import cazimir.com.bancuribune.view.login.LoginActivityView;
 import cazimir.com.bancuribune.view.profile.MyJokesActivityView;
 import cazimir.com.bancuribune.view.tutorial.TutorialActivityView;
+import timber.log.Timber;
 
 import static cazimir.com.bancuribune.constant.Constants.ADD_JOKE_LIMIT_HAMSIE;
 import static cazimir.com.bancuribune.constant.Constants.ADD_JOKE_LIMIT_HERING;
@@ -155,9 +157,15 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         DatabaseTypeSingleton type = DatabaseTypeSingleton.getInstance();
-        mPresenter = new MainPresenter(this, new AuthPresenter(this), new JokesRepository(type.isDebug()));
+        mPresenter = new MainPresenter(this, new AuthPresenter(this, FirebaseAuth.getInstance()), new JokesRepository(type.isDebug()));
         goToProfileIfActivityIfStartedFromPushNotification();
         onboardingNeeded();
+        //because when you logout the shared preferences containing the current rank is also deleted
+        //we do not need to add user and rank to db if anonymous login because user cannot add or vote.
+        if(!isAnonymousLogin()){
+            //if rank is in DB save instanceId to user table to send push notifications
+            addRankAndUserToDB();
+        }
         setSwipeRefreshListener();
         initializeRatingReminder();
         checkIfReminderToAddShouldBeShown();
@@ -231,6 +239,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     }
 
     private Date getLastCheckDateFromSharedPreferences() {
+
         preferences = this.getSharedPreferences("reminder", Context.MODE_PRIVATE);
         long lastCheck = preferences.getLong("last_check", 0);
         //first run
@@ -267,6 +276,8 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
 
     private String getCurrentRankNameFromSharedPreferences() {
         preferences = getSharedPreferences(RANK, MODE_PRIVATE);
+        Timber.tag(Constants.TIMBER_SHARED_PREFERENCES).i("Current rank from shared preferences is: %s",
+                preferences.getString(RANK_NAME, null));
         return preferences.getString(RANK_NAME, null);
     }
 
@@ -333,7 +344,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         protected Card doInBackground(TrelloObject... params) {
             Card card = new Card();
             card.setName(params[0].getText());
-            card.setDesc(activityReference.get().mPresenter.getAuthPresenter().getCurrentUserEmail());
+            card.setDesc(activityReference.get().mPresenter.getAuthPresenter().getCurrentUserName());
             if (params[0].isJoke()) {
                 return trelloApi.createCard(TRELLO_JOKE_LIST, card);
             }
@@ -353,13 +364,6 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     private void onboardingNeeded() {
         if (isFirstRun()) {
             startTutorialActivity();
-        }
-
-        //because when you logout the shared preferences containing the current rank is also deleted
-        //we do not need to add user and rank to db if anonymous login because user cannot add or vote.
-        if(!isAnonymousLogin()){
-            //if rank is in DB save instanceId to user table to send push notifications
-            addRankAndUserToDB();
         }
     }
 
@@ -408,16 +412,19 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         });
     }
 
+    /**
+     * @return true if it is a fresh install of the application in order to show the user the tutorial screen.
+     */
     private boolean isFirstRun() {
 
         Boolean mFirstRun;
-        String currentUserId = mPresenter.getAuthPresenter().getCurrentUserID();
+        String currentUserID = mPresenter.getAuthPresenter().getCurrentUserID();
 
         SharedPreferences mPreferences = this.getSharedPreferences("first_time", Context.MODE_PRIVATE);
-        mFirstRun = mPreferences.getBoolean(currentUserId, true);
+        mFirstRun = mPreferences.getBoolean(currentUserID, true);
         if (mFirstRun) {
             SharedPreferences.Editor editor = mPreferences.edit();
-            editor.putBoolean(currentUserId, false);
+            editor.putBoolean(currentUserID, false);
             editor.apply();
             return true;
         }
@@ -447,9 +454,10 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
                 animateHeartIcon(position);
                 playOnVotedAudio();
 
-                if(!mPresenter.isLoggedInAnonymously()){
+                //if not logged in anonymously
+                if (!mPresenter.isLoggedInAnonymously()) {
                     mPresenter.checkIfAlreadyVoted(joke, position);
-                }else {
+                } else {
                     startLoginActivity();
                 }
             }
@@ -772,7 +780,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
             case R.id.switchDB:
                 DatabaseTypeSingleton type = DatabaseTypeSingleton.getInstance();
                 type.setType(!type.isDebug());
-                mPresenter = new MainPresenter(this, new AuthPresenter(this), new JokesRepository(type.isDebug()));
+                mPresenter = new MainPresenter(this, new AuthPresenter(this, FirebaseAuth.getInstance()), new JokesRepository(type.isDebug()));
                 mPresenter.getAllJokesData(true, true);
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
