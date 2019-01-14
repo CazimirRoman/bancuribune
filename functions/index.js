@@ -9,14 +9,24 @@ const RANK_UPDATED = "rank_updated"
 const JOKE_APPROVED = "joke_approved"
 
 exports.onJokeApproved_test = functions.database.ref('/_dev/jokes_dev/{pushId}')
-    .onWrite(event => {
+    .onWrite((event, context) => {
 
         var jokeId = -1;
 
-        if (event.data.previous.exists()) {
-            console.log(event.data.child("uid").val());
+        if (event.before.exists() && !event.after.exists()) {
+
+            var text = event.before.child("jokeText").val();
+            console.log("deleted joke with text: " + text);
+
+            //the user that created the deleted joke must receive a push notification informing him/her that the joke was not approved!
+
+            var createdBy = event.before.child("createdBy").val();
+
+
+
+
             return;
-          }
+        }
 
         //approved turned from false to true
         if ((!event.before.child("approved").val()) && event.after.child("approved").val()) {
