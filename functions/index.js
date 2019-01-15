@@ -7,28 +7,68 @@ admin.initializeApp();
 
 const RANK_UPDATED = "rank_updated"
 const JOKE_APPROVED = "joke_approved"
+const JOKE_REJECTED = "joke_rejected"
 
 exports.onJokeApproved_test = functions.database.ref('/_dev/jokes_dev/{pushId}')
     .onWrite((event, context) => {
 
-        var jokeId = -1;
+        var jokeId = "";
 
+         //joke deleted - existed before but not anymore
         if (event.before.exists() && !event.after.exists()) {
 
             var text = event.before.child("jokeText").val();
             console.log("deleted joke with text: " + text);
 
-            //the user that created the deleted joke must receive a push notification informing him/her that the joke was not approved!
-
+            //get the user that created the deleted joke must receive a push notification informing him/her that the joke was not approved!
             var createdBy = event.before.child("createdBy").val();
 
+            const getUser = admin.database().ref("/_dev/users_dev").orderByChild('userId').equalTo(createdBy).once('value');
 
+            //return this promise first
+                        return Promise.all([getUser]).then(results => {
 
+                            var userUid;
 
+                            results[0].forEach(function(childSnapshot) {
+                                var value = childSnapshot.val();
+                                userUid = value.uid;
+                                console.log("The key for the user is: " + value.uid)
+                            });
+
+                            //using the key of the user get access to the instanceId property in the user object
+                            var getInstanceId = admin.database().ref(`/_dev/users_dev/${userUid}/instanceId`).once('value');
+
+                            //then return this promise
+                            return Promise.all([getInstanceId]).then(results => {
+
+                                const instanceId = results[0].val();
+
+                                console.log("The instance id is: " + instanceId)
+
+                                const payload = {
+
+                                    data: {
+                                        title: "Bancul tău nu a fost aprobat!",
+                                        body: "Te rog sa il introduci din nou fiind atent sa nu contina cuvinte obscene etc etc",
+                                        regards: JOKE_REJECTED,
+                                        jokeId: jokeId
+                                    }
+                                };
+
+                                admin.messaging().sendToDevice(instanceId, payload)
+                                    .then(function(response) {
+                                        console.log("Successfully sent message:", response);
+                                    })
+                                    .catch(function(error) {
+                                        console.log("Error sending message:", error);
+                                    });
+                            })
+                        })
             return;
         }
 
-        //approved turned from false to true
+        //joke approved - approved turned from false to true
         if ((!event.before.child("approved").val()) && event.after.child("approved").val()) {
 
             const message = event.after.child("jokeText").val();
@@ -90,8 +130,63 @@ exports.onJokeApproved_test = functions.database.ref('/_dev/jokes_dev/{pushId}')
 exports.onJokeApproved_prod = functions.database.ref('/jokes/{pushId}')
     .onWrite(event => {
 
-        var jokeId = -1;
+        var jokeId = "";
 
+        //joke DELETED - existed before but not anymore
+        if (event.before.exists() && !event.after.exists()) {
+
+            var text = event.before.child("jokeText").val();
+            console.log("deleted joke with text: " + text);
+
+            //get the user that created the deleted joke must receive a push notification informing him/her that the joke was not approved!
+            var createdBy = event.before.child("createdBy").val();
+
+            const getUser = admin.database().ref("/users").orderByChild('userId').equalTo(createdBy).once('value');
+
+            //return this promise first
+                        return Promise.all([getUser]).then(results => {
+
+                            var userUid;
+
+                            results[0].forEach(function(childSnapshot) {
+                                var value = childSnapshot.val();
+                                userUid = value.uid;
+                                console.log("The key for the user is: " + value.uid)
+                            });
+
+                            //using the key of the user get access to the instanceId property in the user object
+                            var getInstanceId = admin.database().ref(`/users/${userUid}/instanceId`).once('value');
+
+                            //then return this promise
+                            return Promise.all([getInstanceId]).then(results => {
+
+                                const instanceId = results[0].val();
+
+                                console.log("The instance id is: " + instanceId)
+
+                                const payload = {
+
+                                    data: {
+                                        title: "Bancul tău nu a fost aprobat!",
+                                        body: "Te rog sa il introduci din nou fiind atent sa nu contina cuvinte obscene etc etc",
+                                        regards: JOKE_REJECTED,
+                                        jokeId: jokeId
+                                    }
+                                };
+
+                                admin.messaging().sendToDevice(instanceId, payload)
+                                    .then(function(response) {
+                                        console.log("Successfully sent message:", response);
+                                    })
+                                    .catch(function(error) {
+                                        console.log("Error sending message:", error);
+                                    });
+                            })
+                        })
+            return;
+        }
+
+        //joke APPROVED - approved turned from false to true
         if ((!event.before.child("approved").val()) && event.after.child("approved").val()) {
 
             const message = event.after.child("jokeText").val();
