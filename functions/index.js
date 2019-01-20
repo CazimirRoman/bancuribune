@@ -50,7 +50,7 @@ exports.onJokeApproved_test = functions.database.ref('/_dev/jokes_dev/{pushId}')
 
                                     data: {
                                         title: "Bancul tău nu a fost aprobat!",
-                                        body: "Te rog sa il introduci din nou fiind atent sa nu contina cuvinte obscene etc etc",
+                                        body: "Te rog adaug\u0103 din nou bancul fiind atent:\r\n- La ortografie, punctua\u021Bie \u0219i topic\u0103\r\n- Cuvintele ofensatoare s\u0103 fie blocate (ex: c\u0103**t)",
                                         regards: JOKE_REJECTED,
                                         jokeId: jokeId
                                     }
@@ -132,7 +132,7 @@ exports.onJokeApproved_prod = functions.database.ref('/jokes/{pushId}')
 
         var jokeId = "";
 
-        //joke DELETED - existed before but not anymore
+        //joke deleted - existed before but not anymore
         if (event.before.exists() && !event.after.exists()) {
 
             var text = event.before.child("jokeText").val();
@@ -168,7 +168,7 @@ exports.onJokeApproved_prod = functions.database.ref('/jokes/{pushId}')
 
                                     data: {
                                         title: "Bancul tău nu a fost aprobat!",
-                                        body: "Te rog sa il introduci din nou fiind atent sa nu contina cuvinte obscene etc etc",
+                                        body: "Te rog adaug\u0103 din nou bancul fiind atent:\r\n- La ortografie, punctua\u021Bie \u0219i topic\u0103\r\n- Cuvintele ofensatoare s\u0103 fie blocate (ex: c\u0103**t)",
                                         regards: JOKE_REJECTED,
                                         jokeId: jokeId
                                     }
