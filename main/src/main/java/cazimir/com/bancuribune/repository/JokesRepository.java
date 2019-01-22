@@ -18,6 +18,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import cazimir.com.bancuribune.callbacks.admin.OnDeleteJokeCallback;
 import cazimir.com.bancuribune.callbacks.admin.OnGetAllPendingJokesListener;
 import cazimir.com.bancuribune.callbacks.admin.OnJokeApprovedListener;
 import cazimir.com.bancuribune.callbacks.likedJokes.OnDeleteJokeVoteCallback;
@@ -859,4 +860,36 @@ public class JokesRepository implements IJokesRepository {
         });
     }
 
+    @Override
+    public void deleteJoke(final OnDeleteJokeCallback listener, Joke joke) {
+        Query query = jokesRef.orderByChild("uid").equalTo(joke.getUid());
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot jokeSnapshop : dataSnapshot.getChildren()) {
+                    try {
+                        Joke joke = jokeSnapshop.getValue(Joke.class);
+
+                        jokesRef.child(jokeSnapshop.getKey()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                listener.onSuccess();
+                            }
+                        });
+
+
+                    } catch (NullPointerException e) {
+                        listener.onFailed(e.getMessage());
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                listener.onFailed(databaseError.getMessage());
+            }
+        });
+    }
 }

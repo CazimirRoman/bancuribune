@@ -22,6 +22,7 @@ public class AdminActivityView extends BaseBackActivity implements IAdminActivit
 
     private AdminJokesAdapter mAdapter;
     private AdminPresenter mPresenter;
+    private OnAdminJokeItemClickListener mOnAdminJokeItemClickListener;
 
 
     @BindView(R.id.jokesList)
@@ -31,8 +32,23 @@ public class AdminActivityView extends BaseBackActivity implements IAdminActivit
         super.onCreate(savedInstanceState);
         DatabaseTypeSingleton type = DatabaseTypeSingleton.getInstance();
         mPresenter = new AdminPresenter(this, new JokesRepository(type.isDebug()));
+        initializeOnJokeItemClickListener();
         initRecycleView();
         getAllPendingJokes();
+    }
+
+    private void initializeOnJokeItemClickListener() {
+        mOnAdminJokeItemClickListener = new OnAdminJokeItemClickListener() {
+            @Override
+            public void onItemApproved(String uid, String jokeText) {
+                mPresenter.approveJoke(uid, jokeText);
+            }
+
+            @Override
+            public void onItemDeleted(Joke joke) {
+                mPresenter.deleteJoke(joke);
+            }
+        };
     }
 
     @Override
@@ -50,12 +66,7 @@ public class AdminActivityView extends BaseBackActivity implements IAdminActivit
     private void initRecycleView() {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
         adminJokesListRecyclerView.setLayoutManager(layoutManager);
-        mAdapter = new AdminJokesAdapter(new OnAdminJokeItemClickListener() {
-            @Override
-            public void onItemApproved(String uid, String jokeText) {
-                    mPresenter.approveJoke(uid, jokeText);
-                }
-        });
+        mAdapter = new AdminJokesAdapter(mOnAdminJokeItemClickListener);
         adminJokesListRecyclerView.setAdapter(mAdapter);
     }
 
@@ -77,12 +88,7 @@ public class AdminActivityView extends BaseBackActivity implements IAdminActivit
     @Override
     public void refreshJokes(List<Joke> jokes) {
 
-        mAdapter = new AdminJokesAdapter(new OnAdminJokeItemClickListener() {
-            @Override
-            public void onItemApproved(String uid, String jokeText) {
-                mPresenter.approveJoke(uid, jokeText);
-            }
-        });
+        mAdapter = new AdminJokesAdapter(mOnAdminJokeItemClickListener);
 
         adminJokesListRecyclerView.setAdapter(mAdapter);
         for (Joke joke : jokes) {

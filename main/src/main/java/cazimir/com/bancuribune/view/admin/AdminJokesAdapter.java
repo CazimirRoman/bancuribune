@@ -43,6 +43,7 @@ public class AdminJokesAdapter extends RecyclerView.Adapter<AdminJokesAdapter.My
         TextView expandableText;
         TextView author;
         TextView approve;
+        TextView delete;
         EditText edit;
 
         MyViewHolder(View view) {
@@ -51,6 +52,7 @@ public class AdminJokesAdapter extends RecyclerView.Adapter<AdminJokesAdapter.My
             expandableText = view.findViewById(R.id.expandable_text);
             author = view.findViewById(R.id.authorText);
             approve = view.findViewById(R.id.approve);
+            delete = view.findViewById(R.id.delete);
             edit = view.findViewById(R.id.expandable_text_edit);
         }
     }
@@ -91,6 +93,13 @@ public class AdminJokesAdapter extends RecyclerView.Adapter<AdminJokesAdapter.My
                 holder.edit.setText(joke.getJokeText());
                 holder.edit.setVisibility(View.VISIBLE);
                 return true;
+            }
+        });
+
+        holder.delete.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onItemDeleted(joke);
             }
         });
     }
