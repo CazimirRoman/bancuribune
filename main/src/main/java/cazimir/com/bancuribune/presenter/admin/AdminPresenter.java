@@ -1,7 +1,10 @@
 package cazimir.com.bancuribune.presenter.admin;
 
+import android.widget.Toast;
+
 import java.util.List;
 
+import cazimir.com.bancuribune.callbacks.admin.OnDeleteJokeCallback;
 import cazimir.com.bancuribune.callbacks.admin.OnGetAllPendingJokesListener;
 import cazimir.com.bancuribune.callbacks.admin.OnJokeApprovedListener;
 import cazimir.com.bancuribune.model.Joke;
@@ -48,5 +51,20 @@ public class AdminPresenter implements IAdminPresenter {
                 mView.showToast(message);
             }
         });
+    }
+
+    @Override
+    public void deleteJoke(Joke joke) {
+        mRepository.deleteJoke(new OnDeleteJokeCallback() {
+            @Override
+            public void onSuccess() {
+                mView.getAllPendingJokes();
+            }
+
+            @Override
+            public void onFailed(String error) {
+
+            }
+        }, joke);
     }
 }

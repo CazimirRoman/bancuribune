@@ -97,6 +97,22 @@
 
                     </FrameLayout>
 
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent">
+
+                        <cazimir.com.bancuribune.utils.FontAwesomeTextView
+                            android:id="@+id/delete"
+                            style="@style/fontAwesome.iconSizeJoke"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:elevation="20dp"
+                            android:text="@string/fa_icon_delete"
+                            app:elevation="20dp" />
+
+                    </FrameLayout>
+
                 </LinearLayout>
 
                 <LinearLayout
