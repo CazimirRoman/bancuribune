@@ -63,7 +63,7 @@ public class AdminPresenter implements IAdminPresenter {
 
             @Override
             public void onFailed(String error) {
-
+                mView.showToast(error);
             }
         }, joke);
     }
