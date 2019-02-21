@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.firebase.crash.FirebaseCrash;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -15,6 +16,7 @@ import cazimir.com.bancuribune.callbacks.list.OnAddJokeVoteFinishedListener;
 import cazimir.com.bancuribune.callbacks.list.OnAllowedToAddFinishedListener;
 import cazimir.com.bancuribune.callbacks.list.OnCheckIfVotedFinishedListener;
 import cazimir.com.bancuribune.callbacks.list.OnGetJokesListener;
+import cazimir.com.bancuribune.callbacks.list.OnGetMostVotedJokesListener;
 import cazimir.com.bancuribune.callbacks.list.OnUpdatePointsFinishedListener;
 import cazimir.com.bancuribune.constant.Constants;
 import cazimir.com.bancuribune.model.Joke;
@@ -68,7 +70,7 @@ public class MainPresenter implements IMainPresenter {
             @Override
             public void onJokeApprovedSuccess(String message) {
                 mMainActivityView.showToast(message);
-                mMainActivityView.getAllJokesData(true, false);
+                mMainActivityView.getAllJokesData(true, false, false);
                 mMainActivityView.hideKeyboard();
             }
 
@@ -214,7 +216,7 @@ public class MainPresenter implements IMainPresenter {
     }
 
     @Override
-    public void getAllJokesData(boolean reset, boolean shouldShowProgress) {
+    public void getAllJokesData(boolean reset, boolean shouldShowProgress, boolean mostVoted) {
 
         if (reset) {
             mMainActivityView.refreshJokesListAdapter();
@@ -224,27 +226,48 @@ public class MainPresenter implements IMainPresenter {
             mMainActivityView.showProgressBar();
         }
 
-        mJokesRepository.getAllJokes(new OnGetJokesListener() {
-            @Override
-            public void onGetJokesSuccess(List<Joke> jokes) {
-                mMainActivityView.displayJokes(jokes);
-                mMainActivityView.hideProgressBar();
-                mMainActivityView.hideSwipeRefresh();
-            }
 
-            @Override
-            public void onGetJokesFailed(String error) {
-                mMainActivityView.requestFailed(error);
-                mMainActivityView.hideProgressBar();
-                mMainActivityView.hideSwipeRefresh();
-            }
+        if(mostVoted){
+            mJokesRepository.getMostVotedJokes(new OnGetMostVotedJokesListener() {
+                @Override
+                public void onSuccess(ArrayList<Joke> jokes) {
+                    mMainActivityView.displayJokes(jokes);
+                    mMainActivityView.hideProgressBar();
+                    mMainActivityView.hideSwipeRefresh();
+                }
 
-            @Override
-            public void onEndOfListReached() {
-                mMainActivityView.hideProgressBar();
-                mMainActivityView.hideSwipeRefresh();
-            }
-        }, reset);
+                @Override
+                public void onFailed(String error) {
+                    mMainActivityView.requestFailed(error);
+                    mMainActivityView.hideProgressBar();
+                    mMainActivityView.hideSwipeRefresh();
+                }
+            });
+        }else{
+            mJokesRepository.getAllJokes(new OnGetJokesListener() {
+                @Override
+                public void onGetJokesSuccess(List<Joke> jokes) {
+                    mMainActivityView.displayJokes(jokes);
+                    mMainActivityView.hideProgressBar();
+                    mMainActivityView.hideSwipeRefresh();
+                }
+
+                @Override
+                public void onGetJokesFailed(String error) {
+                    mMainActivityView.requestFailed(error);
+                    mMainActivityView.hideProgressBar();
+                    mMainActivityView.hideSwipeRefresh();
+                }
+
+                @Override
+                public void onEndOfListReached() {
+                    mMainActivityView.hideProgressBar();
+                    mMainActivityView.hideSwipeRefresh();
+                }
+            }, reset);
+        }
+
+
     }
 
     @Override

@@ -27,19 +27,8 @@ public class LoginPresenter implements ILoginPresenter {
         mAuthPresenter.login(new OnLoginWithEmailCallback() {
             @Override
             public void onSuccess() {
-                mAuthPresenter.saveInstanceIdToUserObject(new OnSaveInstanceIdToUserObjectCallback() {
-                    @Override
-                    public void onSuccess() {
-                        mView.launchMainActivity();
-                        mView.hideProgress();
-                    }
-
-                    @Override
-                    public void onFailed(String error) {
-                        mView.showToast(error);
-                        mView.hideProgress();
-                    }
-                });
+                mView.launchMainActivity();
+                mView.hideProgress();
             }
 
             @Override

@@ -27,6 +27,7 @@ import cazimir.com.bancuribune.callbacks.list.OnAddJokeVoteFinishedListener;
 import cazimir.com.bancuribune.callbacks.list.OnAllowedToAddFinishedListener;
 import cazimir.com.bancuribune.callbacks.list.OnCheckIfVotedFinishedListener;
 import cazimir.com.bancuribune.callbacks.list.OnGetJokesListener;
+import cazimir.com.bancuribune.callbacks.list.OnGetMostVotedJokesListener;
 import cazimir.com.bancuribune.callbacks.list.OnUpdatePointsFinishedListener;
 import cazimir.com.bancuribune.callbacks.myJokes.OnGetMyJokesListener;
 import cazimir.com.bancuribune.callbacks.reporting.OnGetTotalNumberOfJokesCompleted;
@@ -198,6 +199,43 @@ public class JokesRepository implements IJokesRepository {
                         }
                     });
         }
+    }
+
+    @Override
+    public void getMostVotedJokes(final OnGetMostVotedJokesListener listener) {
+
+        final ArrayList<Joke> jokes = new ArrayList<>();
+
+        Query mostVotedJokes = jokesRef.orderByChild("points");
+
+        mostVotedJokes.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot jokeSnapshot : dataSnapshot.getChildren()) {
+                    Joke joke = jokeSnapshot.getValue(Joke.class);
+                    if (joke != null) {
+                        jokes.add(joke);
+                    }
+                }
+
+                Collections.sort(jokes, new Comparator<Joke>() {
+                    @Override
+                    public int compare(Joke j1, Joke j2) {
+                        return j2.getPoints() - j1.getPoints();
+                    }
+
+                });
+
+                listener.onSuccess(jokes);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 
     @Override

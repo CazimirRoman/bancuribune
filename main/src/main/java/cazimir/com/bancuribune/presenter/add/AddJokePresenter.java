@@ -44,4 +44,9 @@ public class AddJokePresenter implements IAddJokePresenter {
             }
         }, joke);
     }
+
+    @Override
+    public boolean isAdmin() {
+        return mAuthPresenter.isAdmin();
+    }
 }

@@ -1,7 +1,9 @@
 package cazimir.com.bancuribune.view.login;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -9,6 +11,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.facebook.CallbackManager;
@@ -37,17 +40,21 @@ import timber.log.Timber;
 
 import static cazimir.com.bancuribune.constant.Constants.EMAIL_EMPTY;
 import static cazimir.com.bancuribune.constant.Constants.EMAIL_INVALID;
+import static cazimir.com.bancuribune.constant.Constants.JOKE_APPROVED;
+import static cazimir.com.bancuribune.constant.Constants.JOKE_REJECTED;
 import static cazimir.com.bancuribune.constant.Constants.PASSWORD_EMPTY;
 import static cazimir.com.bancuribune.constant.Constants.PASSWORD_INVALID;
 import static cazimir.com.bancuribune.constant.Constants.PASSWORD_MATCH_NA;
+import static cazimir.com.bancuribune.constant.Constants.RANK_UPDATED;
 import static cazimir.com.bancuribune.constant.Constants.REGISTER_ACTIVITY_REQ_CODE;
+import static cazimir.com.bancuribune.constant.Constants.REVIEW_REQUESTED;
 
 public class LoginActivityView extends BaseActivity implements ILoginActivityView {
 
     private ILoginPresenter mLoginPresenter;
     private CallbackManager mCallbackManager;
     private String mJokeIdExtra;
-    private Boolean mIsNewRank = false;
+    private String mRegards;
     private Boolean mIsAnonymousLogin = false;
 
     @BindView(R.id.etEmail)
@@ -93,7 +100,6 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
                 showToast("Loghează-te pentru a putea benficia de toate funcțiile aplicației");
             }
         }
-
     }
 
     @Override
@@ -232,9 +238,27 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
             }
 
             //it is a rank update. for rank updates jokeId is not present
-            if(extras.getString("regards") != null && extras.getString("regards").equals("rank_updated")) {
+            if(extras.getString("regards") != null && extras.getString("regards").equals(RANK_UPDATED)) {
                 Timber.i("User clicked on push notification for rank update");
-                mIsNewRank = true;
+                mRegards = RANK_UPDATED;
+            }
+
+            //it is a rank update. for rank updates jokeId is not present
+            if(extras.getString("regards") != null && extras.getString("regards").equals(JOKE_APPROVED)) {
+                Timber.i("User clicked on push notification for joke approved");
+                mRegards = JOKE_APPROVED;
+            }
+
+            //it is a rank update. for rank updates jokeId is not present
+            if(extras.getString("regards") != null && extras.getString("regards").equals(JOKE_REJECTED)) {
+                Timber.i("User clicked on push notification for joke rejected");
+                mRegards = JOKE_REJECTED;
+            }
+
+            //it is a rank update. for rank updates jokeId is not present
+            if(extras.getString("regards") != null && extras.getString("regards").equals(REVIEW_REQUESTED)) {
+                Timber.i("User clicked on push notification for review request");
+                mRegards = REVIEW_REQUESTED;
             }
         }
     }
@@ -246,7 +270,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         Intent i = new Intent(this, MainActivityView.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         i.putExtra("jokeId", mJokeIdExtra);
-        i.putExtra("regards", mIsNewRank);
+        i.putExtra("regards", mRegards);
         i.putExtra(Constants.ANONYMOUS_LOGIN, mIsAnonymousLogin);
         startActivity(i);
         Timber.i("Launching main activity...");

@@ -8,12 +8,12 @@
     android:paddingEnd="10dp"
     android:paddingStart="10dp">
 
-
     <com.beardedhen.androidbootstrap.BootstrapWell
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="8dp"
+        android:padding="15dp"
+        android:layout_marginBottom="10dp"
         android:background="@color/white"
         app:bootstrapSize="xs">
 
