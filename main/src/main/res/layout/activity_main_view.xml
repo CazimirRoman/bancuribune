@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -11,43 +12,72 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <FrameLayout
-        android:id="@+id/fabScrollToTop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/include_app_bar"
-        android:elevation="30dp">
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/scrollToTop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:scaleType="center"
-            android:src="@drawable/ic_up" />
-
-    </FrameLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/include_app_bar"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical">
-
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefreshLayout"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_below="@id/include_app_bar"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/jokesList"
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/scrollToTop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_below="@+id/btnGroupNewestMostVoted"
+                android:layout_alignParentEnd="true"
+                android:scaleType="center"
+                android:src="@drawable/ic_up" />
+
+            <com.beardedhen.androidbootstrap.BootstrapButtonGroup
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </android.support.v4.widget.SwipeRefreshLayout>
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:id="@+id/btnGroupNewestMostVoted"
+                android:layout_margin="8dp"
+                app:roundedCorners="true"
+                app:bootstrapBrand="info"
+                app:bootstrapSize="lg"
+                app:buttonMode="radio">
 
-    </LinearLayout>
+                <com.beardedhen.androidbootstrap.BootstrapButton
+                    android:id="@+id/btnGetNewestJokes"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="wrap_content"
+                    android:text="@string/getNewestJokes"
+                    app:bootstrapBrand="info"
+                    app:checked="true"
+                    app:bootstrapSize="lg"
+                    app:buttonMode="radio" />
+
+                <com.beardedhen.androidbootstrap.BootstrapButton
+                    android:id="@+id/btnGetMostVotes"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="wrap_content"
+                    android:text="@string/getMostVotedJokes"
+                    app:bootstrapBrand="info"
+                    app:bootstrapSize="lg"
+                    app:buttonMode="radio" />
+
+            </com.beardedhen.androidbootstrap.BootstrapButtonGroup>
+
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swipeRefreshLayout"
+                android:layout_below="@id/btnGroupNewestMostVoted"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/jokesList"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </android.support.v4.widget.SwipeRefreshLayout>
+
+        </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/adBannerLayout"

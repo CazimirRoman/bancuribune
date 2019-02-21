@@ -113,7 +113,10 @@ public class AddJokeActivityView extends BaseBackActivity implements IAddJokeAct
     @Override
     public void closeAdd() {
         this.setResult(RESULT_OK, intent);
-        logEvent(EVENT_ADDED, null);
+        if(!mPresenter.isAdmin()){
+            logEvent(EVENT_ADDED, null);
+        }
+
         finish();
     }
 

@@ -66,4 +66,10 @@ public class Constants {
     public static final String AD_UNIT_ID_PROD = "ca-app-pub-7748272108558557/6099098244";
     public static final String TIMBER_ADD_JOKE_FLOW = "AddJokeFlow";
     public static final String TIMBER_SHARED_PREFERENCES = "SharedPreferences";
+
+    //regards statuses from push notification
+    public static final String RANK_UPDATED = "rank_updated";
+    public static final String JOKE_APPROVED = "joke_approved";
+    public static final String JOKE_REJECTED = "joke_rejected";
+    public static final String REVIEW_REQUESTED = "review_requested";
 }

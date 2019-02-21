@@ -2,6 +2,7 @@ package cazimir.com.bancuribune.view.list;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -39,11 +40,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.facebook.Profile;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.julienvey.trello.Trello;
 import com.julienvey.trello.domain.Card;
 import com.julienvey.trello.impl.TrelloImpl;
@@ -100,6 +103,7 @@ import static cazimir.com.bancuribune.constant.Constants.RECHIN;
 import static cazimir.com.bancuribune.constant.Constants.REMAINING;
 import static cazimir.com.bancuribune.constant.Constants.REMAINING_ADDS;
 import static cazimir.com.bancuribune.constant.Constants.REMINDER_INTERVAL_CHECK;
+import static cazimir.com.bancuribune.constant.Constants.REVIEW_REQUESTED;
 import static cazimir.com.bancuribune.constant.Constants.SESSION_SHOW;
 import static cazimir.com.bancuribune.constant.Constants.SOMON;
 import static cazimir.com.bancuribune.constant.Constants.STAR_RATING_THRESHOLD;
@@ -114,7 +118,6 @@ import static java.lang.Math.abs;
 public class MainActivityView extends BaseBackActivity implements IMainActivityView {
 
     private static final String TAG = MainActivityView.class.getSimpleName();
-
     private MainPresenter mPresenter;
     private JokesAdapter adapter;
     private String sharedText;
@@ -123,11 +126,17 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     private int soundID;
     boolean loaded = false;
     private boolean mDebug = false;
-    private int mCurrentPosition = 0;
+    private int mCurrentPositionNew = 0;
+    private int mCurrentPositionMostVoted = 0;
     private RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
     private boolean mFirstRunShowBanner = true;
     private Menu mMenu;
+    private boolean mMostVotedSelected;
 
+    @BindView(R.id.btnGetNewestJokes)
+    BootstrapButton btnGetNewestJokes;
+    @BindView(R.id.btnGetMostVotes)
+    BootstrapButton btnGetMostVotes;
     @BindView(R.id.jokesList)
     RecyclerView jokesListRecyclerView;
     @BindView(R.id.swipeRefreshLayout)
@@ -146,10 +155,8 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     ProgressBar progressMain;
     @BindView(R.id.fabActionButtons)
     LinearLayout fabActionButtons;
-    @BindView(R.id.fabScrollToTop)
-    FrameLayout fabScrollToTop;
     @BindView(R.id.scrollToTop)
-    FloatingActionButton scrollToTop;
+    FloatingActionButton fabScrollToTop;
     @BindView(R.id.adBannerLayout)
     LinearLayout adBannerLayout;
 
@@ -158,11 +165,13 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         super.onCreate(savedInstanceState);
         DatabaseTypeSingleton type = DatabaseTypeSingleton.getInstance();
         mPresenter = new MainPresenter(this, new AuthPresenter(this, FirebaseAuth.getInstance()), new JokesRepository(type.isDebug()));
-        goToProfileIfActivityIfStartedFromPushNotification();
+        handlePushNotifications();
         onboardingNeeded();
+
+        Log.d("Firebase", "token "+ FirebaseInstanceId.getInstance().getToken());
         //because when you logout the shared preferences containing the current rank is also deleted
         //we do not need to add user and rank to db if anonymous login because user cannot add or vote.
-        if(!isAnonymousLogin()){
+        if (!isAnonymousLogin()) {
             //if rank is in DB save instanceId to user table to send push notifications
             addRankAndUserToDB();
         }
@@ -170,9 +179,29 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         initializeRatingReminder();
         checkIfReminderToAddShouldBeShown();
         updateUIForAdmin();
-        getAllJokesData(true, false);
+        getAllJokesData(true, false, false);
         initializeLikeSound();
         showAds();
+
+        btnGetNewestJokes.setOnCheckedChangedListener(new BootstrapButton.OnCheckedChangedListener() {
+            @Override
+            public void OnCheckedChanged(BootstrapButton bootstrapButton, boolean isChecked) {
+                if (isChecked) {
+                    mMostVotedSelected = false;
+                    getAllJokesData(true, false, false);
+                }
+            }
+        });
+
+        btnGetMostVotes.setOnCheckedChangedListener(new BootstrapButton.OnCheckedChangedListener() {
+            @Override
+            public void OnCheckedChanged(BootstrapButton bootstrapButton, boolean isChecked) {
+                if (isChecked) {
+                    mMostVotedSelected = true;
+                    getAllJokesData(true, false, true);
+                }
+            }
+        });
     }
 
     @Override
@@ -180,12 +209,44 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         return R.layout.activity_main_view;
     }
 
+    private void handlePushNotifications() {
+        goToProfileActivityFromPush();
+    }
+
+    private void goToProfileActivityFromPush() {
+        //we need to start Profile activity in both cases (joke approved and rank updated)
+        if (checkIfExtraRegardsAvailable()) {
+
+            if(getIntent().getStringExtra("regards").equals(REVIEW_REQUESTED)){
+                redirectUserToPlayStore();
+                //for all other cases joke approved, joke rejected and rank update
+            }else{
+                if(checkIfExtraJokeIdAvailable()){
+                    startMyJokesActivity();
+                }
+
+            }
+
+        } else {
+            Log.d(TAG + " getExtras", "No extras received");
+        }
+    }
+
+    private void redirectUserToPlayStore() {
+        final Uri marketUri = Uri.parse("https://play.google.com/store/apps/details?id=cazimir.com.bancuribune&hl=en_US");
+        try {
+            startActivity(new Intent(Intent.ACTION_VIEW, marketUri));
+        } catch (ActivityNotFoundException ex) {
+            Toast.makeText(MainActivityView.this, "Couldn't find PlayStore on this device", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void showAds() {
         AdView mAdView = new AdView(this);
         mAdView.setAdSize(AdSize.BANNER);
-        if(BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             mAdView.setAdUnitId(Constants.AD_UNIT_ID_TEST);
-        }else{
+        } else {
             mAdView.setAdUnitId(Constants.AD_UNIT_ID_PROD);
         }
         adBannerLayout.addView(mAdView);
@@ -193,17 +254,12 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         mAdView.loadAd(adRequest);
     }
 
-    private void goToProfileIfActivityIfStartedFromPushNotification() {
-        //we need to start Profile activity in both cases (joke approved and rank updated)
-        if(checkIfExtraDataAvailable()){
-            startMyJokesActivity();
-        } else {
-            Log.d(TAG + " getExtras", "No extras received");
-        }
+    private boolean checkIfExtraRegardsAvailable() {
+        return (getIntent().getStringExtra("regards") != null);
     }
 
-    private boolean checkIfExtraDataAvailable() {
-        return (getIntent().getStringExtra("jokeId") != null) || (getIntent().getBooleanExtra("regards", false));
+    private boolean checkIfExtraJokeIdAvailable() {
+        return (getIntent().getStringExtra("jokeId") != null);
     }
 
     @Override
@@ -402,7 +458,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
             @Override
             public void onRefresh() {
                 if (isInternetAvailable()) {
-                    getAllJokesData(true, true);
+                    getAllJokesData(true, true, mMostVotedSelected);
                 } else {
                     showAlertDialog(getString(R.string.no_internet), SweetAlertDialog.ERROR_TYPE);
                     swipeRefreshLayout.setRefreshing(false);
@@ -495,8 +551,8 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     }
 
     @Override
-    public void getAllJokesData(boolean reset, boolean swipe) {
-        mPresenter.getAllJokesData(reset, swipe);
+    public void getAllJokesData(boolean reset, boolean swipe, boolean mostVoted) {
+        mPresenter.getAllJokesData(reset, swipe, mostVoted);
     }
 
     private RecyclerView.LayoutManager initRecycleView() {
@@ -509,7 +565,14 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
 
             @Override
             public void onScrollFinished() {
-                mCurrentPosition = layoutManager.findFirstVisibleItemPosition();
+                if(mMostVotedSelected){
+                    mCurrentPositionMostVoted = layoutManager.findFirstVisibleItemPosition();
+                    Log.i(TAG, String.format("onScrollFinished: mCurrentPositionMostVoted: %s", String.valueOf(mCurrentPositionMostVoted)));
+                }else{
+                    mCurrentPositionNew = layoutManager.findFirstVisibleItemPosition();
+                    Log.i(TAG, String.format("onScrollFinished: mCurrentPositionNew: %s", String.valueOf(mCurrentPositionNew)));
+                }
+
             }
 
             @Override
@@ -529,14 +592,14 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
 
             @Override
             public void onLoadMore(int current_page) {
-                getAllJokesData(false, false);
+                getAllJokesData(false, false, false);
 
             }
         });
     }
 
     private void showAdBanner() {
-        if(mFirstRunShowBanner){
+        if (mFirstRunShowBanner) {
             adBannerLayout.setVisibility(View.VISIBLE);
             mFirstRunShowBanner = false;
         }
@@ -562,7 +625,13 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
 
         adapter.notifyDataSetChanged();
         hideProgressBar();
-        jokesListRecyclerView.scrollToPosition(mCurrentPosition);
+
+        if(mMostVotedSelected){
+            jokesListRecyclerView.scrollToPosition(mCurrentPositionMostVoted);
+        }else{
+            jokesListRecyclerView.scrollToPosition(mCurrentPositionNew);
+        }
+
     }
 
     @Override
@@ -577,7 +646,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     @OnClick(R.id.addJokeButtonFAB)
     public void checkIfAllowedToAdd() {
 
-        if(!mPresenter.isLoggedInAnonymously()){
+        if (!mPresenter.isLoggedInAnonymously()) {
             String currentRank = getCurrentRankNameFromSharedPreferences();
             if (isInternetAvailable()) {
                 if (!mPresenter.isAdmin()) {
@@ -619,7 +688,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     @OnClick(R.id.myJokesButtonFAB)
     public void startMyJokesActivity() {
         if (isInternetAvailable()) {
-            if(!mPresenter.isLoggedInAnonymously()){
+            if (!mPresenter.isLoggedInAnonymously()) {
                 goToMyJokesActivity();
             } else {
                 startLoginActivity();
@@ -676,7 +745,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
     @OnClick(R.id.myLikedJokesButtonFAB)
     public void startMyLikedJokesActivity() {
         if (isInternetAvailable()) {
-            if(!mPresenter.isLoggedInAnonymously()){
+            if (!mPresenter.isLoggedInAnonymously()) {
                 startActivityForResult(new Intent(this, LikedJokesActivityView.class), LIKED_JOKES_REQ_CODE);
             } else {
                 startLoginActivity();
@@ -708,11 +777,14 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         if (requestCode == ADD_JOKE_REQUEST) {
             if (resultCode == RESULT_OK) {
                 if (data.getStringExtra(Constants.JOKE_TEXT) != null) {
-                    sendJokeToTrello(data.getStringExtra(Constants.JOKE_TEXT));
+                    if(!BuildConfig.DEBUG){
+                        sendJokeToTrello(data.getStringExtra(Constants.JOKE_TEXT));
+                    }
                 }
 
                 showAddSuccessDialog();
-                getAllJokesData(true, false);
+
+                getAllJokesData(true, false, false);
             }
         } else if (requestCode == USER_LOGOUT_REQ) {
             if (resultCode == RESULT_OK) {
@@ -720,7 +792,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
             }
 
         } else if (requestCode == LIKED_JOKES_REQ_CODE) {
-            getAllJokesData(true, false);
+            getAllJokesData(true, false, false);
 
         }
     }
@@ -761,9 +833,9 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
         mMenu = menu;
         if (mPresenter.isAdmin()) {
             inflater.inflate(R.menu.db_switcher, menu);
-            if(DatabaseTypeSingleton.getInstance().isDebug()){
+            if (DatabaseTypeSingleton.getInstance().isDebug()) {
                 mMenu.findItem(R.id.switchDB).setTitle("Switch to prod DB");
-            }else{
+            } else {
                 mMenu.findItem(R.id.switchDB).setTitle("Switch to test DB");
 
             }
@@ -781,7 +853,7 @@ public class MainActivityView extends BaseBackActivity implements IMainActivityV
                 DatabaseTypeSingleton type = DatabaseTypeSingleton.getInstance();
                 type.setType(!type.isDebug());
                 mPresenter = new MainPresenter(this, new AuthPresenter(this, FirebaseAuth.getInstance()), new JokesRepository(type.isDebug()));
-                mPresenter.getAllJokesData(true, true);
+                mPresenter.getAllJokesData(true, true, false);
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override

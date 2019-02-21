@@ -11,6 +11,7 @@ import cazimir.com.bancuribune.callbacks.list.OnAddJokeVoteFinishedListener;
 import cazimir.com.bancuribune.callbacks.list.OnAllowedToAddFinishedListener;
 import cazimir.com.bancuribune.callbacks.list.OnCheckIfVotedFinishedListener;
 import cazimir.com.bancuribune.callbacks.list.OnGetJokesListener;
+import cazimir.com.bancuribune.callbacks.list.OnGetMostVotedJokesListener;
 import cazimir.com.bancuribune.callbacks.list.OnUpdatePointsFinishedListener;
 import cazimir.com.bancuribune.callbacks.myJokes.OnGetMyJokesListener;
 import cazimir.com.bancuribune.callbacks.reporting.OnGetTotalNumberOfJokesCompleted;
@@ -42,4 +43,5 @@ public interface IJokesRepository {
     void deleteJokeVote(OnDeleteJokeVoteCallback onDeleteJokeVoteCallback, Joke mJokeToBeRemoved, String userId);
     void getAllRanks(OnGetAllRanksListener onGetAllRanksListener);
     void deleteJoke(OnDeleteJokeCallback onDeleteJokeCallback, Joke joke);
+    void getMostVotedJokes(OnGetMostVotedJokesListener onGetMostVotedJokesListener);
 }

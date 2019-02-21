@@ -9,7 +9,7 @@ import cazimir.com.bancuribune.model.Rank;
 import cazimir.com.bancuribune.view.list.OnAddUserToDatabaseCallback;
 
 public interface IMainActivityView extends IGeneralView {
-    void getAllJokesData(boolean reset, boolean swipe);
+    void getAllJokesData(boolean reset, boolean swipe, boolean mostVoted);
     void displayJokes(List<Joke> jokes);
     void requestFailed(String error);
     void navigateToAddJokeActivity();

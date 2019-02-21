@@ -86,7 +86,7 @@ public class MainPresenterTest {
         mOnJokeApprovedListenerArgumentCaptor.getValue().onJokeApprovedSuccess(APROBAT_TEXT);
         InOrder inOrder = Mockito.inOrder(mMainActivityView);
         inOrder.verify(mMainActivityView).showToast(APROBAT_TEXT);
-        inOrder.verify(mMainActivityView).getAllJokesData(true, false);
+        inOrder.verify(mMainActivityView).getAllJokesData(true, false, false);
         inOrder.verify(mMainActivityView).hideKeyboard();
     }
 
