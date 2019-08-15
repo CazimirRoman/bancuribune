@@ -1,9 +1,7 @@
 package cazimir.com.bancuribune.view.login;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,13 +9,14 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.facebook.CallbackManager;
 import com.facebook.login.widget.LoginButton;
 import com.github.aakira.expandablelayout.ExpandableRelativeLayout;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -50,6 +49,9 @@ import static cazimir.com.bancuribune.constant.Constants.REGISTER_ACTIVITY_REQ_C
 import static cazimir.com.bancuribune.constant.Constants.REVIEW_REQUESTED;
 
 public class LoginActivityView extends BaseActivity implements ILoginActivityView {
+
+    private static final String EMAIL = "email";
+    private static final String PUBLIC_PROFILE = "public_profile";
 
     private ILoginPresenter mLoginPresenter;
     private CallbackManager mCallbackManager;
@@ -220,7 +222,7 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
         facebookButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                facebookButton.setReadPermissions("email", "public_profile");
+                facebookButton.setReadPermissions(Arrays.asList(EMAIL, PUBLIC_PROFILE));
                 facebookButton.registerCallback(mCallbackManager, mLoginPresenter.loginWithFacebook());
                 facebookButton.setVisibility(View.GONE);
             }
@@ -289,8 +291,8 @@ public class LoginActivityView extends BaseActivity implements ILoginActivityVie
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REGISTER_ACTIVITY_REQ_CODE) {
             if (resultCode == RESULT_OK) {
                 String email = data.getStringExtra("email");
